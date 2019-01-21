@@ -7,12 +7,12 @@ module.exports = class extends BaseRest {
     async postAction() {
         // let type = 'DATF';
         let json = this.post();
-        const start = this.post('start');
-        const end = this.post('end');
-        const sat = this.post('sat');
-        const code = this.post('code');
-        const rawvalue = this.post('rawvalue');
-        const closetime = this.post('closetime');
+        // const start = this.post('start');
+        // const end = this.post('end');
+        // const sat = this.post('sat');
+        // const code = this.post('code');
+        // const rawvalue = this.post('rawvalue');
+        // const closetime = this.post('closetime');
 
         let thresholdType = this.post('thresholdType');
 
