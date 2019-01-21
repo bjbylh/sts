@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="space">
+    <meta name="keywords" content="space">
+    <title>测试进度监控</title>
+    <link rel="stylesheet" type="text/css" href="/static/home/css/reset.css">
+    <link rel="stylesheet" href="/static/home/css/global.css">
+    <link rel="stylesheet" href="/static/home/css/main.css">
+    <!--[if IE 8]>
+    <link rel="stylesheet" href="/static/home/css/font.css">
+    <![endif]-->
+    <style type="text/css" media="screen">
+        body, html {
+            margin: 0;
+            padding: 0;
+            position: relative;
+            font-size: 100%;
+        }
+
+        body {
+            min-width: 1200px;
+            background: #00294d url(/static/home/images/banner_1.png) no-repeat;
+            background-position: center 0;
+        }
+
+        .content .filterBox.w200 .filterList {
+            padding-right: 5px !important;
+        }
+
+        .content .filterBox.w200 .filterList.filterList2 {
+            padding-right: 8px !important;
+        }
+
+        .content .filterBox.w200 .filterList .orderbtn {
+            width: 120px;
+            height: 40px;
+            line-height: 40px;
+            padding: 0em 0em;
+            background: url(/static/home/images/order_btn.png) !important;
+            color: #83c1f3 !important;
+            border: 0px solid transparent;
+            border-radius: 0px;
+            box-sizing: border-box;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none !important;
+            cursor: pointer;
+        }
+
+        .content .filterBox.w200 .filterList .orderbtn.current {
+            width: 120px;
+            height: 40px;
+            line-height: 40px;
+            padding: 0em 0em;
+            background: url(/static/home/images/order_btn_active.png) !important;
+            color: #fff !important;
+            border: 0px solid transparent;
+            border-radius: 0px;
+            box-sizing: border-box;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none !important;
+            cursor: pointer;
+        }
+
+        .mySelectType40165 .select2-container .select2-selection--single .select2-selection__clear {
+            position: relative;
+            left: -20px;
+            top: -1px !important;
+        }
+
+        .gray {
+            -webkit-filter: grayscale(100%);
+            -moz-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            filter: grayscale(100%);
+            filter: gray;
+        }
+
+
+    </style>
+    <link href="/static/home/compontents/datatable/datatables.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/static/home/css/datatable.css">
+
+    <link href="/static/home/compontents/select2/dist/css/select2.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/static/home/css/myselect2.css">
+
+    <script type="text/javascript" src="/static/arena/timeline/moment-with-locales.min.js"></script>
+    <!--script src="/static/arena/timeline/dist/vis.js"></script>
+    <link href="/static/arena/timeline/dist/vis.css" rel="stylesheet" type="text/css" /-->
+
+    <script src="/static/arena/timeline/timeline.js"></script>
+    <link href="/static/arena/timeline/timeline.css" rel="stylesheet" type="text/css"/>
+
+
+    <style type="text/css">
+
+
+        .timeline-timeline {
+            border: 1px solid #02afe3;
+        }
+
+        .timeline-panel.timeline-center, .timeline-panel.timeline-left, .timeline-panel.timeline-right, .timeline-panel.timeline-top, .timeline-panel.timeline-bottom {
+            border: 1px #02afe3;
+        }
+
+        .timeline-panel.timeline-center, .timeline-panel.timeline-top, .timeline-panel.timeline-bottom {
+            border-left-style: solid;
+            border-right-style: solid;
+        }
+
+        .timeline-panel.timeline-center, .timeline-panel.timeline-left, .timeline-panel.timeline-right {
+            border-top-style: solid;
+            border-bottom-style: solid;
+        }
+
+        .timeline-time-axis .timeline-grid.timeline-minor {
+            border-color: #02afe3;
+        }
+
+        .timeline-time-axis .timeline-grid.timeline-major {
+            border-color: #02afe3;
+        }
+
+        .timeline-labelset .timeline-label {
+            border-bottom: 1px solid #02afe3;
+            color: #83c1f3;
+        }
+
+        .timeline-foreground .timeline-group {
+            position: relative;
+            box-sizing: border-box;
+            border-bottom: 1px solid #02afe3;
+        }
+
+        .timeline-time-axis .timeline-text {
+            color: #83c1f3;
+            text-align: center;
+        }
+
+        .timeline-time-axis {
+            text-align: center;
+        }
+
+        .timeline-item.green {
+            background-color: green;
+            border-color: green;
+            color: white;
+            font-family: monospace;
+            box-shadow: 0 0 10px gray;
+        }
+
+        .timeline-item.red {
+            background-color: darkred;
+            border-color: darkred;
+            color: white;
+            font-family: monospace;
+            box-shadow: 0 0 10px gray;
+        }
+
+        .timeline-item {
+            font-family: monospace;
+            box-shadow: 0 0 10px gray;
+        }
+    </style>
+
+
+</head>
+<body>
+<input type="hidden" id="userimg" value="{{userimgpath}}"/>
+<div class="header wrapper">
+    <img src="/static/home/images/logo.png" alt="" class="logo">
+    <ul class="nav">
+        <li class="navItem">
+            <a href="/tval" target="_blank" class="leaderboard"></a>
+        </li>
+        <li class="navItem">
+            <a href="#" class="analysis active"></a>
+        </li>
+        <li class="navItem">
+            <a href="/tval/analysis/satCPx" target="_blank" class="displaywall"></a>
+        </li>
+        <li class="navItem last">
+            <a href="/tval/index/wall" target="_blank" class="indicatordisplay"></a>
+        </li>
+    </ul>
+    <div class="user">
+        <img src="/static/userimages/foreground.png" class="usericon-wapper">
+        <img src="{{userimgpath}}" class="usericon">
+        <ul class="dropdownBox">
+            <li class="userInfo">
+                <span class="db font24">{{userInfo.name}}</span>
+                <span class="db font14">当前登录者</span>
+            </li>
+            <li class="dropdownList js_modify"><a class="color33">修改密码</a></li>
+            <li class="dropdownList"><a class="colorR" href="javascript:" onclick="logout()">退出</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="content wrapper marT60">
+    <div class="optionalRangeBox" style="padding-top: 20px">
+        <ul class="clearfix filterBox w200" style="margin-bottom: 0px">
+            <li class="filterList">
+                <span class="db font18">筛选条件</span>
+            </li>
+            <li class="filterList mySelectType40165">
+                <select class="condition" id="factory" style="width: 165px">
+                </select>
+            </li>
+            <li class="filterList mySelectType40165">
+                <select class="condition" style="width: 165px" id="field">
+                </select>
+            </li>
+            <li class="filterList mySelectType40165">
+                <select class="condition" id="applyField" style="width: 165px">
+                </select>
+            </li>
+            <li class="filterList mySelectType40165">
+                <select class="condition" style="width: 165px" id="orbitType">
+                </select>
+            </li>
+            <li class="filterList mySelectType40165">
+                <select class="condition" style="width: 165px" id="platform">
+                </select>
+            </li>
+            <li class="filterList mySelectType40165" style="padding-right: 0px !important;">
+                <select class="condition" style="width: 165px; " id="user">
+                </select>
+            </li>
+
+        </ul>
+
+        <div id="divgantt" style="margin: 40px;margin-top: 20px">
+
+        </div>
+    </div>
+</div>
+
+<div class="pop_bg"></div>
+<div class="modify-password-box">
+    <form class="modify-form" id="changpwd">
+        <span class="form-title">修改密码</span>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请输入新密码" id="new_p" name="new_p"
+                   value="">
+        </div>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请再次确认新密码" id="new_p2"
+                   name="new_p2" value="">
+        </div>
+        <div class="form-actions">
+            <a href="javascript:;" class="form-btn" onclick="chpassword()">确认修改</a>
+        </div>
+    </form>
+</div>
+
+<div class="footer">
+    © CASC 2018
+</div>
+
+<script src="/static/home/compontents/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="/static/home/compontents/datatable/datatables.min.js"></script>
+<script type="text/javascript" src="/static/home/compontents/select2/dist/js/select2.js"></script>
+<script type="text/javascript" src="/static/home/js/placeholderSupport.js"></script>
+<script type="text/javascript" src="/static/home/js/mylogin.js"></script>
+<script type="text/javascript" src="/static/home/js/util.js"></script>
+<script>
+  var urlEncode = function (param, key, encode) {
+    if (param == null) return '';
+    var paramStr = '';
+    var t = typeof (param);
+    if (t == 'string' || t == 'number' || t == 'boolean') {
+      paramStr += '&' + key + '=' + ((encode == null || encode) ? encodeURIComponent(param) : param);
+    } else {
+      for (var i in param) {
+        var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);
+        paramStr += urlEncode(param[i], k, encode);
+      }
+    }
+    return paramStr;
+  };
+
+  var groups = [];
+  var filtergroups = [];
+  var items = [];
+  var ganttchart = null;
+
+  $(document).ready(function () {
+    var filterdata = function () {
+
+      var param = {};
+      param.sat_factory = $('#factory').val();
+      param.sat_applyField = $('#applyField').val();
+      param.sat_orbitType = $('#orbitType').val();
+      param.sat_platform = $('#platform').val();
+      param.sat_field = $('#field').val();
+      param.sat_user = $('#user').val();
+
+      for (var p in param) {
+        if (typeof(param[p]) !== 'function') {
+          if (param[p] === '' || param[p] === null)
+            delete param[p];
+        }
+      }
+      debugger;
+      filtergroups = selectArr(groups, param);
+
+      // specify options
+      var now = new Date();
+      var stime = new Date(now - 100*24*60*60*1000);
+      now.setFullYear(now.getFullYear()+1);
+      var etime = new Date(now - 200*24*60*60*1000);
+
+      var options = {
+
+        locale: moment.locale('zh-cn'),
+        stack: false,
+        horizontalScroll: true,
+        zoomKey: 'ctrlKey',
+        editable: false,
+        margin: {
+          axis: 10,   // minimal margin between items and the axis
+          item: {
+            horizontal: 10,
+            vertical: 10
+          }
+        },
+        start:stime,
+        end:etime,
+        orientation: 'top',
+        align: 'center',
+        groupHeightMode: 'fixed'
+      };
+
+      // create a Timeline
+      var container = document.getElementById('divgantt');
+      debugger;
+      /*for(var idx=0;idx<items.length;idx++){
+        items[idx].start = new Date(items[idx].start);
+        items[idx].end = new Date(items[idx].end);
+      }*/
+      debugger;
+      if (ganttchart == null) {
+
+        ganttchart = new timeline.Timeline(container, items, filtergroups, options);
+
+      } else {
+
+        ganttchart.setData({
+          groups: filtergroups,
+          items: items
+        });
+      }
+    }
+
+    $.ajax({
+      cache: true,
+      type: "POST",
+      async: false,
+      url: '/tval/rank/getStage',
+      error: function (request) {
+        alert("Connection error");
+      },
+      success: function (data) {
+        groups = data.data.groups;
+        items = data.data.items;
+
+        $("#factory").select2({
+          placeholder: "限定研制单位",
+          data: getDistinctCloumn(groups, "sat_factory"),
+          allowClear: true
+        });
+        $('#field').select2({placeholder: "限定卫星领域", data: getDistinctCloumn(groups, "sat_field"), allowClear: true});
+        $('#applyField').select2({
+          placeholder: "限定应用目标",
+          data: getDistinctCloumn(groups, "sat_applyField"),
+          allowClear: true
+        });
+        $('#orbitType').select2({
+          placeholder: "限定轨道形式",
+          data: getDistinctCloumn(groups, "sat_orbitType"),
+          allowClear: true
+        });
+        $('#platform').select2({
+          placeholder: "限定卫星平台",
+          data: getDistinctCloumn(groups, "sat_platform"),
+          allowClear: true
+        });
+        $('#user').select2({placeholder: "限定卫星用户", data: getDistinctCloumn(groups, "sat_user"), allowClear: true});
+        $("#factory").val(null).trigger("change");
+        $("#field").val(null).trigger("change");
+        $("#applyField").val(null).trigger("change");
+        $("#orbitType").val(null).trigger("change");
+        $("#platform").val(null).trigger("change");
+        $("#user").val(null).trigger("change");
+
+
+        $('.condition').on("change", function (e) {
+          filterdata();
+        });
+
+        filterdata();
+      }
+    });
+
+
+  });
+
+
+</script>
+</body>
+</html>

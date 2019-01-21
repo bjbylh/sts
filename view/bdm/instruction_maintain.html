@@ -1,0 +1,687 @@
+{% include "./top.html" %}
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<!--<link href="/static/metronic/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css"/>-->
+<!--<link href="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css"-->
+      <!--rel="stylesheet" type="text/css"/>-->
+<!-- END PAGE LEVEL PLUGINS -->
+
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<!--<script src="/static/metronic/assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js"
+        type="text/javascript"></script>-->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<!--<script src="/static/metronic/assets/pages/scripts/table-datatables-responsive.min.js" type="text/javascript"></script>-->
+<!-- END PAGE LEVEL SCRIPTS -->
+<!-- BEGIN SPREADJS -->
+<link rel="stylesheet" href="/static/spread.sheets/css/gc.spread.sheets.excel2013white.11.0.0.css">
+<script type="text/javascript" src="/static/spread.sheets/js/gc.spread.sheets.all.11.0.0.min.js"></script>
+<script type="text/javascript"src="/static/spread.sheets/js/gc.spread.sheets.resources.zh.11.0.0.min.js"></script>
+<!-- END SPREADJS -->
+<style type="text/css">
+    html, body {
+        margin: 0;
+        padding: 0;
+        width:99.5%;
+        height:95%;
+    }
+    #lzBtn-grounp {
+        margin: 10px 10px;
+    }
+
+    #lzBtn-grounp .btn {
+        width: 100px
+    }
+</style>
+    <div id="lzBtn-grounp" class="clearfix">
+        <button id="btnRefrash" type="button" data-loading-text="Loading..." class="demo-loading-btn btn btn-primary"><i class="fa fa-refresh"></i>&nbsp&nbsp刷新</button>
+        <button id="btnAdd" type="button" data-loading-text="Loading..." class="demo-loading-btn btn btn-primary" disabled><i class="fa fa-plus"></i>&nbsp&nbsp添加</button>
+        <button id="btnDelet" type="button" data-loading-text="Loading..." class="demo-loading-btn btn red" disabled><i class="fa fa-remove"></i>&nbsp&nbsp删除</button>
+        <button id="bteidt" type="button" data-loading-text="Loading..." class="demo-loading-btn btn red"><i class="fa fa-lock"></i>&nbsp&nbsp锁定</button>
+        <button id="btsave" type="button" data-loading-text="Loading..." class="demo-loading-btn btn btn-primary"><i class="fa fa-save"></i>&nbsp&nbsp保存</button>
+    </div>
+<div class="sample-tutorial" style="height:100%;width:100%">
+    <div id="instruction" style="height:100%;width:100%;border:1px solid #767676"></div>
+</div>
+<script type="text/javascript">
+  var spreadNS = GC.Spread.Sheets;
+  $(function(){
+    var spread = new GC.Spread.Sheets.Workbook(document.getElementById("instruction"));
+    var sheet = spread.getSheet(0);
+    initSpread(spread);
+    //刷新
+    $("#btnRefrash").click(function(){
+      var cellStyle2 = new spreadNS.Style();
+      cellStyle2.backColor =undefined;
+      var dataEdit = sheet.getDirtyRows();
+      for(var i=0;i<dataEdit.length;i++){
+        sheet.getCell(dataEdit[i].row, -1, GC.Spread.Sheets.SheetArea.rowHeader).backColor(undefined);
+        for(var j=0;j<15;j++){
+          sheet.setStyle(dataEdit[i].row, j, cellStyle2, spreadNS.SheetArea.viewport);
+        }
+      }
+      loadData(spread);
+    });
+    //添加行
+    $("#btnAdd").click(function(){
+      var irow=sheet.getDataSource().length;
+      sheet.addRows(irow, 1)
+      // 自定义单元格格式
+      var customFormatterTest = {};
+      customFormatterTest.prototype = GC.Spread.Formatter.FormatterBase;
+      customFormatterTest.format = function (obj, conditionalForeColor) {
+        conditionalForeColor.value = "blue";
+        return obj.toString();
+      };
+      customFormatterTest.parse = function (str) {
+        if (!str) {
+          return "";
+        }
+        return str;
+      };
+      sheet.getCell(irow, 1).formatter(customFormatterTest);
+      sheet.getCell(irow, 4).formatter(customFormatterTest);
+    });
+    // 删除行
+    DeleateRow(spread);
+    // 解锁
+    $("#bteidt").click(function(){
+  /*    var data=sheet.getDataSource();
+      if(data.length==0){
+        sheet.options.isProtected =false;
+        $("#btnAdd").attr("disabled", false);
+        $("#btnDelet").attr("disabled", false);
+        $(this).html('<i class="fa fa-edit"></i>&nbsp&nbsp编辑').removeClass('red').addClass('btn-primary');
+        showMessageNomal('进入编辑模式，请谨慎操作');
+        isLock=0;
+      }else */
+        if(isLock==1){
+        sheet.options.isProtected = false;
+        $("#btnAdd").attr("disabled", false);
+        $("#btnDelet").attr("disabled", false);
+        $(this).html('<i class="fa fa-edit"></i>&nbsp&nbsp编辑').removeClass('red').addClass('btn-primary');
+        showMessageNomal('进入编辑模式，请谨慎操作');
+        isLock=0;
+      }else if(isLock==0){
+        sheet.options.isProtected = true;
+        $("#btnAdd").attr("disabled", true);
+        $("#btnDelet").attr("disabled", true);
+        $(this).html('<i class="fa fa-lock"></i>&nbsp&nbsp锁定').removeClass('btn-primary').addClass('red');
+        isLock=1;
+      }
+    });
+    //保存
+    $("#btsave").click(function(){
+      var dataEdit=sheet.getDirtyRows();
+      var dataAdd=sheet.getInsertRows();
+      if(dataEdit.length!=0){
+        var idata=dataEdit;
+        dataSearch(spread,idata,dataEdit);
+        if(isBanck==1){
+          showMessageEro('不能为空存储失败');
+        }else if(isBanck==0){
+          if(isClash==1){
+            showMessageEro('信息有冲突存储失败');
+          }else{
+            showMessageNomal("信息存储成功");
+          }
+        }
+        isBanck=0;
+        isClash=0;
+      }else if(dataAdd.length!=0){
+        var idata=dataAdd;
+        dataSearch(spread,idata,dataAdd);
+        if(isBanck==1){
+          showMessageEro('不能为空存储失败');
+        }else if(isBanck==0){
+          if(isClash==1){
+            showMessageEro('信息有冲突存储失败');
+          }else{
+            showMessageNomal("信息存储成功");
+            refreash(spread)
+          }
+        }
+        isBanck=0;
+        isClash=0;
+      }else {
+        showMessageNomal('没有修改数据');
+      }
+    });
+  });
+  var isLock=1;                          //是否锁定
+  var zdRow="";                        //行变动新
+  var oldRow="";                       //行变动旧
+  var selecArr;                         //下拉数组数据源
+  var isBanck=0;                        //是否存在空值提示，0不存在，1存在
+  var isClash=0;                        //是否存在冲突提示，0不冲突，1冲突
+  function initSpread(spread) {
+    spread.options.tabStripVisible = false;
+    var sheet = spread.getSheet(0);
+    sheet.options.allowCellOverflow = true;
+
+    // // 初始化数据
+    loadData(spread);
+    sheet.suspendPaint();
+    // 换行自动存储数据
+    var selectionChanged = GC.Spread.Sheets.Events.SelectionChanged;
+    sheet.bind(selectionChanged, function(e,args) {
+      zdRow=args.newSelections[0].row;
+      oldRow=args.oldSelections[0].row;
+      if(zdRow!=oldRow){
+        if(sheet.getDirtyRows().length!=0){
+          var dataEdit=sheet.getDirtyRows();
+          // 设置脏数据标记
+          for (var i = 0; i < dataEdit.length; i++) {
+            sheet.getCell(dataEdit[i].row, -1, GC.Spread.Sheets.SheetArea.rowHeader).backColor('yellow');
+          }
+          // 数据验证并存储
+          dataEdit=sheet.getDirtyRows();
+          for(var i=0;i<dataEdit.length;i++){
+            if(oldRow==dataEdit[i].row){
+              var Editdata=dataEdit[i];
+              console.log(Editdata)
+              singleSearch(spread,Editdata);
+              if(isBanck==1){
+                showMessageEro('不能为空存储失败')
+              }else if(isBanck==0){
+                if(isClash==1){
+                  showMessageEro('信息有冲突存储失败')
+                }
+              }
+              if(isBanck==0){
+                if(isBanck==0 ){
+                  $.ajax({
+                    type : "post",
+                    async: false,
+                    url : "doSave",
+                    data:{"_satid":"{{sat._id}}","data":JSON.stringify(Editdata.item),'_subsysid':'{{subsys._id}}'},
+                    success : function(data) {
+                      // showMessageNomal("信息存储成功");
+                      // refreash2(spread)
+                    },
+                    error:function(request){
+                      // showMessageAbnomal("信息存储失败")
+                    }
+                  })
+                }
+              }
+              isBanck=0;
+              isBanck=0
+            }
+          }
+        } else if(sheet.getInsertRows().length!=0 && sheet.getInsertRows()[0].item.insid!=null){    //存储新增数据
+          var dataAdd=sheet.getInsertRows();
+          //设置新增数据标记
+          for (var i = 0; i < dataAdd.length; i++) {
+            sheet.getCell(dataAdd[i].row, -1, GC.Spread.Sheets.SheetArea.rowHeader).backColor('yellow');
+          }
+          // 数据验证并存储
+          for(var i=0;i<dataAdd.length;i++){
+            if(oldRow==dataAdd[i].row){
+              var dataAdd=dataAdd[i]
+              singleSearch(spread,dataAdd);
+              if(isBanck==1){
+                showMessageEro('不能为空存储失败')
+              }else if(isBanck==0){
+                if(isClash==1){
+                  showMessageEro('信息有冲突存储失败')
+                }
+              }
+              isClash=0;
+              isBanck=0
+            }
+          }
+        }else if(sheet.getInsertRows().length!=0 && sheet.getInsertRows()[0].item.insid==null){
+          if(sheet.getInsertRows()[0].row!=zdRow){
+            layer.msg("新增指令代号不能为空，会导致存储失败")
+          }
+        }
+      }
+    });
+    // 锁定
+    sheet.options.isProtected = true;
+    sheet.resumePaint();
+  }
+  function loadData(spread){
+    var sheet = spread.getSheet(0);
+    sheet.suspendPaint();
+    // 下拉列表
+    selectDData();
+    var lines=selecArr;
+    var lineCellType = new GC.Spread.Sheets.CellTypes.ComboBox();
+    lineCellType.items(lines).editorValueType(spreadNS.CellTypes.EditorValueType.text);
+    var colInfos=[
+      {name:"insid",displayName:"指令代号",size:80},
+      {name:"_id",displayName:"ID",size:80},
+      {name:"device",displayName:"所属分系统",cellType: lineCellType,size:80},
+      {name:"insno",displayName:"指令编号",size:80},
+      {name:"insname",displayName:"指令名字",size:80},
+      {name:"insplus",displayName:"脉冲标志",size:80},
+      {name:"instype",displayName:"指令类型",size:80},
+      {name:"ins_enable",displayName:"使能标志",size:80},
+      {name:"inssubs",displayName:"允许发送的分系统",size:80},
+      {name:"inswidth",displayName:"脉冲宽度",size:80},
+      {name:"insparsRule",displayName:"参数判读规则",size:80},
+      {name:"inspars",displayName:"相关参数",size:80},
+      {name:"instarget",displayName:"发送指令",size:80},
+      {name:"critical",displayName:"是否关键指令",size:80},
+      {name:"scaleword",displayName:"比例式指令码",size:80}
+    ];
+    $.ajax({
+      type : "get",
+      async: false,
+      url : "getList",
+      data:{"_satid":"{{sat._id}}",'_subsysid':'{{subsys._id}}'},
+      success : function(data) {
+        var dataSourse=data.data;
+        sheet.setDataSource(dataSourse);
+        sheet.bindColumns(colInfos);
+        // 筛选
+        if(dataSourse.length!=0){
+          var filter = new GC.Spread.Sheets.Filter.HideRowFilter(new GC.Spread.Sheets.Range(0, 0,dataSourse.length, 15));
+          sheet.rowFilter(filter);
+        }
+        // 隐藏列
+        sheet.setColumnVisible(1, false);
+        //自定义单元格格式
+        var customFormatterTest = {};
+        customFormatterTest.prototype = GC.Spread.Formatter.FormatterBase;
+        customFormatterTest.format = function (obj, conditionalForeColor) {
+          conditionalForeColor.value = "blue";
+          return obj.toString();
+        };
+        customFormatterTest.parse = function (str) {
+          if (!str) {
+            return "";
+          }
+          return str;
+        };
+        for(var i=0;i<dataSourse.length;i++){
+          sheet.getCell(i, 0).formatter(customFormatterTest);
+          sheet.getCell(i, 4).formatter(customFormatterTest);
+        }
+        // 行高列宽
+        sheet.defaults.rowHeight = 30;
+        sheet.setColumnWidth(0, 120);
+        sheet.setColumnWidth(2, 150);
+        sheet.setColumnWidth(3, 120);
+        sheet.setColumnWidth(4, 240);
+        sheet.setColumnWidth(5, 120);
+        sheet.setColumnWidth(6, 120);
+        sheet.setColumnWidth(7, 120);
+        sheet.setColumnWidth(8, 160);
+        sheet.setColumnWidth(9, 120);
+        sheet.setColumnWidth(10, 120);
+        sheet.setColumnWidth(11, 120);
+        sheet.setColumnWidth(12, 120);
+        sheet.setColumnWidth(13, 120);
+        sheet.setColumnWidth(14, 120);
+        showMessageNomal('数据加载成功')
+      },
+      error:function(request){
+        showMessageAbnomal('数据加载失败');
+      }
+    });
+    sheet.resumePaint();
+  }
+  function refreash(spread){
+    var sheet = spread.getSheet(0);
+    sheet.suspendPaint();
+    // 下拉列表
+    selectDData();
+    var lines=selecArr;
+    var lineCellType = new GC.Spread.Sheets.CellTypes.ComboBox();
+    lineCellType.items(lines).editorValueType(spreadNS.CellTypes.EditorValueType.text);
+    var colInfos=[
+      {name:"insid",displayName:"指令代号",size:80},
+      {name:"_id",displayName:"ID",size:80},
+      {name:"device",displayName:"所属分系统",cellType: lineCellType,size:80},
+      {name:"insno",displayName:"指令编号",size:80},
+      {name:"insname",displayName:"指令名字",size:80},
+      {name:"insplus",displayName:"脉冲标志",size:80},
+      {name:"instype",displayName:"指令类型",size:80},
+      {name:"ins_enable",displayName:"使能标志",size:80},
+      {name:"inssubs",displayName:"允许发送的分系统",size:80},
+      {name:"inswidth",displayName:"脉冲宽度",size:80},
+      {name:"insparsrule",displayName:"参数判读规则",size:80},
+      {name:"inspars",displayName:"相关参数",size:80},
+      {name:"instarget",displayName:"发送指令",size:80},
+      {name:"critical",displayName:"是否关键指令",size:80},
+      {name:"scaleword",displayName:"比例式指令码",size:80}
+    ];
+    $.ajax({
+      type : "get",
+      async: false,
+      url : "getList",
+      data:{"_satid":"{{sat._id}}",'_subsysid':'{{subsys._id}}'},
+      success : function(data) {
+        var dataSourse=data.data;
+        sheet.setDataSource(dataSourse);
+        sheet.bindColumns(colInfos);
+        // 筛选
+        if(dataSourse.length!=0){
+          var filter = new GC.Spread.Sheets.Filter.HideRowFilter(new GC.Spread.Sheets.Range(0, 0,dataSourse.length, 15));
+          sheet.rowFilter(filter);
+        }
+        // 隐藏列
+        sheet.setColumnVisible(0, false);
+        //自定义单元格格式
+        var customFormatterTest = {};
+        customFormatterTest.prototype = GC.Spread.Formatter.FormatterBase;
+        customFormatterTest.format = function (obj, conditionalForeColor) {
+          conditionalForeColor.value = "blue";
+          return obj.toString();
+        };
+        customFormatterTest.parse = function (str) {
+          if (!str) {
+            return "";
+          }
+          return str;
+        };
+        for(var i=0;i<dataSourse.length;i++){
+          sheet.getCell(i, 0).formatter(customFormatterTest);
+          sheet.getCell(i, 4).formatter(customFormatterTest);
+        }
+        // 行高列宽
+        sheet.defaults.rowHeight = 30;
+        sheet.setColumnWidth(0, 120);
+        sheet.setColumnWidth(2, 150);
+        sheet.setColumnWidth(3, 120);
+        sheet.setColumnWidth(4, 240);
+        sheet.setColumnWidth(5, 120);
+        sheet.setColumnWidth(6, 120);
+        sheet.setColumnWidth(7, 120);
+        sheet.setColumnWidth(8, 160);
+        sheet.setColumnWidth(9, 120);
+        sheet.setColumnWidth(10, 120);
+        sheet.setColumnWidth(11, 120);
+        sheet.setColumnWidth(12, 120);
+        sheet.setColumnWidth(13, 120);
+        sheet.setColumnWidth(14, 120);
+      },
+      error:function(request){
+        showMessageAbnomal('数据加载失败');
+      }
+    });
+    sheet.resumePaint();
+  }
+  function DeleateRow(spread){
+    $("#btnDelet").click(function(){
+      layer.confirm('<h3 style="width:100%;text-align:center;font-size:30px;color:red;margin-top:0"><i class="fa fa-warning"></i></h3><p style="width:100%;text-align:center;font-size:15px">该操作不可逆你确定要删除么？</p>', {
+        btn: ['确定','取消'] //按钮
+      }, function(){
+        var sheet = spread.getSheet(0);
+        var idData=sheet.getDataItem(zdRow);
+        $.ajax({
+          type : "post",
+          async: false,
+          url : "doDelete",
+          data:{"_satid":"{{sat._id}}","data":JSON.stringify(idData)},
+          success : function(data) {
+            if(data.success==true){
+              sheet.deleteRows(zdRow, 1);
+              showMessageNomal('删除成功')
+            }else{
+              showMessageEro('删除失败')
+            }
+          },
+          error:function(request){
+            alert("获取项目信息失败")
+          }
+        });
+      }, function(){
+        layer.msg('你取消了删除操作', {
+          time: 1500, //1.5s后自动关闭
+        });
+      });
+    });
+  }
+  // 下拉列表读取
+  function selectDData(){
+    $.ajax({
+      type : "get",
+      async: false,
+      url : "/bdm/subsys/getList",
+      data:{"_satid":"{{sat._id}}"},
+      success : function(data) {
+        function getListdata(data) {
+          var oArr = [];
+          for (var i = 0; i < data.data.length; i++) {
+            var obj = {};
+            obj.text = data.data[i].name;
+            obj.value = data.data[i].code;
+            oArr.push(obj)
+          }
+          return oArr;
+        }
+        selecArr=getListdata(data);
+      },
+      error:function(request){
+        alert("获取项目信息失败")
+      }
+    });
+  }
+  // 数据检查
+  function singleSearch(spread,idata){
+    var sheet = spread.getSheet(0);
+    var cellStyle1 = new spreadNS.Style();
+    cellStyle1.name = 'style1';
+    cellStyle1.backColor ="#ff5a5f";
+    var cellStyle2 = new spreadNS.Style();
+    cellStyle2.name = 'style2';
+    cellStyle2.backColor =undefined;
+    var cellStyle3 = new spreadNS.Style();
+    cellStyle3.name = 'style1';
+    cellStyle3.backColor ="#ffc711";
+      var isTrue=0;                       //是否空值，1为空，0非空
+      var isClash1=0;                      //是否冲突，0不冲突，1冲突
+      var isClash2=0;                      //是否冲突，0不冲突，1冲突
+      var idata2 = {
+        "指令编号": idata.item.insno,
+        "指令名字": idata.item.insname,
+        "指令代号": idata.item.insid
+      };
+      for (var i in idata2) {
+        switch (i) {
+          case "指令编号":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata.row,3, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue = 1;
+              isBanck=1;
+              break;
+            } else {
+              sheet.setStyle(idata.row,3, cellStyle2, spreadNS.SheetArea.viewport);
+              break;
+            }
+          case "指令名字":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata.row, 4, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue =1;
+              isBanck=1;
+              break;
+            } else {
+              $.ajax({
+                type: "post",
+                async: false,
+                url : "doValidateInsName",
+                data: {"_satid": "{{sat._id}}","_instructionid":idata.item._id,"insname": idata.item.insname},
+                success: function(data) {
+                  if (data == true) {
+                    console.log(11111)
+                    sheet.setStyle(idata.row, 4, cellStyle2, spreadNS.SheetArea.viewport);
+                    isClash =0;
+                  } else if (data == false) {
+                    console.log(2222)
+                    sheet.setStyle(idata.row, 4, cellStyle3, spreadNS.SheetArea.viewport);
+                    isClash=1;
+                  }
+                },
+                error: function(request) {
+                  isClash1 = 1;
+                  showMessageAbnomal("后台数据校验失败")
+                }
+              });
+              break;
+            }
+          case "指令代号":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata.row, 0, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue = 1;
+              isBanck=1;
+              break;
+            } else {
+              $.ajax({
+                type: "post",
+                async: false,
+                url : "doValidateInsid",
+                data: {"_satid": "{{sat._id}}", "_instructionid":idata.item._id,"insid": idata.item.insid},
+                success: function(data) {
+                  if (data == true) {
+                    sheet.setStyle(idata.row, 0, cellStyle2, spreadNS.SheetArea.viewport);
+                    isClash = 0;
+                  } else if (data == false) {
+                    isClash = 1;
+                    sheet.setStyle(idata.row, 0, cellStyle3, spreadNS.SheetArea.viewport);
+                  }
+                },
+                error: function(request) {
+                  isClash2 = 1;
+                  showMessageAbnomal("后台数据校验失败")
+                }
+              });
+              break;
+            }
+        }
+      }
+  }
+  // 数据检查
+  function dataSearch(spread,idata,dataEdit){
+    var sheet = spread.getSheet(0);
+    sheet.clearPendingChanges();
+    var cellStyle1 = new spreadNS.Style();
+    cellStyle1.name = 'style1';
+    cellStyle1.backColor ="#ff5a5f";
+    var cellStyle2 = new spreadNS.Style();
+    cellStyle2.name = 'style2';
+    cellStyle2.backColor =undefined;
+    var cellStyle3 = new spreadNS.Style();
+    cellStyle3.name = 'style1';
+    cellStyle3.backColor ="#ffc711";
+    for(var j=0;j<idata.length;j++) {
+      var isTrue="";                       //是否空值，1为空，0非空
+      var isClash1="";                      //是否冲突，0不冲突，1冲突
+      var isClash2="";                      //是否冲突，0不冲突，1冲突
+      var idata2 = {
+        "指令编号": idata[j].item.insno,
+        "指令名字": idata[j].item.insname,
+        "指令代号": idata[j].item.insid
+      };
+      for (var i in idata2) {
+        switch (i) {
+          case "指令编号":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata[j].row,3, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue = 1;
+              isBanck=1;
+              break;
+            } else {
+              sheet.setStyle(idata[j].row,3, cellStyle2, spreadNS.SheetArea.viewport);
+              break;
+            }
+          case "指令名字":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata[j].row, 4, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue =1;
+              isBanck=1;
+              break;
+            } else {
+              $.ajax({
+                type: "post",
+                async: false,
+                url : "doValidateInsName",
+                data: {"_satid": "{{sat._id}}","_instructionid":idata[j].item._id,"InsName": idata[j].item.insname},
+                success: function(data) {
+                  if (data == true) {
+                    sheet.setStyle(idata[j].row, 4, cellStyle2, spreadNS.SheetArea.viewport);
+                    isClash1 = 0;
+                  } else if (data == false) {
+                    isClash1 = 1;
+                    isClash=1;
+                    sheet.setStyle(idata[j].row, 4, cellStyle3, spreadNS.SheetArea.viewport);
+                  }
+                },
+                error: function(request) {
+                  isClash1 = 1;
+                  showMessageAbnomal("后台数据校验失败")
+                }
+              });
+              break;
+            }
+          case "指令代号":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata[j].row, 0, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue = 1;
+              isBanck=1;
+              break;
+            } else {
+              $.ajax({
+                type: "post",
+                async: false,
+                url : "doValidateInsid",
+                data: {"_satid": "{{sat._id}}", "_instructionid":idata[j].item._id,"insid": idata[j].item.insid},
+                success: function(data) {
+                  if (data == true) {
+                    sheet.setStyle(idata[j].row,0, cellStyle2, spreadNS.SheetArea.viewport);
+                    isClash2 = 0;
+                  } else if (data == false) {
+                    isClash2 = 1;
+                    isClash=1;
+                    sheet.setStyle(idata[j].row,0, cellStyle3, spreadNS.SheetArea.viewport);
+                  }
+                },
+                error: function(request) {
+                  isClash2 = 1;
+                  showMessageAbnomal("后台数据校验失败")
+                }
+              });
+              break;
+            }
+        }
+      }
+      if(isTrue==0){
+        if(isClash1==0 && isClash2==0){
+          $.ajax({
+            type : "post",
+            async: false,
+            url : "doSave",
+            data:{"_satid":"{{sat._id}}","data":JSON.stringify(idata[j].item),'_subsysid':'{{subsys._id}}'},
+            success : function(data) {
+              sheet.getCell(idata[j].row, -1, GC.Spread.Sheets.SheetArea.rowHeader).backColor(undefined);
+            },
+            error:function(request){
+              // showMessageAbnomal("信息存储失败")
+            }
+          })
+        }
+      }
+    }
+  }
+</script>
+<!--这里使用SpreadJS进行遥控指令列表的维护，对应“2.2.4 遥控指令”-->
+
+
+
+{% include "./footer.html" %}

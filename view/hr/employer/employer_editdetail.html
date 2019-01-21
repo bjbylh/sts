@@ -1,0 +1,646 @@
+{% include "hr/top.html" %}
+
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+
+<!-- BEGIN GLOBAL LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+<!-- END BLOBAL LEVEL SCRIPTS -->
+
+<!-- BEGIN GLOBAL LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+<!-- END GLOBAL LEVEL PLUGINS -->
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+<link href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js" type="text/javascript"></script>
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/static/metronic/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+<script src="/static/metronic/assets/global/plugins/moment.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+
+<div class="col-sm-12">
+    <div class="portlet light">
+        <div class="portlet-title">
+            <div class="caption font-dark">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject font-dark sbold uppercase">
+                    用户编辑
+                </span>
+            </div>
+            <div class="actions"></div>
+        </div>
+        <div class="portlet-body form">
+            <form class="form-horizontal" id="editform" >
+                <div class="form-body">
+                    <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        部分表格字段填充不正确，请检查!
+                    </div>
+                    <div class="alert alert-success display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表格填充正确！
+                    </div>
+
+                    <h3 class="form-section">账户信息</h3>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="account">账号
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-sm-9">
+                                    <div class="input-icon right">
+                                        <i class="fa"></i>
+                                        <input type="text" class="form-control" id="account" name="account" required value="{{data.account}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="password">密码
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-sm-9">
+                                    <div class="input-icon right">
+                                        <input type="password" class="form-control" id="password" name="password" required value="{{data.password}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="form-section">基本信息</h3>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="name">姓名
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-sm-9">
+                                    <div class="input-icon right">
+                                        <i class="fa"></i>
+                                        <input type="text" class="form-control" id="name" name="name" required value="{{data.name}}">
+                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="account">性别
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-sm-9">
+                                    <select id="sex" class="form-control select2" name="sex">
+                                        <option value="男" {% if data.sex=="男" %}selected{% endif %}>男</option>
+                                        <option value="女" {% if data.sex=="女" %}selected{% endif %}>女</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="nation">民族</label>
+                                <div class="col-sm-9">
+                                    <select id="nation" class="form-control select2" name="nation">
+                                        {% for v in nation %}
+                                        <option value={{v}} {% if data.nation==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="name">生日
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-sm-9">
+                                    <div class="input-group date date-picker col-sm-12">
+                                        <input type="text" class="form-control" id="birthday" name="birthday" value="{{data.birthday}}">
+                                        <span class="input-group-btn">
+                                            <button class="btn default" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="account">籍贯
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-sm-9">
+                                    <select id="province" class="form-control select2" name="province">
+                                        {% for v in province %}
+                                        <option value={{v}} {% if data.province==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="id_card">身份证</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="id_card" name="id_card" required value="{{data.id_card}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="name">政治面貌</label>
+                                <div class="col-sm-9">
+                                    <select id="political_outlook" class="form-control select2" name="political_outlook">
+                                        {% for v in political_outlook %}
+                                        <option value={{v}} {% if data.political_outlook==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="address">家庭住址</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="address" name="address" value="{{data.address}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="post">家庭邮编</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="post" name="post" value="{{data.post}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="mobile_phone_1">手机(1)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="mobile_phone_1" name="mobile_phone_1" value="{{data.mobile_phone_1}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="mobile_phone_2">手机(2)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="mobile_phone_2" name="mobile_phone_2" value="{{data.mobile_phone_2}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="mobile_phone_3">手机(3)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="mobile_phone_3" name="mobile_phone_3" value="{{data.mobile_phone_3}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="home_phone_1">座机(1)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="home_phone_1" name="home_phone_1" value="{{data.home_phone_1}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="home_phone_2">座机(2)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="home_phone_2" name="home_phone_2" value="{{data.home_phone_2}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="home_phone_3">座机(3)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="home_phone_3" name="home_phone_3" value="{{data.home_phone_3}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="form-section">学历信息</h3>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="employer_type">学历</label>
+                                <div class="col-sm-9">
+                                    <select id="degree_type" class="form-control select2" name="degree_type">
+                                        {% for v in degree_type %}
+                                        <option value={{v}} {% if data.degree_type==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="employer_type">毕业学校</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="university" name="university" value="{{data.university}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="employer_type">专业</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="professional" name="professional" value="{{data.professional}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="graduat_time">毕业时间</label>
+                                <div class="col-sm-9">
+                                    <div class="input-group date date-picker col-sm-12">
+                                        <input type="text" class="form-control" id="graduat_time" name="graduat_time" value="{{data.graduat_time}}">
+                                        <span class="input-group-btn">
+                                            <button class="btn default" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="501_time">入部时间</label>
+                                <div class="col-sm-9">
+                                    <div class="input-group date date-picker col-sm-12">
+                                        <input type="text" class="form-control" id="501_time" name="501_time" value="{{data['501_time']}}">
+                                        <span class="input-group-btn">
+                                            <button class="btn default" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="form-section">岗位信息</h3>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="department">部门</label>
+                                <div class="col-sm-9">
+                                    <select id="department" class="form-control select2" name="department">
+                                        <option value=""></option>
+                                        {% for v in department_document %}
+                                        <option value={{v["name"]}} {% if data.department==v["name"] %}selected{% endif %}>{{v["name"]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="group">班组</label>
+                                <div class="col-sm-9">
+                                    <select id="group" class="form-control select2" name="group">
+                                        <option value=""></option>
+                                        {% for d in department_document %}
+                                            {% if data.department==d["name"] %}
+                                                {% for v in d["teams"] %}
+                                                    <option value={{v["name"]}} {% if data.group==v["name"] %}selected{% endif %}>{{v["name"]}}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="title_type">工作</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="profession" name="profession" value="{{data.profession}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="position">岗序</label>
+                                <div class="col-sm-9">
+                                    <select id="position" class="form-control select2" name="position">
+                                        <option value=""></option>
+                                        {% for v in position_document %}
+                                            <option value={{v["name"]}} {% if data.position==v["name"] %}selected{% endif %}>{{v["name"]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="title">岗位</label>
+                                <div class="col-sm-9">
+                                    <select id="title" class="form-control select2" name="title">
+                                        <option value=""></option>
+                                        {% for d in position_document %}
+                                            {% if data.position==d["name"] %}
+                                                {% for v in d["titles"] %}
+                                                    <option value={{v["name"]}} {% if data.title==v["name"] %}selected{% endif %}>{{v["name"]}}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="title_type">职务(1)</label>
+                                <div class="col-sm-9">
+                                    <select id="duty" class="form-control select2" name="duty">
+                                        <option value=""></option>
+                                        {% for v in duty %}
+                                        <option value={{v}} {% if data.duty==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="duty_2">职务(2)</label>
+                                <div class="col-sm-9">
+                                    <select id="duty_2" class="form-control select2" name="duty_2">
+                                        <option value=""></option>
+                                        {% for v in duty %}
+                                        <option value={{v}} {% if data.duty_2==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="employer_type">员工类型</label>
+                                <div class="col-sm-9">
+                                    <select id="employer_type" class="form-control select2" name="employer_type">
+                                        {% for v in employer_type %}
+                                        <option value={{v}} {% if data.employer_type==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="title_type">职称</label>
+                                <div class="col-sm-9">
+                                    <select id="title_type" class="form-control select2" name="title_type">
+                                        {% for v in title_type %}
+                                        <option value={{v}} {% if data.title_type==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="secret_type">密级</label>
+                                <div class="col-sm-9">
+                                    <select id="secret_type" class="form-control select2" name="secret_type">
+                                        {% for v in secret_type %}
+                                        <option value={{v}} {% if data.secret_type==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="room_no_1">房间(1)</label>
+                                <div class="col-sm-9">
+                                    <select id="room_no_1" class="form-control select2" name=room_no_1>
+                                        {% for v in room_no %}
+                                        <option value={{v}} {% if data.room_no_1==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="office_phone_1">电话(1)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="office_phone_1" name="office_phone_1"
+                                           value="{{data.office_phone_1}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="room_no_2">房间(2)</label>
+                                <div class="col-sm-9">
+                                    <select id="room_no_2" class="form-control select2" name=room_no_2>
+                                        {% for v in room_no %}
+                                        <option value={{v}} {% if data.room_no_2==v %}selected{% endif %}>{{v}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="office_phone_2">电话(2)</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="office_phone_2" name="office_phone_2"
+                                           value="{{data.office_phone_2}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var callbackdata = function () {
+        $("#editform").submit();
+        var validate = $("#editform").valid();
+        if (validate)
+            return $('#editform').serialize();
+        else
+            return null;
+    };
+
+    function formvaliate() {
+
+        var form = $("#editform");
+        var error = $('.alert-danger', form);
+        var success = $('.alert-success', form);
+
+        form.validate({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-block help-block-error', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: "",  // validate all fields including form hidden input
+
+            //display error alert on form submit
+            invalidHandler: function (event, validator) {
+                success.hide();
+                error.show();
+                App.scrollTo(error, -200);
+            },
+
+            // render error placement for each input type
+            errorPlacement: function (error, element) {
+                var icon = $(element).parent('.input-icon').children('i');
+                icon.removeClass('fa-check').addClass("fa-warning");
+                icon.attr("data-original-title", error.text()).tooltip({'container': 'body'});
+            },
+
+            // hightlight error inputs
+            highlight: function (element) {
+                $(element)
+                    .closest('.form-group').removeClass("has-success").addClass('has-error');
+            },
+
+            // revert the change done by hightlight
+            unhighlight: function (element) {
+            },
+
+            success: function (label, element) {
+                var icon = $(element).parent('.input-icon').children('i');
+                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+                icon.removeClass("fa-warning").addClass("fa-check");
+            },
+
+            submitHandler: function (form) {
+                success.show();
+                error.hide();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+
+        var position_data;
+        var department_data;
+
+        formvaliate();
+        $(".select2").select2();
+        $("#birthday").inputmask("yyyy-mm-dd");
+        $("#graduat_time").inputmask("yyyy-mm-dd");
+        $("#501_time").inputmask("yyyy-mm-dd");
+        $("#office_phone_1").inputmask("mask", {"mask": "99999999"});
+        $("#office_phone_2").inputmask("mask", {"mask": "99999999"});
+
+        $.ajax({
+            type: "get",
+            url: "/hr/department/department/get",
+            dataType: 'json',
+            success: function(data) {
+                department_data = data;
+                console.log(department_data);
+            },
+            error: function() {
+            }
+        });
+
+        $.ajax({
+            type: "get",
+            url: "/hr/position/position/get",
+            dataType: 'json',
+            success: function(data) {
+                position_data = data;
+                console.log(position_data);
+            },
+            error: function() {
+            }
+        });
+
+        $('#department').on('select2:select', function (e) {
+            var name = e.params.data.text;
+            $('#group').empty();
+            var newr = new Option("", "", false, false);
+            $('#group').append(newr);
+            for (d in department_data.data) {
+                var dep = department_data.data[d];
+                if (dep["name"] == name) {
+                    for (v in dep["teams"]) {
+                        var txtteam = dep["teams"][v]["name"];
+                        var newr = new Option(txtteam, txtteam, false, false);
+                        $('#group').append(newr);
+                     }
+                }
+            }
+        });
+
+        $('#position').on('select2:select', function (e) {
+            var name = e.params.data.text;
+            $('#title').empty();
+            var newr = new Option("", "", false, false);
+            $('#title').append(newr);
+            for (d in position_data.data) {
+                var pos = position_data.data[d];
+                if (pos["name"] == name) {
+                    for (v in pos["titles"]) {
+                        var txtteam = pos["titles"][v]["name"];
+                        var newr = new Option(txtteam, txtteam, false, false);
+                        $('#title').append(newr);
+                    }
+                }
+            }
+        });
+
+        $('.date-picker').datepicker({
+            language: 'zh-CN',
+            autoclose: true,
+            format: 'yyyy-mm-dd'
+        });
+    });
+
+</script>
+
+{% include "hr/footer.html" %}

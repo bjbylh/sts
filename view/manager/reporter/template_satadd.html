@@ -1,0 +1,393 @@
+{% include "manager/top.html" %}
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/static/metronic/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css"
+      rel="stylesheet" type="text/css"/>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js"
+        type="text/javascript"></script>
+
+<!-- END PAGE LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/pages/scripts/components-date-time-pickers.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<link href="/static/arena/editor.md/css/editormd.css" rel="stylesheet">
+<script src="/static/arena/editor.md/editormd.js"></script>
+
+<style>
+    .editormd-preview-close-btn {
+        display: none !important;
+    }
+    
+    .CodeMirror-sizer {
+    	margin-left:10px !important;
+    }
+</style>
+
+
+<div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-title">
+            <div class="caption font-dark">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject bold uppercase">{{sat.name}}<i class="fa fa-chevron-right"></i>报告模板管理
+                    <i class="fa fa-chevron-right"></i>{% if data._id==null %}添加模板{% else %}编辑模板{% endif %}</span>
+            </div>
+            <div class="tools"></div>
+        </div>
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <div id="backDiv">
+                <form class="form-horizontal" id="form_satellite">
+                    <div class="form-body" style="padding: 0px !important;">
+                        <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+                        <input type="hidden" id="_satid" name="_satid" value="{{sat._id}}">
+                        <input type="hidden" id="_satcode" value="{{sat.code}}">
+                        <input type="hidden" id="template" name="template" value="{{data.template}}">
+                        <div class="alert alert-danger display-hide">
+                            <button class="close" data-close="alert"></button>
+                            表单验证失败，请检查表单内容.
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-3" for="name">模板名称 <span> * </span></label>
+                            <div class="col-xs-9">
+                                <input type="text" class="form-control required" id="name" name="name"
+                                       value="{{data.name}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-3" for="code">模板代号 <span> * </span></label>
+                            <div class="col-xs-9">
+                                <input type="text" class="form-control required" id="code" name="code"
+                                       value="{{data.code}}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3" for="genTime">初次生成时间</label>
+                            <div class="col-xs-9">
+                                <input class="form-control date-picker" size="16" type="text" id="genTime"
+                                       name="genTime" value="{{data.genTime}}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3" for="type">类型</label>
+                            <div class="col-xs-9">
+                                <select id="type" name="type" class="form-control">
+                                    <option value="年报" {% if data.type=="年报" %}selected{% endif %}>年报</option>
+                                    <option value="半年报" {% if data.type=="半年报" %}selected{% endif %}>半年报</option>
+                                    <option value="季报" {% if data.type=="季报" %}selected{% endif %}>季报</option>
+                                    <option value="月报" {% if data.type=="月报" %}selected{% endif %}>月报</option>
+                                    <option value="周报" {% if data.type=="周报" %}selected{% endif %}>周报</option>
+                                    <option value="日报" {% if data.type=="日报" %}selected{% endif %}>日报</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions right">
+                        <button type="button" class="btn green" id="nextbtn">下一步</button>
+                    </div>
+
+                </form>
+            </div>
+            <div id="nextDiv">
+                <form class="form-horizontal" id="form_satellite_md">
+                    <div id="test-editormd">
+                        <textarea style="display:none;" id="txt-editor"></textarea>
+                    </div>
+
+                    <div class="form-actions right">
+                        <button type="button" class="btn blue" id="backbtn">上一步</button>&nbsp;&nbsp;
+                        <button type="button" class="btn green" id="btn_submit">保存</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+
+    var form_v = $("#form_satellite");
+    var error_v = $('.alert-danger', form_v);
+    form_v.validate({
+      errorElement: 'span', //default input error message container
+      errorClass: 'help-block help-block-error', // default input error message class
+      focusInvalid: false, // do not focus the last invalid input
+      ignore: "",  // validate all fields including form hidden input
+      messages: {
+        code: {
+          remote: '代号已经被使用'
+        }
+      },
+      rules: {
+        name: {
+          required: true
+        },
+        code:{
+          required: true,
+          remote:{
+            url: 'validatesattmp',
+            type:'get',
+            data:{
+              _id: function() { return $('#_id').val(); },
+              code: function() { return $('#code').val(); },
+              satcode:  function() { return $('#_satcode').val(); }
+            }
+          }
+        }
+      },
+      invalidHandler: function (event, validator) { //display error alert on form submit
+        error_v.show();
+        App.scrollTo(error_v, -200);
+      },
+      errorPlacement: function (error, element) { // render error placement for each input type
+        var cont = $(element).parent('.input-group');
+        if (cont.size() > 0) {
+          cont.after(error);
+        } else {
+          element.after(error);
+        }
+      },
+      highlight: function (element) { // hightlight error inputs
+        $(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+      },
+      unhighlight: function (element) { // revert the change done by hightlight
+        $(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+      },
+      success: function (label) {
+        label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+      },
+      submitHandler: function (form) {
+        error_v.hide();
+      }
+    });
+
+    function guid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    var testEditor = null;
+    $("#txt-editor").append($("#template").val());
+    $('#nextDiv').hide();
+    $('#nextbtn').click(function () {
+      $("#form_satellite").submit();
+      var validate = $("#form_satellite").valid();
+      if (!validate)
+        return;
+      $('#backDiv').hide();
+      $('#nextDiv').show(0, function () {
+        if (testEditor == null)
+          testEditor = editormd("test-editormd", {
+            htmlDecode: true, // Decode all html tags & attributes
+            // Filter tags/attributes expression : tagName,tagName,...|attrName,attrName,...
+            htmlDecode: "style,script,iframe,sub,sup|on*", // Filter tags, and all on* attributes
+            lineNumbers: false,
+            watch: false,
+            codeFold: true,
+            width: '100%',
+            height: 500,
+            syncScrolling: "single",
+            path: "/static/arena/editor.md/lib/",
+            toolbarIcons: function () {
+              var mytoolbar = ["|", "localimg", "testIcon", "loadMaterial","indicator"]
+              return editormd.toolbarModes["full"].concat(mytoolbar);
+            },
+            toolbarIconsClass: {
+              localimg: "fa-file-image-o", // 指定一个FontAawsome的图标类
+              testIcon: "fa-gears", // 指定一个FontAawsome的图标类
+              loadMaterial: "fa-yelp", // 指定一个FontAawsome的图标类
+              indicator:'fa-hourglass-end'
+            },
+
+            // 自定义工具栏按钮的事件处理
+            toolbarHandlers: {
+              /**
+               * @param {Object}      cm         CodeMirror对象
+               * @param {Object}      icon       图标按钮jQuery元素对象
+               * @param {Object}      cursor     CodeMirror的光标对象，可获取光标所在行和位置
+               * @param {String}      selection  编辑器选中的文本
+               */
+              testIcon: function (cm, icon, cursor, selection) {
+                var _self = this;
+                layer.open({
+                  type: 2,
+                  title: '请选择基本标签',
+                  area: ['800px', '600px'],
+                  content: '/manager/reporter/template/sattag?_id=' + $("#_satid").val(),
+                  btn: ['确定', '取消'],
+                  yes: function (index, layero) {
+                    var rows = $(layero).find("iframe")[0].contentWindow.callbackdata();
+                    if (rows.length == 0) {
+                      layer.msg("请选择一个基本标签");
+                    } else {
+                      var mod = rows[0];
+                      var markdownstr = "[[" + mod.code + "]]";
+                    	if(rows.length>1){
+                    		for(var idx=1;idx<rows.length;idx++){
+                    			mod = rows[idx];
+                      		markdownstr += "\r\n[[" + mod.code + "]]";
+                    		}
+                    	}
+                      _self.insertValue(markdownstr);
+                      layer.close(index);
+                    }
+                  }
+                });
+              },
+              localimg: function (cm, icon, cursor, selection) {
+                var _self = this;
+                layer.open({
+                  title: '请选择图片',
+                  content: '<input type="file" accept="image/*" id="localfile" name="localfile"/>',
+                  btn: ['确定', '取消'],
+                  yes: function (index, layero) {
+                    //按钮【按钮一】的回调
+                    if (typeof FileReader == 'undifined') //判断浏览器是否支持filereader
+                    {
+                      alert("抱歉，你的浏览器不支持 FileReader");
+                      return;
+                    }
+
+                    var file = parent.document.getElementById("localfile").files[0];
+                    if (!/image\/\w+/.test(file.type)) //判断获取的是否为图片文件
+                    {
+                      alert("请确保文件为图像文件");
+                      return;
+                    }
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function (e) {
+                      var markdownstr = "\r\n";
+                      var uuid = guid();
+                      //markdownstr+="![]("+this.result+")\r\n\r\n";
+                      markdownstr += "![][" + uuid + "]\r\n\r\n";
+                      _self.insertValue(markdownstr);
+                      _self.gotoLine("last");
+                      _self.insertValue("[" + uuid + "]:" + this.result + "\r\n");
+                      layer.close(index);
+                    }
+                  }
+                });
+              },
+              loadMaterial: function (cm, icon, cursor, selection) {
+                var _self = this;
+                layer.open({
+                  type: 2,
+                  title: '请选择报告素材',
+                  area: ['800px', '600px'],
+                  content: '/manager/reporter/template/satanalysis?_id=' + $("#_satid").val(),
+                  btn: ['确定', '取消'],
+                  yes: function (index, layero) {
+                    var rows = $(layero).find("iframe")[0].contentWindow.callbackdata();
+                    if (rows.length == 0) {
+                      layer.msg("请选择一个数据分析项目");
+                    } else {
+                      var mod = rows[0];
+                      var markdownstr = "[[~" + mod.code + "]]";
+                      if(rows.length>1){
+                    		for(var idx=1;idx<rows.length;idx++){
+                    			mod = rows[idx];
+                      		markdownstr += "\r\n[[~" + mod.code + "]]";
+                    		}
+                    	}
+                      _self.insertValue(markdownstr);
+                      layer.close(index);
+                    }
+                  }
+                });
+              },
+              indicator:function(cm, icon, cursor, selection){
+              	var _self = this;
+                layer.open({
+                  type: 2,
+                  title: '请选择指标标签',
+                  area: ['800px', '600px'],
+                  content: '/manager/reporter/template/satindicator?_id=' + $("#_satid").val(),
+                  btn: ['确定', '取消'],
+                  yes: function (index, layero) {
+                    var rows = $(layero).find("iframe")[0].contentWindow.callbackdata();
+                    if (rows.length == 0) {
+                      layer.msg("请选择一个指标标签");
+                    } else {
+                      var mod = rows[0];
+                      var markdownstr = "[[∴" + mod.code + "]]";
+                    	if(rows.length>1){
+                    		for(var idx=1;idx<rows.length;idx++){
+                    			mod = rows[idx];
+                      		markdownstr += "\r\n[[∴" + mod.code + "]]";
+                    		}
+                    	}
+                      _self.insertValue(markdownstr);
+                      layer.close(index);
+                    }
+                  }
+                });
+              }
+
+            },
+
+            lang: {
+              toolbar: {
+                testIcon: "基本标签", // 自定义按钮的提示文本，即title属性
+                localimg: "上传图片", // 自定义按钮的提示文本，即title属性
+                loadMaterial: "选择素材"
+              }
+            }
+          });
+      });
+      //$('#nextDiv').attr('style', 'display: block;');
+    });
+    $('#backbtn').click(function () {
+      $('#backDiv').show();
+      $('#nextDiv').hide();
+    });
+    $("#btn_submit").click(function () {
+      $("#template").val(testEditor.getMarkdown().replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+      $.ajax({
+        cache: true,
+        type: "POST",
+        url: "doSatSave",
+        data: $('#form_satellite').serialize(), // 你的formid
+        async: false,
+        error: function (request) {
+          alert("Connection error");
+        },
+        success: function (data) {
+          alert(data.msg);
+          //layer.closeAll();
+          var $tabs = parent.$(parent.document).data('multitabs');
+          var $iframe = $tabs.$element.navPanelList.find('li.active:first a')[0].dataset['id'];
+          var $table = parent.$("#"+$iframe)[0].contentWindow.$("#example");
+          $table.DataTable().ajax.reload();
+        }
+      });
+
+    })
+  });
+</script>
+
+{% include "manager/footer.html" %}

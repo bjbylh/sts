@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="space">
+    <meta name="keywords" content="space">
+    <title>{{data.name}}</title>
+    <link rel="stylesheet" type="text/css" href="/static/home/css/reset.css">
+    <link rel="stylesheet" href="/static/home/css/global.css">
+    <link rel="stylesheet" href="/static/home/css/main.css">
+    <!--[if IE 8]>
+    <link rel="stylesheet" href="css/font.css">
+    <![endif]-->
+    <style type="text/css" media="screen">
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        body {
+            min-width: 1200px;
+            background: #00294d url(/static/home/images/banner_1.png) no-repeat;
+            background-position: center 0;
+        }
+
+        label {
+            width: 150px !important;
+        }
+    </style>
+</head>
+
+<body>
+	<input type="hidden" id="userimg" value="{{userimgpath}}" />
+<div class="header wrapper">
+    <img src="/static/home/images/logo.png" alt="" class="logo">
+    <ul class="nav">
+        <li class="navItem">
+            <a href="/home/rank" target="_blank" class="leaderboard"></a>
+        </li>
+        <li class="navItem">
+            <a href="/home/analysis/satNYr" target="_blank" class="analysis"></a>
+        </li>
+        <li class="navItem">
+            <a href="/home/index/wall" target="_blank" class="displaywall"></a>
+        </li>
+        <li class="navItem last">
+            <a href="/home/analysis/pdtCPx" target="_blank" class="indicatordisplay"></a>
+        </li>
+    </ul>
+    <div class="user">
+    	<img src="/static/userimages/foreground.png" class="usericon-wapper">
+				<img src="{{userimgpath}}" class="usericon">
+        <ul class="dropdownBox">
+            <li class="userInfo">
+                <span class="db font24">{{userInfo.name}}</span>
+                <span class="db font14">当前登录者</span>
+            </li>
+            <li class="dropdownList js_modify"><a class="color33">修改密码</a></li>
+            <li class="dropdownList"><a class="colorR" href="javascript:" onclick="logout()">退出</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="content wrapper marT60">
+    <div class="optionalRangeBox">
+        <div class="faultDetailTitle">
+            <span class="db font30">{{sat.name}}常驻故障</span>
+            <span class="db font18 marT10">{{data.name}}</span>
+        </div>
+        <div class="line"></div>
+        <ul class="faultDetailList">
+            <li>
+                <label>影响分系统：</label>
+                <span>{{data.subsys_name}}</span>
+            </li>
+            <li>
+                <label>影响单机：</label>
+                <span>{{data.device_name}}</span>
+            </li>
+            <li>
+                <label>故障名称：</label>
+                <span>{{data.name}}</span>
+            </li>
+            <li>
+                <label>影响因子:</label>
+                <span>{{data.impact}}</span>
+            </li>
+            <li>
+                <label>失效日期：</label>
+                <span>{{data.occurTime}}</span>
+            </li>
+            <li>
+                <label>故障部位及现象：</label>
+                <span>{{data.incident}}</span>
+            </li>
+            <li>
+                <label>补偿措施：</label>
+                <span>{{data.treatment}}</span>
+            </li>
+            <li>
+                <label>备注：</label>
+                <span>{{data.remark}}</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="pop_bg"></div>
+<div class="modify-password-box">
+    <form class="modify-form" id="changpwd">
+        <span class="form-title">修改密码</span>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请输入新密码" id="new_p" name="new_p"
+                   value="">
+        </div>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请再次确认新密码" id="new_p2"
+                   name="new_p2" value="">
+        </div>
+        <div class="form-actions">
+            <a href="javascript:;" class="form-btn" onclick="chpassword()">确认修改</a>
+        </div>
+    </form>
+</div>
+
+<div class="footer">
+    © CASC 2018
+</div>
+
+<script type="text/javascript" src="/static/home/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/home/js/placeholderSupport.js"></script>
+<script type="text/javascript" src="/static/home/js/mylogin.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,214 @@
+{% include "admin/top.html" %}
+<link href="/static/control/DataTables-1.10.16/extensions/Buttons/css/buttons.dataTables.css" rel="stylesheet">
+<script src="/static/control/DataTables-1.10.16/extensions/Buttons/js/dataTables.buttons.js"></script>
+<script src="/static/control/My97DatePicker/WdatePicker.js"></script>
+<link href="/static/control/bootstrap-table/dist/bootstrap-table.css" rel="stylesheet">
+<script src="/static/control/bootstrap-table/dist/bootstrap-table.js"></script>
+<script src="/static/control/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
+<script src="/static/control/layer-v3.1.0/layer/layer.js"></script>
+<link href="/static/control/select2-4.0.4/dist/css/select2.min.css" rel="stylesheet">
+<script src="/static/control/select2-4.0.4/dist/js/select2.js"></script>
+
+<!-- start: Content -->
+<div id="content" class="layui-col-md12">
+
+	<div class="row-fluid">
+		<div class="box span12">
+			<div class="box-header" data-original-title>
+				<h2><i class="halflings-icon white edit"></i>{{user.name}}{% if data._id==null %}角色添加{% else %}角色编辑{% endif %}</h2>
+				<div class="box-icon">
+					<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
+					<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
+				</div>
+			</div>
+			<div class="box-content">
+				<input type="hidden" id="roleId" value="{{data.roleid}}">
+				<form class="form-horizontal" id="form">
+					<fieldset>
+						<input type="hidden" id="userid" name="userid" value="{{user._id}}">
+						<input type="hidden" id="user_name" name="user_name" value="{{user.name}}">
+						<input type="hidden" id="role_name" name="role_name" value="{{data.role_name}}">
+						<input type="hidden" id="sats" name="sats">
+						<div class="control-group">
+							<label class="control-label" for="name">用户</label>
+							<div class="controls">
+								<input type="text" id="username" name="username" value="{{user.name}}" disabled="disabled">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="role">角色</label>
+							<div class="controls">
+								<select id="role" name="roleid" style="width: 220px;">
+								</select>
+							</div>
+						</div>
+				</form>
+				<div class="control-group" style="width:  40%;">
+					<div style="float: right; padding-bottom: 10px;">
+						<a class="dt-button" href="#" onclick="openSat()"><span>添加型号</span></a>&nbsp;
+						<a class="dt-button" href="#" onclick="deleteRows()"><span>删除</span></a>&nbsp;
+					</div>
+					<table id="table" class="display table table-striped" cellspacing="0" width="100%"></table>
+				</div>
+				<div class="form-actions">
+					<button type="button" class="btn btn-primary" id="btn_submit">保存</button>
+					<button type="reset" class="btn">取消</button>
+				</div>
+				</fieldset>
+
+			</div>
+		</div>
+		<!--/span-->
+
+	</div>
+	<!--/row-->
+
+</div>
+<!--/.fluid-container-->
+
+<!-- end: Content -->
+
+<script>
+	$(document).ready(function() {
+		$.ajax({
+			url: "/rbac/role/getRoles",
+			type: 'get',
+			dataType: 'json',
+			success: function(data) {
+				var roles_data = data.data;
+				var rs = [];
+				roles_data.forEach(function(t) {
+					if(t._id == $("#roleId").val()) {
+						t.selected = true;
+						$('#role_name').val(t.name);
+					}
+					var d = {};
+					d.id = t._id;
+					d.text = t.name;
+					rs.push(d);
+				});
+				$('#role').select2({
+					data: rs
+				});
+			}
+
+		});
+		$('#role').bind('change', function() {
+			$('#role_name').val($('#role').find("option:selected").text());
+		});
+		var cols = [{
+				checkbox: true
+			},
+			{
+				field: 'name',
+				title: '名称'
+			},
+			{
+				field: 'code',
+				title: '代号'
+			}
+		];
+		$('#table').bootstrapTable({
+			toolbar: "#toolbar",
+			locale: 'zh-CN',
+			sidePagination: "client", //服务端处理分页
+			striped: true,
+			undefinedText: "",
+			pagination: true,
+			singleSelect: false,
+			pageSize: 2,
+			cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+			pageNumber: 1,
+			pageList: [10, 30, 50],
+			search: false, //不显示 搜索框
+			uniqueId: "_id", //每一行的唯一标识，一般为主键列
+			showColumns: false, //不显示下拉框（选择显示的列）
+			undefinedText: '',
+			columns: cols,
+			url: '/rbac/user/getUsers',
+			queryParams: function(params) {
+				return {}
+			},
+			type: "get",
+		});
+
+		$("#btn_submit").click(function() {
+			var rows = $('#table').bootstrapTable('getData', false);
+
+			$('#sats').val(JSON.stringify(rows));
+			$.ajax({
+				cache: true,
+				type: "POST",
+				url: "/rbac/userRole/sava",
+				data: $('#form').serialize(), // 你的formid
+				async: false,
+				error: function(request) {
+					alert("Connection error");
+				},
+				success: function(data) {
+					alert(data.msg);
+					parent.window.location.reload();
+				}
+			});
+
+		})
+	});
+
+	function deleteRows() {
+		var rows = $('#table').bootstrapTable('getSelections');
+		alert(rows.length);
+		var codes = [];
+		for(var i = 0; i < rows.length; i++) {
+			codes.push(rows[i].code);
+		}
+		console.error(codes);
+		$('#table').bootstrapTable('remove', {
+			field: 'code',
+			values: codes
+		});
+	}
+
+	function openSat() {
+		layer.open({
+			type: 2,
+			title: '请选择参数',
+			area: ['1000px', '800px'],
+			content: '/rbac/user/satList', //'/admin/satmanager/device/param?_satid='+$("#_satid").val(),
+			btn: ['确定', '取消'],
+			yes: function(index, layero) {
+				var rows = $(layero).find("iframe")[0].contentWindow.callbackdata();
+				if(rows.length == 0) {
+					layer.msg("请选择至少一个参数");
+				} else {
+					var data = [];
+					var rowss = $('#table').bootstrapTable('getData', false);
+					for(var i = 0; i < rows.length; i++) {
+						var sat = {};
+						sat.code = rows[i].code;
+						sat.name = rows[i].name;
+						//排重
+						if(rowss != null && rowss.length > 0) {
+							var flg = false;
+							for(var n = 0; n < rowss.length; n++) {
+								if(sat.code == rowss[n].code && sat.name == rowss[n].name) {
+									flg = true;
+									break;
+								}
+							}
+							if(flg) {
+								continue;
+							}
+						}
+						data.push(sat);
+					}
+					$('#table').bootstrapTable('prepend', data);
+					layer.close(index);
+				}
+			}
+		});
+	}
+</script>
+
+</body>
+
+</html>

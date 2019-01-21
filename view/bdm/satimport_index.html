@@ -1,0 +1,153 @@
+{% include "./top.html" %}
+
+
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="/static/metronic/assets/global/plugins/select2/css/select2.css">
+<link rel="stylesheet" href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css">
+<sctipt src="/static/metronic/assets/global/plugins/select2/js/select2.js"></sctipt>
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.js"></script>
+<style type="text/css">
+    #file:hover{
+        cursor:pointer;
+    }
+</style>
+<div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <form class="form-horizontal" id="form_satellite">
+                <input type="hidden" id="_satid" value=""/>
+                <div class="form-body" style="padding: 0px !important;">
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表单验证失败，请检查表单内容.
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="listSatellite">目标型号</label>
+                                <div class="col-xs-8">
+                                    <select id="listSatellite" class="form-control single" name="listSatellite"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <div class="form-group">
+                                <label class="control-label col-xs-3" for="file-title">导入数据</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" id="file-title" name="rc" value=""style="max-width:54%;display: inline-block">
+                                    <button id="fileBtn"  class="btn btn-primary" style="margin-top:-3px">浏览...
+                                        <input id="dbfile" name="dbfile" type="file" accept=".db" required style="opacity:0; filter:alpha(opacity=0); position:absolute; top:0px; left:20px;height:35px;width:61%" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="listConflictType">数据冲突时</label>
+                                <div class="col-xs-8">
+                                    <select id="listConflictType" class="form-control" name="listConflictType">
+                                        <option value="1">保留已有数据</option>
+                                        <option value="2">覆盖已有数据</option>
+                                        <option value="3">取消导入</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6" align="right">
+                            <button type="button" class="btn green" id="btnImportSatellite">导入数据</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function() {
+    var sats=[];
+    $(function(){
+      //下拉框
+      $.ajax({
+        type : "get",
+        async: false,
+        url : "/bdm/satellite/getList",
+        data:{},
+        success : function(data) {
+          for(var i=0;i<data.data.length;i++){
+            sats.push({id:data.data[i]._id,text:data.data[i].name+'-' + data.data[i].code});
+          }
+          $('#listSatellite').select2({
+            data:sats
+          });
+        },
+        error:function(request){
+          showMessageAbnomal("获取信息失败")
+        }
+      });
+    })
+
+    $(".listSatellite").on("select2:select",function(e){
+    })
+
+    $("#dbfile").change(function(){
+      var stt=$(this).val();
+      if(stt!=null){
+        var tt=stt.slice(12,stt.length);
+        $("#file-title").val(tt)
+      }
+    })
+
+    /**
+     *
+     */
+    $('#btnImportSatellite').click(function() {
+      var sats = $("#listSatellite").select2('data');
+      if(sats == null || sats.length<1){
+        showMessageAbnomal('请选择要导入数据的目标型号');
+        return;
+      }
+      var dbfile = $("#dbfile")[0].files;
+      if(dbfile === undefined || dbfile==null || dbfile.length<1){
+        showMessageAbnomal('请选择要导入的型号基础数据文件（.db）');
+        return;
+      }
+      var data = new FormData($("#form_satellite")[0]);
+      $.ajax({
+        cache: true,
+        type: 'POST',
+        url: 'checkImportDBFile',
+        //data: {_satid: sats[0].id, dbfile: dbfile[0]},
+        data: data,
+        async: true,
+        cache: false,
+        contentType: false,
+        processData: false,
+        error: function(request) {
+          showMessageAbnomal('操作错误，请检查后重试');
+        },
+        success: function(data) {
+          if(data.success == true){
+            showMessageNomal(data.msg);
+          }
+          else{
+            showMessageAbnomal(data.msg);
+          }
+        }
+      });
+
+    });
+
+  })
+
+</script>
+<!--这里是型号基础信息导入的页面-->
+
+{% include "./footer.html" %}

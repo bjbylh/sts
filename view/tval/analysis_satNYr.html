@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="space">
+    <meta name="keywords" content="space">
+    <title>历年卫星数量分析</title>
+    <link rel="stylesheet" type="text/css" href="/static/home/css/reset.css">
+    <link rel="stylesheet" href="/static/home/css/global.css">
+    <link rel="stylesheet" href="/static/home/css/main.css">
+    <!--[if IE 8]>
+    <link rel="stylesheet" href="/static/home/css/font.css">
+    <![endif]-->
+    <style type="text/css" media="screen">
+        body, html {
+            margin: 0;
+            padding: 0;
+            position: relative;
+            font-size: 100%;
+        }
+
+        body {
+            min-width: 1200px;
+            background: #00294d url(/static/home/images/banner_1.png) no-repeat;
+            background-position: center 0;
+        }
+    </style>
+
+    <link href="/static/home/compontents/select2/dist/css/select2.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/static/home/css/myselect2.css">
+</head>
+<body>
+<input type="hidden" id="userimg" value="{{userimgpath}}"/>
+<div class="header wrapper">
+    <img src="/static/home/images/logo.png" alt="" class="logo">
+    <ul class="nav">
+        <li class="navItem">
+            <a href="/home/rank" target="_blank" class="leaderboard"></a>
+        </li>
+        <li class="navItem">
+            <a href="/home/analysis/satNYr" class="analysis active"></a>
+        </li>
+        <li class="navItem">
+            <a href="/home/index/wall" target="_blank" class="displaywall"></a>
+        </li>
+        <li class="navItem last">
+            <a href="/home/analysis/pdtCPx" target="_blank" class="indicatordisplay"></a>
+        </li>
+    </ul>
+    <div class="user">
+        <img src="/static/userimages/foreground.png" class="usericon-wapper">
+        <img src="{{userimgpath}}" class="usericon">
+        <ul class="dropdownBox">
+            <li class="userInfo">
+                <span class="db font24">{{userInfo.name}}</span>
+                <span class="db font14">当前登录者</span>
+            </li>
+            <li class="dropdownList js_modify"><a class="color33">修改密码</a></li>
+            <li class="dropdownList"><a class="colorR" href="javascript:" onclick="logout()">退出</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="content wrapper marT60">
+    <!--img src="/static/home/images/title_analysis.png" alt="" class="title"-->
+    <div class="optionalRangeBox">
+        <div class="rangeTitle" style="padding-top: 15px;padding-bottom:15px">
+        </div>
+        <div class="indicatorAnalysisFilterBox line" style="padding-bottom: 10px;margin-bottom: 13px">
+            <ul class="clearfix filterBox w200" style="margin-bottom: 0px">
+                <li class="filterList" style="padding-right: 10px">
+                    <span class="db font18">分析主题</span>
+                </li>
+                <li class="filterList mySelectType40165 mySelectType40455">
+                    <select class="condition" id="topic" style="width: 455px">
+                        <option value="SAT" selected>型号分析</option>
+                        <option value="TRB">在轨故障分析</option>
+                    </select>
+                </li>
+                <li class="filterList" style="padding-right: 10px">
+                    <span class="db font18">分析内容</span>
+                </li>
+                <li class="filterList mySelectType40165 mySelectType40455" style="padding-right: 0px">
+                    <select class="condition" id="content" style="width: 455px">
+                        <option></option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+
+        <div id="chart_wrapper">
+            <ul class="clearfix filterBox w200" style="margin-top: 10px;margin-bottom: 0px">
+                <li class="filterList" style="padding-right: 10px">
+                    <span class="input-group-btn">
+                        <a id="style_plain" class="stylebtn current">普通</a>
+                    </span>
+                </li>
+                <li class="filterList" style="padding-right: 10px">
+                    <span class="input-group-btn">
+                        <a id="style_inverted" class="stylebtn">翻转</a>
+                    </span>
+                </li>
+                <li class="filterList" style="padding-right: 10px">
+                    <span class="input-group-btn">
+                        <a id="style_polar" class="stylebtn">极地图</a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+
+        <!-- 分析报告 -->
+        <div class="analysisReportBox">
+            <div class="analysisWrapper" style="background-color: transparent;height: inherit">
+                <!--div id='chart' class="w100"></div-->
+                <div id="chartDiv" class="w100" style="height: 600px"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="pop_bg"></div>
+<div class="modify-password-box">
+    <form class="modify-form" id="changpwd">
+        <span class="form-title">修改密码</span>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请输入新密码" id="new_p" name="new_p"
+                   value="">
+        </div>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请再次确认新密码" id="new_p2"
+                   name="new_p2" value="">
+        </div>
+        <div class="form-actions">
+            <a href="javascript:;" class="form-btn" onclick="chpassword()">确认修改</a>
+        </div>
+    </form>
+</div>
+
+<div class="footer">
+    © CASC 2018
+</div>
+
+<script src="/static/home/compontents/jquery.min.js" type="text/javascript"></script>
+<script src="/static/home/compontents/highcharts/highcharts.js"></script>
+<script src="/static/home/compontents/highcharts/highcharts-more.js"></script>
+<script src="/static/home/compontents/highcharts/modules/exporting.js"></script>
+<script src="/static/home/compontents/highcharts/themes/dark-blue.js"></script>
+
+<script type="text/javascript" src="/static/home/compontents/select2/dist/js/select2.js"></script>
+<script type="text/javascript" src="/static/home/js/placeholderSupport.js"></script>
+<script type="text/javascript" src="/static/home/js/mylogin.js"></script>
+<script type="text/javascript" src="/static/home/js/util.js"></script>
+<script type="text/javascript" src="/static/home/js/analysis.js"></script>
+<script type="text/javascript" src="/static/home/js/highchartsat.js"></script>
+<script>
+  var SatArray = [];
+  var chartData = {};
+
+  function query() {
+    $('.stylebtn.current').removeClass('current');
+    $('#style_plain').addClass('current');
+
+    var category = [];
+    var y_now = new Date().getFullYear();
+
+    for (var i = 1970; i <= y_now; i++) {
+      category.push(i);
+    }
+    chartData.category = category;
+
+    var resultArr = [];
+    var tagArr = ['发射数量', '在轨数量', '退役数量'];
+    for (var j = 0; j < tagArr.length; j++) {
+      var itemArr = [];
+      for (var k = 0; k < category.length; k++) {
+        itemArr.push(0);
+      }
+      resultArr.push({text: tagArr[j], vals: itemArr});
+    }
+
+    debugger;
+
+    for (var i = 0; i < SatArray.length; i++) {
+
+      var satitem = SatArray[i];
+      var y_launch = satitem.lanuchYear;
+      var y_retire = satitem.retireYear;
+      var t_launch = new Date(satitem.lanuchTime);
+
+      if (satitem.stage == '失效' || satitem.stage == '退役') {
+        if (satitem.retireYear == undefined || satitem.retireYear == '') {
+          if (satitem.invalidYear == undefined || satitem.invalidYear == '') {
+            var life = satitem.life;
+            if (life == undefined || life == '') {
+              life = satitem.assessLife;
+            }
+            if (life == undefined || life == '') {
+              y_retire = y_launch;
+            } else {
+              y_retire = (new Date(t_launch.getTime() + life * 365 * 24 * 60 * 60 * 1000)).getFullYear();
+            }
+          } else {
+            y_retire = satitem.invalidYear;
+          }
+        }
+      }
+
+      if (y_launch !== undefined && y_launch !== null && y_launch !== '') {
+
+        if (y_retire == undefined || y_retire == null || y_retire == '') {
+          y_retire = y_now + 1;
+        } else {
+          if (y_retire > y_now)
+            y_retire = y_now + 1;
+        }
+
+        var lanuchidx = jQuery.inArray(y_launch, category);
+        if (lanuchidx != -1)
+          resultArr[0].vals[lanuchidx] += 1;
+
+        var retireidx = jQuery.inArray(y_retire, category);
+        if (retireidx != -1)
+          resultArr[2].vals[retireidx] += 1;
+
+        for (var k = y_launch; k <= y_retire; k++) {
+          var yearidx = jQuery.inArray(k, category);
+          if (yearidx != -1)
+            resultArr[1].vals[yearidx] += 1;
+        }
+      }
+    }
+
+    chartData.series = resultArr;
+    loadChart();
+  }
+
+  $(document).ready(function () {
+
+    $('#content').on("change", function (e) {
+      var href = "/home/analysis/" + $("#content").val();
+      if ($("#content").val() !== 'satNYr') {
+        window.open(href, '_self');
+      }
+    });
+    $('#topic').val("SAT").trigger("change");
+
+    $('#content').val("satNYr").trigger("change");
+
+    $.ajax({
+      cache: true,
+      type: "POST",
+      url: '/home/analysis/loadSatData',
+      error: function (request) {
+        alert("Connection error");
+      },
+      success: function (data) {
+        SatArray = data.data;
+        query();
+      }
+    });
+
+  });
+</script>
+</body>
+</html>

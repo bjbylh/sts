@@ -1,0 +1,115 @@
+{% include "admin/top.html" %}
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/static/metronic/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css"
+      rel="stylesheet" type="text/css"/>
+<!-- END PAGE LEVEL PLUGINS -->
+
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js"
+        type="text/javascript"></script>
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/pages/scripts/table-datatables-responsive.min.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+
+
+<link href="/static/metronic/assets/global/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/bootstrap-table.js"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+
+<style>
+    .bars {
+        height: 0px !important;
+        margin: 0px !important;
+    }
+</style>
+
+
+<input type="hidden" id="roleid" value="{{roleid}}" />
+<input type="hidden" id="userid" value="{{userid}}" />
+<div class="col-md-12">
+<table id="table" class="display table table-striped" cellspacing="0" width="100%"></table>
+</div>
+<script>
+	$(document).ready(function() {
+		var cols = [{
+				checkbox: true
+			},
+			{
+				field: 'name',
+				title: '名称'
+			},
+			{
+				field: 'code',
+				title: '代号'
+			}
+		];
+		$('#table').bootstrapTable({
+			toolbar: "#toolbar",
+			locale: 'zh-CN',
+			sidePagination: "client", //服务端处理分页
+			striped: true,
+			undefinedText: "",
+			pagination: true,
+			singleSelect: false,
+			pageSize: 20,
+			cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+			pageNumber: 1,
+			pageList: [10, 30, 50],
+			search: true, //不显示 搜索框
+			uniqueId: "code", //每一行的唯一标识，一般为主键列
+			showColumns: false, //不显示下拉框（选择显示的列）
+			undefinedText: '',
+			columns: cols,
+			url: '/rbac/userRole/getSatAndGroup',
+			type: "get",
+			onLoadSuccess:function(data){
+				checked();
+			},
+			queryParams: function(params) {
+				return {
+					//					'roleid': $('#role').val(),
+					//					'userid': $('#userid').val()
+				}
+			}
+			
+		});
+
+	});
+
+	function checked(){
+		$.ajax({
+			url: '/rbac/user/getSelectedSats',
+			data: {
+				'roleid': $('#roleid').val(),
+				'userid': $('#userid').val()
+			},
+			type: 'get',
+			dataType: 'json',
+			async: false,
+			success: function(data) {
+				var codes=[];
+				for(var i=0;i<data.length;i++){
+					codes.push(data[i].satcode);
+				}
+				$('#table').bootstrapTable("checkBy", {
+					field: "code",
+					values: codes
+				});
+			}
+		});
+	}
+	var callbackdata = function() {
+		var rows = $('#table').bootstrapTable('getAllSelections');
+		return rows;
+	}
+</script>

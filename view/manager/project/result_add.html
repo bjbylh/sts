@@ -1,0 +1,802 @@
+{% include "manager/top.html" %}
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/static/metronic/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css"
+      rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"
+      rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet"
+      type="text/css"/>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+<script src="/static/metronic/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+
+<!--script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js"
+        type="text/javascript"></script-->
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/pages/scripts/components-date-time-pickers.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<script src="/static/arena/js/form.js" type="text/javascript"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/spread.sheets/css/gc.spread.sheets.excel2013white.11.0.0.css" />
+
+<script src="/static/spread.sheets/js/FileSaver.min.js"></script>
+<script src="/static/spread.sheets/js/gc.spread.sheets.all.11.0.0.min.js"></script>
+<script src="/static/spread.sheets/js/gc.spread.excelio.11.0.0.min.js"></script>
+<script src="/static/spread.sheets/js/gc.spread.sheets.resources.zh.11.0.0.min.js"></script>
+
+<script src="/static/arena/FileSaver/FileSaver.js"></script>
+
+<div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-title">
+            <div class="caption font-dark">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject bold uppercase">{{sat.name}}<i class="fa fa-chevron-right"></i>{{prj.name}}
+                    <i class="fa fa-chevron-right"></i>{% if data._id==null %}添加测试结果{% else %} 编辑测试结果 {% endif %}</span>
+            </div>
+            <div class="tools"></div>
+        </div>
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <input type="hidden" id="stage_id" name="stage_id" value="{{data.stage}}">
+            <form class="form-horizontal" id="form_satellite">
+                <div class="form-body" style="padding: 0px !important;">
+                    <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+                    <input type="hidden" id="_satid" name="_satid" value="{{sat._id}}">
+                    <input type="hidden" id="project" name="project" value="{{prj._id}}">
+                    <input type="hidden" id="stage_name" name="stage_name" value="{{data.stage_name}}">
+										
+										<input type="hidden" id="restp" name="restp" value="{{data.restp}}" />
+										<input type="hidden" id="respa" name="respa" value="{{data.respa}}" />
+										<input type="hidden" id="resuv" name="resuv" value="{{data.resuv}}" />
+										<input type="hidden" id="resgl" name="resgl" value="{{data.resgl}}" />
+										<input type="hidden" id="imgarr" name="imgarr" value="{{data.imgarr}}" />
+										
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表单验证失败，请检查表单内容.
+                    </div>
+                    <div class="form-group col-xs-4">
+                        <label class="control-label col-xs-3" for="time">测试时间 <span> * </span></label>
+                        <div class="col-xs-9">
+                            <input type="text" size="10" class="form-control form-control-inline date-picker"
+                                   id="time"
+                                   name="time" value="{{data.time}}">
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-4">
+                        <label class="control-label col-xs-3" for="stage">关联阶段<span></span></label>
+                        <div class="col-xs-9">
+                            <select id="stage" name="stage" class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-4">
+                        <label class="control-label col-xs-3" for="person">测试人</label>
+                        <div class="col-xs-9">
+
+                            <input type="person" class="form-control" id="person" name="person"
+                                   value="{{data.person}}">
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-4">
+                        <label class="control-label col-xs-3" for="place">测试场地</label>
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="place" name="place"
+                                   value="{{data.place}}">
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-4">
+                        <label class="control-label col-xs-3" for="tag">结果标记</label>
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="tag" name="tag"
+                                   value="{{data.tag}}">
+                        </div>
+                    </div>
+                    <div class="form-group" style="float: right;margin-right: 120px;">
+                        <input type="button" class="dt-button buttons-copy buttons-html5 btn green btn-outline" data-toggle="modal" href="#basic" id="daoru" value="导入"/>&emsp;
+                        <input type="button" class="dt-button buttons-copy buttons-html5 btn blue btn-outline" id="daochu" value="导出"/>&emsp;
+                        <input type="button" class="dt-button buttons-copy buttons-html5 btn red btn-outline"  data-toggle="modal" href="#basicc" id="daoimg" value="导入图片"/>&emsp;
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <!--EXCEL-区-->
+                        <div id="ss" class="sample-spreadsheets" style="width:100%; height:475px;border: 1px solid gray;"></div>
+                    </div>
+                    
+                    
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+				<h4 class="modal-title">导入测试结果</h4>
+			</div>
+			<div class="modal-body">
+
+				<div class="row">
+					<div class="col-md-6">
+						<input type="file" name="filee" id="filee" accept=".xls,.xlsx" />
+					</div>
+					<div class="col-md-6">
+						<input type="button" value="上传文件" id="import" />
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn dark btn-outline" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="basicc" tabindex="-1" role="basic" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+				<h4 class="modal-title">导入图片</h4>
+			</div>
+			<div class="modal-body">
+
+				<div class="row">
+					<div class="col-md-6">
+						<input type="file" name="Imgfilee" id="Imgfilee" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"  multiple />
+					</div>
+					<div class="col-md-6">
+						<input type="button" value="上传图片" id="importImg" />
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn dark btn-outline" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+	var spread = new GC.Spread.Sheets.Workbook(document.getElementById("ss"));
+	spread.setSheetCount(4);
+	
+	GC.Spread.Common.CultureManager.culture("zh-cn"); //本地化
+	initSpread(spread);
+	spread.suspendPaint();
+	
+	//设置表名
+	var sheet = spread.getActiveSheet();
+	var sheet1 = spread.getSheet(0);
+	var sheet2 = spread.getSheet(1);
+	var sheet3 = spread.getSheet(2);
+	var sheet4 = spread.getSheet(3);
+
+
+
+	sheet1.name("测试步骤表格");
+	sheet2.name("遥测统计表格");
+	sheet3.name("测量结果表格");
+	sheet4.name("通用结果表格");
+	
+	//设置每个sheet的表头
+	var colOneName=[['序号','工作项目','测试工作程序内容及要求','指令或参数','判读要求','单位','实测结果','判读结论','备注']];
+	var colTwoName=[['序号','参数代号','参数名称','单位','正常值范围','测试结果','判读结论']];
+	var colThreeName=[['序号','测点名称','插头号','节点号','单位','预期值','实际值','判读结论','备注']];
+	var colFourName=[['序号','结果名称','类型（数字、字符、图片）','单位','预期值','实际值','判读结论','备注']];
+	sheet1.setArray(0,0,colOneName);
+	sheet2.setArray(0,0,colTwoName);
+	sheet3.setArray(0,0,colThreeName);
+	sheet4.setArray(0,0,colFourName);
+	sheet1.setColumnCount(9); //列数
+	sheet2.setColumnCount(7); //列数
+	sheet3.setColumnCount(9); //列数
+	sheet4.setColumnCount(8); //列数
+	//sheet4.setRowCount(80);
+	
+	
+	//设置表头高度、居中及背景色
+	sheet1.setRowHeight('0',30);
+	sheet2.setRowHeight('0',30);
+	sheet3.setRowHeight('0',30);
+	sheet4.setRowHeight('0',30);
+	sheet1.getCell(0, -1).hAlign(GC.Spread.Sheets.HorizontalAlign.center).vAlign(GC.Spread.Sheets.VerticalAlign.center).backColor('rgb(182, 223, 241)');
+	sheet2.getCell(0, -1).hAlign(GC.Spread.Sheets.HorizontalAlign.center).vAlign(GC.Spread.Sheets.VerticalAlign.center).backColor('rgb(182, 223, 241)');
+	sheet3.getCell(0, -1).hAlign(GC.Spread.Sheets.HorizontalAlign.center).vAlign(GC.Spread.Sheets.VerticalAlign.center).backColor('rgb(182, 223, 241)');
+	sheet4.getCell(0, -1).hAlign(GC.Spread.Sheets.HorizontalAlign.center).vAlign(GC.Spread.Sheets.VerticalAlign.center).backColor('rgb(182, 223, 241)');
+	
+	
+	//部分单元格不允许被编辑
+	var option = {
+		allowFilter: true,
+		allowSort: false,
+		allowResizeRows: true,
+		allowResizeColumns: true, //false,
+		allowEditObjects: false,
+		allowDragInsertRows: false,
+		allowDragInsertColumns: false,
+		allowInsertRows: false,
+		allowInsertColumns: false,
+		allowDeleteRows: false,
+		allowDeleteColumns: false
+	}
+	sheet1.options.protectionOptions = option;
+	sheet1.options.isProtected = true;
+	sheet2.options.protectionOptions = option;
+	sheet2.options.isProtected = true;
+	sheet3.options.protectionOptions = option;
+	sheet3.options.isProtected = true;
+	sheet4.options.protectionOptions = option;
+	sheet4.options.isProtected = true;
+
+	//
+	var style = new GC.Spread.Sheets.Style();
+  style.locked = false;
+  style.wordWrap = true;
+	
+	//设置表头宽度
+	for(var i=0;i<9;i++){
+		sheet1.setColumnWidth(i, 100);
+		sheet3.setColumnWidth(i, 100);
+		sheet1.setStyle(-1, i, style);			//解锁
+		sheet3.setStyle(-1, i, style);			//解锁
+		if(i==2 || i==6){
+			sheet1.setColumnWidth(i, 200);
+		}
+		if(i==1 || i==7){
+			sheet3.setColumnWidth(i, 200);
+		}
+		
+	}
+	for(var i=0;i<8;i++){
+		sheet4.setColumnWidth(i, 100);
+		sheet4.setStyle(-1, i, style);			//解锁
+		if(i==1 || i==2 || i==5){
+			sheet4.setColumnWidth(i, 200);
+		}
+	}
+	for(var i=0;i<7;i++){
+		sheet2.setColumnWidth(i, 100);
+		sheet2.setStyle(-1, i, style);			//解锁
+		if(i==2 || i==5){
+			sheet2.setColumnWidth(i, 200);
+		}
+	}
+	
+	sheet1.getRange(0, 0, 1, 9).locked(true);
+	sheet2.getRange(0, 0, 1, 7).locked(true);
+	sheet3.getRange(0, 0, 1, 9).locked(true);
+	sheet4.getRange(0, 0, 1, 8).locked(true);
+
+
+
+
+    sheet1.bind(GC.Spread.Sheets.Events.EditEnded, function (sender, args) {
+      sheet1.autoFitRow(args.row);
+    });
+    sheet2.bind(GC.Spread.Sheets.Events.EditEnded, function (sender, args) {
+      sheet2.autoFitRow(args.row);
+    });
+    sheet3.bind(GC.Spread.Sheets.Events.EditEnded, function (sender, args) {
+      sheet3.autoFitRow(args.row);
+    });
+    sheet4.bind(GC.Spread.Sheets.Events.EditEnded, function (sender, args) {
+      //sheet4.autoFitRow(args.row);
+        var picRow = sheet4.getValue(args.row,2);
+        if(picRow != "图片"){
+            sheet4.autoFitRow(args.row);
+        }
+    });
+
+	var restp=eval($("#restp").val());
+	var respa=eval($("#respa").val());
+	var resuv=eval($("#resuv").val());
+	var resgl=eval($("#resgl").val());
+	var imgArray=eval($("#imgarr").val());
+	
+	
+	if($("#_id").val() != ""){							//如果不是新增条目，则初始化四张sheet
+	    //spread.setActiveSheetIndex(0);
+        if(JSON.stringify(restp) == "[]"){
+
+            if(JSON.stringify(respa) == "[]"){
+
+                if(JSON.stringify(resuv) == "[]"){
+
+                    if(JSON.stringify(resgl) == "[]"){
+                        spread.setActiveSheetIndex(0);
+                    }else{
+                        spread.setActiveSheetIndex(3);
+                    }
+
+                }else{
+                    spread.setActiveSheetIndex(2);
+                }
+
+            }else{
+                spread.setActiveSheetIndex(1);
+            }
+
+
+        }else{
+            spread.setActiveSheetIndex(0);
+        }
+
+
+
+		var one=[];
+		for(var i=0;i<restp.length;i++){
+			var onehang=[];
+			for(var j in restp[i]){
+				onehang.push(restp[i][j]);
+			}
+			one.push(onehang);
+		}
+		sheet1.setArray(1,0,one);
+      for(var i=0;i<restp.length;i++){
+       sheet1.autoFitRow(i+1);
+      }
+      if(restp.length>0){
+        spread.setActiveSheet(0);
+      }
+
+		
+		var two=[];
+		for(var i=0;i<respa.length;i++){
+			var twohang=[];
+			for(var j in respa[i]){
+				twohang.push(respa[i][j]);
+			}
+			two.push(twohang);
+		}
+		sheet2.setArray(1,0,two);
+      for(var i=0;i<respa.length;i++){
+        sheet2.autoFitRow(i+1);
+      }
+		
+		var three=[];
+		for(var i=0;i<resuv.length;i++){
+			var threehang=[];
+			for(var j in resuv[i]){
+				threehang.push(resuv[i][j]);
+			}
+			three.push(threehang);
+		}
+		sheet3.setArray(1,0,three);
+      for(var i=0;i<resuv.length;i++){
+        sheet3.autoFitRow(i+1);
+      }
+		
+		var four=[];
+		for(var i=0;i<resgl.length;i++){
+			var fourhang=[];
+			for(var j in resgl[i]){
+				fourhang.push(resgl[i][j]);
+			}
+			four.push(fourhang);
+		}
+		sheet4.setArray(1,0,four);
+      for(var i=0;i<resgl.length;i++){
+        sheet4.autoFitRow(i+1);
+      }
+
+     // spread.setActiveSheetIndex(2);
+
+
+		var a=0;
+		for(var i=0;i<four.length;i++){
+				if(four[i][2]=="图片"){
+					sheet4.getCell(i+1, 5).backgroundImage(imgArray[a].img);
+					a+=1;
+					sheet4.setRowHeight(i+1,120);
+				}
+		}
+		
+	}
+
+
+
+
+
+	
+	spread.resumePaint();
+	
+	function initSpread(spread) {
+		var spreadNS = GC.Spread.Sheets;
+		 sheet4 = spread.getSheet(3);
+
+
+           // sheet4.setFormula(1, 3, "=C2");
+    /* var combo = new spreadNS.CellTypes.ComboBox();
+    combo.items([{ text: "数字", value: "11k" }, { text: "字符", value: "15k" }, { text: "图片", value: "100k" }]);
+    combo.editorValueType(spreadNS.CellTypes.EditorValueType.text);
+    
+    sheet4.getCell(-1, 2, spreadNS.SheetArea.viewport).cellType(combo).value("数字");*/
+	};
+	
+	
+  var callbackdata = function () {
+  	var serializationOption = {
+			ignoreFormula: true, // indicate to ignore the style when convert workbook to json, default value is false
+			ignoreStyle: true, // indicate to ignore the formula when convert workbook to json, default value is false
+			rowHeadersAsFrozenColumns: true, // indicate to treat the row headers as frozen columns when convert workbook to json, default value is false
+			columnHeadersAsFrozenRows: true // indicate to treat the column headers as frozen rows when convert workbook to json, default value is false
+		}
+  	var spread1 = $('#ss').data('workbook');
+		var One = spread1.toJSON(serializationOption).sheets.测试步骤表格.data.dataTable; //JSON.stringify()
+  	var Two = spread1.toJSON(serializationOption).sheets.遥测统计表格.data.dataTable;
+  	var Three = spread1.toJSON(serializationOption).sheets.测量结果表格.data.dataTable;
+  	var Four = spread1.toJSON(serializationOption).sheets.通用结果表格.data.dataTable;
+  	
+  	
+  	
+  	//console.log(imgarr);				//新
+  	//console.log($("#imgarr").val());			//旧
+  	
+  	if($("#imgarr").val() != ""){
+  		if(imgarr == ""){						//编辑时无添加
+  			$("#imgarr").val($("#imgarr").val());
+  		}else{									//编辑时添加图片了
+  			var jso = JSON.parse($("#imgarr").val());
+  			for(var i=0;i<imgarr.length;i++){
+  				jso.push(imgarr[i]);
+  			}
+  			$("#imgarr").val(JSON.stringify(jso));
+  		}
+  	}else{						//第一次添加图片时
+  		$("#imgarr").val(JSON.stringify(imgarr));
+  	}
+  	
+  	
+  	var saveOne=[];
+  	for(var i in One){
+  		if(i >= 2) {
+  			var saveOneobj={};
+  			for(var k in One[1]) {
+  				if(One[i][k]==undefined){
+  					One[i][k]={};
+  					One[i][k].key= One[1][k].value;
+  					One[i][k].value='';
+  				}else{
+  					One[i][k].key = One[1][k].value;
+  				}
+  				saveOneobj[One[i][k].key]=One[i][k].value;
+				}
+  			saveOne.push(saveOneobj);
+  		}
+  	}
+  	
+  	var saveTwo=[];
+  	for(var i in Two){
+  		if(i >= 2) {
+  			var saveTwoobj={};
+  			for(var k in Two[1]) {
+  				if(Two[i][k]==undefined){
+  					Two[i][k]={};
+  					Two[i][k].key= Two[1][k].value;
+  					Two[i][k].value='';
+  				}else{
+  					Two[i][k].key = Two[1][k].value;
+  				}
+  				saveTwoobj[Two[i][k].key]=Two[i][k].value;
+				}
+  			saveTwo.push(saveTwoobj);
+  		}
+  	}
+  	
+  	var saveThree=[];
+  	for(var i in Three){
+  		if(i >= 2) {
+  			var saveThreeobj={};
+  			for(var k in Three[1]) {
+  				if(Three[i][k]==undefined){
+  					Three[i][k]={};
+  					Three[i][k].key= Three[1][k].value;
+  					Three[i][k].value='';
+  				}else{
+  					Three[i][k].key = Three[1][k].value;
+  				}
+  				saveThreeobj[Three[i][k].key]=Three[i][k].value;
+				}
+  			saveThree.push(saveThreeobj);
+  		}
+  	}
+  	
+  	
+  	var saveFour=[];
+  	
+  	
+  	for(var i in Four){
+  		if(i >= 2) {
+  			var saveFourobj={};
+  			for(var k in Four[1]) {
+  				if(Four[i][k]==undefined){
+  					Four[i][k]={};
+  					Four[i][k].key= Four[1][k].value;
+  					Four[i][k].value='';
+  				}/*else if(Four[i][3].value == "图片"){
+  					Four[i][6].value=Four[i][6].imgBase;
+  				} */else{
+  					Four[i][k].key = Four[1][k].value;
+  				}
+  				saveFourobj[Four[i][k].key]=Four[i][k].value;
+				}
+  			saveFour.push(saveFourobj);
+  		}
+  		
+  	}
+  	
+  	
+  	var saveOnes = JSON.stringify(saveOne);
+  	var saveTwos = JSON.stringify(saveTwo);
+  	var saveThrees = JSON.stringify(saveThree);
+  	var saveFours = JSON.stringify(saveFour);
+  	
+  	$("#restp").val(saveOnes);
+  	$("#respa").val(saveTwos);
+  	$("#resuv").val(saveThrees);
+  	$("#resgl").val(saveFours);
+  	
+    $('#stage_name').val($('#stage option:selected').text());
+
+    $("#form_satellite").submit();
+    var validate = $("#form_satellite").valid();
+    if (validate)
+      return formBuild('#form_satellite');
+    else
+      return null;
+  };
+
+	var imgarr=[];
+  $(document).ready(function () {
+    var rules = {
+      name: {
+        minlength: 2,
+        required: true
+      }
+    };
+    formValid('#form_satellite', rules);
+
+
+    $.ajax({
+      url: 'getstage',
+      type: 'GET',
+      dataType: 'json',
+      data: {
+        _satid: $("#_satid").val()
+      },
+      async: false,
+      error: function (request) {
+        alert("Connection error");
+      },
+      success: function (data) {
+        var stage_data = data.data;
+        stage_data.forEach(function (t) {
+          if (t.id == $("#stage_id").val())
+            t.selected = true;
+        });
+        $('#stage').select2({
+          data: stage_data
+        });
+      }
+    });
+    
+    
+    var spread = $('#ss').data('workbook');
+		var excelIo = new GC.Spread.Excel.IO();
+		var sheet1 = spread.getSheet(0);
+		//导入
+		$('#import').click(function(){
+       var excelFile = document.getElementById("filee").files[0];
+        excelIo.open(excelFile, function (json) {
+            var workbookObj = json;
+           	spread.fromJSON(workbookObj);
+           	$("#basic").modal('hide');
+        }, function (e) {
+            console.log(e);
+        });
+		})
+		
+		var imgName;
+		var pictureUrl;
+        var imgType;
+		$("#Imgfilee").bind('change', function() {
+			var filea=this.files;
+
+            for(var i=0;i<filea.length;i++){
+                if(filea[i].size > 307200){
+                    alert("图片大小不能超过300k");
+                    $('#Imgfilee').val('');
+                    imgName="";
+                    pictureUrl="";
+                    imgType="";
+                    return false;
+                }
+            }
+			
+			if(filea.length == 1){
+				var filee = this.files[0];
+				var imgNamezu = filee.name.split('.');
+                imgName = imgNamezu[0];
+                imgType = imgNamezu[1];
+                if (!/image\/\w+/.test(filee.type)) {
+                    alert("The file muse be image!");
+                    return false;
+                }
+                var reader = new FileReader();
+                reader.readAsDataURL(filee);
+                reader.onload = function (e) {
+		        pictureUrl = this.result;
+		    }
+			}else{
+				pictureUrl=[];				//多张图片导入
+				imgName=[];
+                imgType=[];
+				for(var i=0;i<filea.length;i++){
+					pictureUrl.push("");
+				}
+				
+				for(var i=0;i<filea.length;i++){
+					(function(i){
+						var imgNamezu = filea[i].name.split('.');
+                        imgName.push(imgNamezu[0]);
+                        imgType.push(imgNamezu[1]);
+
+                        if (!/image\/\w+/.test(filea[i].type)) {
+                        alert("The file muse be image!");
+                        return false;
+                        }
+                        var reader = new FileReader();
+                        reader.readAsDataURL(filea[i]);
+
+                        reader.onload = function (e) {
+                            pictureUrl[i] = this.result;
+                        }
+                    })(i);
+				}
+				
+			}
+		});
+		
+		//导入图片
+		
+		$('#importImg').click(function(){
+			
+			var serializationOption = {
+				ignoreFormula: true, // indicate to ignore the style when convert workbook to json, default value is false
+				ignoreStyle: true, // indicate to ignore the formula when convert workbook to json, default value is false
+				rowHeadersAsFrozenColumns: true, // indicate to treat the row headers as frozen columns when convert workbook to json, default value is false
+				columnHeadersAsFrozenRows: true // indicate to treat the column headers as frozen rows when convert workbook to json, default value is false
+			}
+			var spreadd = $('#ss').data('workbook');
+			var fourr = spreadd.toJSON(serializationOption).sheets.通用结果表格.data.dataTable;
+			
+			//spreadd.options.backgroundImageLayout = GC.Spread.Sheets.ImageLayout.stretch;
+			
+			var youzhi=[];
+			for(var i in fourr){
+				youzhi.push(i);
+			}
+			var max = parseInt(Math.max.apply(null,youzhi));
+
+			if(typeof(pictureUrl) == "string"){
+                if(pictureUrl == ""){
+                    alert("请选择图片");
+                    return false;
+                }
+				sheet4.getCell(max, 5).backgroundImage(pictureUrl);
+                sheet4.setRowHeight(max,120);
+                sheet4.setValue(max,1,imgName);
+                sheet4.setValue(max,2,'图片');
+	      
+                var objj= {};
+                objj.row=max;
+                objj.img=pictureUrl;
+                objj.name=imgName;
+                objj.type=imgType;
+                imgarr.push(objj);
+			}else{
+				for(var i=0;i<pictureUrl.length;i++){
+					sheet4.getCell(max+i, 5).backgroundImage(pictureUrl[i]);
+                    sheet4.setRowHeight(max+i,120);
+                    sheet4.setValue(max+i,1,imgName[i]);
+                    sheet4.setValue(max+i,2,'图片');
+
+                    var objj= {};
+                    objj.row=max+i;
+                    objj.img=pictureUrl[i];
+                    objj.name=imgName[i];
+                    objj.type=imgType[i];
+                    imgarr.push(objj);
+				}
+			}
+      
+            $("#basicc").modal('hide');
+		})
+		
+		
+		//导出
+        $('#daochu').click(function(){
+  			if($("#imgarr").val() != ""){
+		  		if(imgarr == ""){						//编辑时无添加
+		  			$("#imgarr").val($("#imgarr").val());
+		  		}else{									//编辑时添加图片了
+		  			var jso = JSON.parse($("#imgarr").val());
+		  			for(var i=0;i<imgarr.length;i++){
+		  				jso.push(imgarr[i]);
+		  			}
+		  			$("#imgarr").val(JSON.stringify(jso));
+		  		}
+		  	}else{						//第一次添加图片时
+		  		$("#imgarr").val(JSON.stringify(imgarr));
+		  	}
+  			var saveImg = JSON.parse($("#imgarr").val());
+  			//console.log(saveImg);
+  			//导出base64编码的图片
+  			for(var i=0;i<saveImg.length;i++){
+  				//saveImg[i].img
+                // 如果浏览器支持msSaveOrOpenBlob方法（也就是使用IE浏览器的时候），那么调用该方法去下载图片
+                if (window.navigator.msSaveOrOpenBlob) {
+                  var bstr = atob(saveImg[i].img.split(',')[1]);
+                  var n = bstr.length;
+                  var u8arr = new Uint8Array(n);
+                  while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                  }
+                  var blob = new Blob([u8arr]);
+                  window.navigator.msSaveOrOpenBlob(blob, saveImg[i].name + '.' + 'png');//'chart-download'
+                } else {
+                  // 这里就按照chrome等新版浏览器来处理
+                  const a = document.createElement('a');
+                  a.href = saveImg[i].img;
+                  var nam = sheet4.getValue(saveImg[i].row,1);
+                  a.setAttribute('download', nam);//'chart-download'
+                  a.click();
+                }
+  			}
+            //导出excel
+            var fileName = '测试结果表格.xlsx';
+            var json = spread.toJSON();
+            // here is excel IO API
+            excelIo.save(json, function (blob) {
+                saveAs(blob, fileName);
+            }, function (e) {
+                // process error
+                console.log(e);
+            });
+        
+        })
+
+  });
+	
+	
+</script>
+
+{% include "manager/footer.html" %}

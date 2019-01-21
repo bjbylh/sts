@@ -1,0 +1,579 @@
+{% include "./top.html" %}
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet"
+      type="text/css"/>
+
+<!-- END THEME GLOBAL STYLES -->
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <form class="form-horizontal" id="form_satellite">
+                <div class="form-body" style="padding: 0px !important;">
+                    <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+                    <input type="hidden" id="_satid" name="_satid" value="{{sat._id}}">
+                    <input type="hidden" id="sprocessData" value="{{tm.process}}">
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表单验证失败，请检查表单内容.
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4 col-xs-offset-3">  <input type="radio"value="通用公式" name="typ">通用公式</label>
+                                <label class="control-label col-xs-4">  <input type="radio"value="专用公式" name="typ">专用公式</label>
+                            </div>
+                        </div>
+                   <!--     <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="relt">公式类型</label>
+                                <div class="col-xs-8">
+                                    <select id="relt" class="form-control formula" name="relt">
+                                        <option selected>直读</option>
+                                        <option>查表法</option>
+                                        <option>曲线</option>
+                                        <option>内置一般公式</option>
+                                        <option>扩展函数</option>
+                                        <option>内置的自定义表达式</option>
+                                        <option>自定义LUA</option>
+                                        <option>自定义JS脚本</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>-->
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="fn">计算公式</label>
+                                <div class="col-xs-8">
+                                    <select id="fn" class="form-control single" name="fn"><option value=""></option></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="fc">代号</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="fc" name="fc" value="" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group exp">
+                        <label class="control-label col-xs-2" for="exp">计算配置信息</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="exp" name="exp" value="" readonly>
+                        </div>
+                    </div>
+                    <div class="row" id="prompt" style="display: none">
+                        <p class="control-label col-xs-12" style="color:red;text-align:center">请用正确格式:&nbsp数字,数字;...//符号为英文</p>
+                    </div>
+                    <div class="form-group expTextarea" style="display:none">
+                        <label class="control-label col-xs-2" for="expTextarea">计算配置信息</label>
+                        <div class="col-xs-10">
+                            <textarea class="form-control" id="expTextarea" name="expTextarea" value="" rows="5" cols="30"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="relt">相关参数<span> * </span></label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="relt" name="relt">
+                        </div>
+                            <p id="reltPrompt" class="control-label col-xs-12" style="color:red;text-align:center;display:none">请用正确格式:&nbsp数字,数字;...//符号为英文</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="cnd">计算条件</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="cnd" name="cnd" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="rn">校准方法</label>
+                                <div class="col-xs-8">
+                                    <select id="rn" class="form-control" name="rn">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="rc">校准方法代号</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="rc" name="rc" value="" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group pull-left col-xs-4 col-xs-push-2">
+                            <label class="control-label col-xs-8" for="flag"><input name="flag" id="flag" type="checkbox" checked>是否解码</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--这里是遥测参数的编辑表单页面，对应“2.2.3 遥测参数”-->
+
+<script type="text/javascript">
+    var isTest=false;
+    $(function(){
+      // 公式下拉框
+      $(".formula").select2({
+        minimumResultsForSearch:Infinity
+      });
+      //下拉框，联动,公式
+      var radioVal=$("input[name='typ']:checked").val();
+      $("input[name='typ']").change(function(){
+        var radioVal=$("input[name='typ']:checked").val();
+        if(radioVal=="专用公式"){
+          $.ajax({
+            type : "get",
+            async: false,
+            url : "/bdm/formula/getList",
+            data:{"_satid":"{{sat._id}}"},
+            success : function(data) {
+              var arr=[];
+              for(var i=0;i<data.data.length;i++){
+                arr.push(data.data[i].name)
+              }
+              $('#fn').select2({
+                data:arr
+              });
+              $("#fn").change(function(){
+                var item=$(this).val();
+                for(var i=0;i<data.data.length;i++){
+                  if(data.data[i].name==item){
+                    var Code=data.data[i].code;
+                    var typeData=data.data[i].type;
+                    $("#fc").val(Code);
+                    switch (typeData){
+                      case "直读":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",true);
+                        break;
+                      case "查表法":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",true);
+
+                        break;
+                      case "曲线":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",false);
+                        break;
+                      case "内置一般公式":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",false);
+                        isTest=true;
+                        break;
+                      case "扩展函数":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "内置的自定义表达式":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "自定义LUA":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "自定义JS脚本":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                    }
+                  }
+                }
+              })
+            },
+            error:function(request){
+              showMessageAbnomal("获取信息失败")
+            }
+          });
+        }else if(radioVal=="通用公式"){
+          $.ajax({
+            type : "get",
+            async: false,
+            url : "/bdm/formula/getList",
+            success : function(data) {
+              var arr=[];
+              for(var i=0;i<data.data.length;i++){
+                arr.push(data.data[i].name)
+              }
+              $('.single').select2({
+                data:arr
+              });
+              $("#fn").change(function(){
+                var item=$(this).val();
+                for(var i=0;i<data.data.length;i++){
+                  if(data.data[i].name==item){
+                    var Code=data.data[i].code;
+                    var typeData=data.data[i].type;
+                    $("#fc").val(Code);
+                    switch (typeData){
+                      case "直读":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",true);
+                        break;
+                      case "查表法":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",true);
+
+                        break;
+                      case "曲线":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",false);
+                        break;
+                      case "内置一般公式":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",false);
+                        break;
+                      case "扩展函数":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "内置的自定义表达式":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "自定义LUA":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "自定义JS脚本":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                    }
+                  }
+                }
+              })
+            },
+            error:function(request){
+              showMessageAbnomal("获取信息失败")
+            }
+          });
+        }
+      });
+      //下拉框，联动,校准方法
+      $.ajax({
+        type : "get",
+        async: false,
+        url : "/bdm/regulate/getList",
+        data:{"_satid":"{{sat._id}}"},
+        success : function(data) {
+          var arr=[];
+          for(var i=0;i<data.data.length;i++){
+            arr.push(data.data[i].name)
+          }
+          $('#rn').select2({
+            data:arr
+          });
+          $("#rn").change(function(){
+            var item=$(this).val();
+            for(var i=0;i<data.data.length;i++){
+              if(data.data[i].name==item){
+                var Code=data.data[i].code;
+                $("#rc").val(Code)
+              }
+            }
+          })
+        },
+        error:function(request){
+          showMessageAbnomal("获取信息失败")
+        }
+      });
+      //设置初始值
+      var sprocessData=$("#sprocessData").val();
+      if(sprocessData!=null&&sprocessData!=undefined&&sprocessData!=""){
+        sprocessData=JSON.parse(sprocessData);
+      }
+      $("#fc").val(sprocessData.fc);
+      $("#exp").val(sprocessData.exp);
+      $("#expTextarea").val(sprocessData.expTextarea);
+      $("#relt").val(sprocessData.relt);
+      $("#cnd").val(sprocessData.cnd);
+      $("#rn").val(sprocessData.rn);
+        if(sprocessData.typ=="通用公式"){
+          $.ajax({
+            type : "get",
+            async: false,
+            url : "/bdm/formula/getList",
+            success : function(data) {
+              var arr=[];
+              for(var i=0;i<data.data.length;i++){
+                arr.push(data.data[i].name)
+              }
+              $('.single').select2({
+                data:arr
+              });
+              $("#fn").change(function(){
+                var item=$(this).val();
+                for(var i=0;i<data.data.length;i++){
+                  if(data.data[i].name==item){
+                    var Code=data.data[i].code;
+                    var typeData=data.data[i].type;
+                    $("#fc").val(Code);
+                    switch (typeData){
+                      case "直读":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",true);
+                        break;
+                      case "查表法":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",true);
+
+                        break;
+                      case "曲线":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",false);
+                        break;
+                      case "内置一般公式":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",false);
+                        break;
+                      case "扩展函数":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "内置的自定义表达式":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "自定义LUA":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "自定义JS脚本":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                    }
+                  }
+                }
+              })
+            },
+            error:function(request){
+              showMessageAbnomal("获取信息失败")
+            }
+          });
+          $("input[name='typ']").eq(0).attr("checked","checked");
+          var fnSelect = $("#fn").select2();
+          fnSelect.val(sprocessData.fn).trigger("change");
+          fnSelect.change();
+        }else if(sprocessData.typ=="专用公式"){
+          $.ajax({
+            type : "get",
+            async: false,
+            url : "/bdm/formula/getList",
+            data:{"_satid":"{{sat._id}}"},
+            success : function(data) {
+              var arr=[];
+              for(var i=0;i<data.data.length;i++){
+                arr.push(data.data[i].name)
+              }
+              $('.single').select2({
+                data:arr
+              });
+              $("#fn").change(function(){
+                var item=$(this).val();
+                for(var i=0;i<data.data.length;i++){
+                  if(data.data[i].name==item){
+                    var Code=data.data[i].code;
+                    var typeData=data.data[i].type;
+                    $("#fc").val(Code);
+                    switch (typeData){
+                      case "直读":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",true);
+                        break;
+                      case "查表法":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",true);
+
+                        break;
+                      case "曲线":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",false);
+                        break;
+                      case "内置一般公式":
+                        $(".exp").show();
+                        $(".expTextarea").hide();
+                        $("#exp").attr("readonly",false);
+                        isTest=true;
+                        break;
+                      case "扩展函数":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "内置的自定义表达式":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "自定义LUA":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                      case "自定义JS脚本":
+                        $(".exp").hide();
+                        $(".expTextarea").show();
+                        break;
+                    }
+                  }
+                }
+              })
+            },
+            error:function(request){
+              showMessageAbnomal("获取信息失败")
+            }
+          });
+          $("input[name='typ']").eq(1).attr("checked","checked");
+          var fnSelect = $("#fn").select2();
+          fnSelect.val(sprocessData.fn).trigger("change");
+          fnSelect.change();
+        }
+     if(sprocessData.rc!=null&&sprocessData.rc!=""&&sprocessData.rc!=undefined){
+       $.ajax({
+         type : "get",
+         async: false,
+         url : "/bdm/regulate/getList",
+         data:{"_satid":"{{sat._id}}"},
+         success : function(data) {
+           var arr=[];
+           for(var i=0;i<data.data.length;i++){
+             arr.push(data.data[i].name)
+           }
+           $('#rn').select2({
+             data:arr
+           });
+           $("#rn").change(function(){
+             var item=$(this).val();
+             for(var i=0;i<data.data.length;i++){
+               if(data.data[i].name==item){
+                 var Code=data.data[i].code;
+                 $("#rc").val(Code)
+               }
+             }
+           });
+           var rnSelect = $("#rn").select2();
+           rnSelect.val(sprocessData.rn).trigger("change");
+           rnSelect.change();
+         },
+         error:function(request){
+           showMessageAbnomal("获取信息失败")
+         }
+       });
+
+     }
+  /*    if(sprocessData.flag==on){
+        $("#flag").prop("checked", true);
+      }else if(sprocessData.flag==""||sprocessData.flag==undefined||sprocessData.flag==null){
+        $("#flag").prop("checked", false);
+      }*/
+    })
+</script>
+<script>
+  var callbackdata = function() {
+    $('#form_satellite').submit();
+    var validate = $('#form_satellite').valid();
+    var expVal=$("#exp").val();
+    var newNuber=expVal.split(";").length-1;
+    var reg=new RegExp("(\\d+,\\d+;){"+newNuber+"}");
+    var reltVal=$("#relt").val();
+    var reltNuber=reltVal.split(",").length-1;
+    var reltReg=new RegExp("^([0-9a-zA-Z]+,){"+reltNuber+"}([0-9a-zA-Z]+)$");
+    if (validate) {
+      if(reltReg.test(reltVal)){
+        if(isTest==true){
+          if(expVal==""||expVal==null||expVal==undefined){
+            return [form2obj('form_satellite')];
+          }else if(newNuber>0&&str.split(";")[newNuber]==""){
+            if(reg.test(expVal)){
+              return [form2obj('form_satellite')];
+            }else{
+              $("#prompt").show();
+              return null;
+            }
+          }else{
+            $("#prompt").show();
+            return null;
+          }
+        }else {
+          return [form2obj('form_satellite')];
+        }
+      }else {
+        $("#reltPrompt").show();
+        return null;
+
+      }
+    } else {
+
+      return null;
+    }
+  }
+  $(document).ready(function() {
+    var rules = {
+      relt: {
+        minlength: 2,
+        required: true,
+        remote: {
+    /*      url: 'doValidateRelt',
+          type: 'post',*/
+          data: {
+            'name': function() {
+              return $('#relt').val();
+            },
+            '_formulaid': function() {
+              return $('#_id').val();
+            },
+            '_satid': function() {
+              return $('#_satid').val();
+            }
+          }
+        }
+      }
+    };
+    var message = {
+      relt: {remote: '计算公式名称不合法或已被占用'}
+    };
+    bindFormValidate('#form_satellite', rules, message);
+  });
+</script>
+
+{% include "./footer.html" %}

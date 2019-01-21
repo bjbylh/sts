@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="space">
+		<meta name="keywords" content="space">
+		<title>首页</title>
+		<link rel="stylesheet" type="text/css" href="/static/home/css/reset.css">
+		<link rel="stylesheet" href="/static/home/css/global.css">
+		<link rel="stylesheet" href="/static/home/css/main.css">
+		<!--[if IE 8]>
+        <link rel="stylesheet" href="/static/home/css/font.css">
+    <![endif]-->
+		<style type="text/css" media="screen">
+			body,
+			html {
+				margin: 0;
+				padding: 0;
+				/**position: relative;**/
+			}
+
+			body {
+				min-width: 1200px;
+				background: #00294d url(/static/home/images/banner.png) no-repeat;
+				background-position: center 0;
+			}
+
+		</style>
+	</head>
+
+	<script>
+		 var myopen = function(URL){
+    	//var fulls='scrollbars=1';
+    	/*var fulls='';
+    	if(window.screen){
+    		var availWidth = parseInt(screen.availWidth);
+    		var availHeight = parseInt(screen.availHeight);
+    		var ah = availHeight;
+    		var aw = availWidth;
+    		if(aw>1600){
+    			aw = 1600;
+    		}else{
+    			aw=1280;
+    		}
+    		var left=(availWidth-aw)/2;
+    		var top=(availHeight-ah)/2;
+    		fulls+='left='+left;
+    		fulls+=',top='+top;
+    		fulls+=',height='+ah;
+    		fulls+=',width='+aw;
+    		fulls+=',resizable=no';
+    	}else{
+    		fulls+='resizable=no';
+    	}*/
+    	window.opener=null;
+    	//var newWin = window.open(URL,"_blank",fulls);
+    	var newWin = window.open(URL,"",'height='+screen.height+', width='+screen.width+',top=0,left=0,toolbar=yes,menubar=yes,scrollbars=yes,location=yes,status=yes,resizable=yes');
+    	newWin.focus();
+    	newWin.moveTo(0,0);
+    }
+	</script>
+
+	<body>
+		<div class="header wrapper">
+			<img src="/static/home/images/logo.png" alt="" class="logo">
+			<ul class="nav">
+				<li class="navItem">
+					<!--a href="/home/rank" target="_blank" class="leaderboard"></a-->
+					<a href="#" class="leaderboard active"></a>
+				</li>
+				<li class="navItem">
+					<!--a href="/home/analysis/satNYr" target="_blank" class="analysis"></a-->
+					<!--<a href="#" onclick="myopen('/home/analysis/satNYr')" class="analysis"></a>-->
+					<a href="#" onclick="myopen('/tval/rank')"   class="analysis"></a>
+				</li>
+				<li class="navItem">
+					<!--a href="/home/index/wall" target="_blank" class="displaywall"></a-->
+					<a href="#" onclick="myopen('/tval/analysis/satCPx')" class="displaywall"></a>
+				</li>
+				<li class="navItem last">
+					<!--a href="/home/analysis/pdtCPx" target="_blank" class="indicatordisplay"></a-->
+					<a href="#" onclick="myopen('/tval/index/wall')" class="indicatordisplay"></a>
+				</li>
+			</ul>
+			<div class="user" id="userinfo">
+				<img src="/static/userimages/foreground.png" class="usericon-wapper">
+				<img src="{{userimgpath}}" class="usericon">
+				<ul class="dropdownBox">
+					<li class="userInfo">
+						<span class="db font24">{{userInfo.name}}</span>
+						<input type="hidden" id="userimg" value="{{userimgpath}}" />
+						<span class="db font14">当前登录者</span>
+					</li>
+					<li class="dropdownList js_modify">
+						<a class="color33">修改密码</a>
+					</li>
+					<li class="dropdownList">
+						<a class="colorR" href="javascript:" onclick="logout()">退出</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="content wrapper" style="padding-bottom: 0px">
+			<img src="/static/home/images/title.png" alt="" class="title">
+			<ul class="classify">
+				<li class="classify_1">
+					<span class="num">{{ sat_count.all_count }}</span>
+					<span class="desc">全部测试航天器数量</span>
+					<!--a href="/home/index/wall" target="_blank" class="link"></a-->
+				</li>
+				<li class="classify_2">
+					<span class="num">{{ sat_count.muyang_count }}</span>
+					<span class="desc">模样航天器数量</span>
+					<!--a href="/home/index/wallorbit" target="_blank" class="link"></a-->
+				</li>
+				<li class="classify_3">
+					<span class="num">{{ sat_count.chuyang_count }}</span>
+					<span class="desc">初样航天器数量</span>
+					<!--a href="/home/index/wallouter" target="_blank" class="link"></a-->
+				</li>
+				<li class="classify_4">
+					<span class="num">{{ sat_count.zhengyang_count }}</span>
+					<span class="desc">正样航天器数量</span>
+					<!--a href="/home/index/wallinner" target="_blank" class="link"></a-->
+				</li>
+				<!--li class="classify_3">
+					<span class="num">{{ sat_count.health_count }}</span>
+					<span class="desc">健康航天器数量</span>
+					<a href="/home/index/wall" target="_blank" class="link"></a>
+				</li>
+				<li class="classify_4">
+					<span class="num">{{ sat_count.ill_count }}</span>
+					<span class="desc">亚健康航天器数量</span>
+					<a href="/home/index/wall" target="_blank" class="link"></a>
+				</li-->
+			</ul>
+		</div>
+
+		<div class="footer">
+			© CASC 2018
+		</div>
+
+		<div class="pop_bg"></div>
+		<div class="modify-password-box">
+			<form class="modify-form" id="changpwd">
+				<span class="form-title">修改密码</span>
+				<div class="form-group">
+					<input class="form-input" type="password" autocomplete="off" placeholder="请输入新密码" id="new_p" name="new_p" value="">
+				</div>
+				<div class="form-group">
+					<input class="form-input" type="password" autocomplete="off" placeholder="请再次确认新密码" id="new_p2" name="new_p2" value="">
+				</div>
+				<div class="form-actions">
+					<a href="javascript:;" class="form-btn" onclick="chpassword()">确认修改</a>
+				</div>
+			</form>
+		</div>
+
+		<script type="text/javascript" src="/static/home/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/static/home/js/placeholderSupport.js"></script>
+		<script type="text/javascript" src="/static/home/js/mylogin.js"></script>
+		<script type="text/javascript">
+			//			$(document).ready(function() {
+			//				var userimg=$('#userimg').val();
+			//				$('.header .user').css({'background':'url('+userimg+') no-repeat'});
+			//			});
+		</script>
+	</body>
+
+</html>

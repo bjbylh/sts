@@ -1,0 +1,238 @@
+{% include "./top.html" %}
+
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet"
+      type="text/css"/>
+
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <form class="form-horizontal" id="form_satellite">
+                <div class="form-body" style="padding: 0px !important;">
+                    <input type="hidden" id="Id_" name="_id" value="{{data._id}}">
+                    <input type="hidden" id="_satid" name="_satid" value="{{sat._id}}">
+                    <input type="hidden" id="data" value="{{data.channelname}}">
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表单验证失败，请检查表单内容.
+                    </div>
+                <div class="row">
+                     <div class="col-sm-6">
+                         <div class="form-group">
+                             <label class="control-label col-xs-4" for="name">模式名称<span> * </span></label>
+                             <div class="col-xs-8">
+                                 <input type="text" class="form-control" id="name" name="name" value="{{data.name}}">
+                             </div>
+                         </div>
+                     </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label col-xs-4" for="code">模式代号<span> * </span></label>
+                            <div class="col-xs-8">
+                                <input type="text" class="form-control" id="code" name="code" value="{{data.code}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                           <div class="form-group">
+                               <label class="control-label col-xs-4 name-lable" for="channelname">所属通道名称<span> * </span></label>
+                               <div class="col-xs-8">
+                                   <select name="channelname" id="channelname" class="form-control">
+                                       <option value=""></option>
+                                   </select>
+                                   <p id="prompt" style="color:red;display:none;font-size:14px">所属通道名称不能为空</p>
+                               </div>
+                           </div>
+                       </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="channelcode">所属通道代号</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="channelcode" name="channelcode" value="{{data.channelcode}}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="describe">模式说明</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="describe" name="describe" value="{{data.describe}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="length">模式/包长度</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="length" name="length" value="{{data.length}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="packno">包标识</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="packno" name="packno" value="{{data.packno}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="innercount">包内帧计数最大值</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="innercount" name="innercount" value="{{data.innercount}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+  var callbackdata = function() {
+    $('#form_satellite').submit();
+    var validate = $('#form_satellite').valid();
+    var channelName=$("#channelname").val();
+
+    if (validate) {
+      if(channelName==null||channelName==""||channelName==undefined){
+         $("#prompt").show();
+         $(".name-lable").css({"color":"red"})
+      }else{
+        return [form2obj('form_satellite')];
+      }
+    } else {
+      return null;
+    }
+  };
+$(function(){
+  //下拉框，联动
+  $.ajax({
+    type : "get",
+    async: false,
+    url : "/bdm/channel/getList",
+    data:{"_satid":"{{sat._id}}"},
+    success : function(data) {
+      var arr=[];
+      for(var i=0;i<data.data.length;i++){
+        arr.push(data.data[i].name)
+      }
+      $('#channelname').select2({
+        data:arr
+      });
+      $("#channelname").change(function(){
+        var item=$(this).val();
+        for(var i=0;i<data.data.length;i++){
+          if(data.data[i].name==item){
+            var Code=data.data[i].code;
+            $("#channelcode").val(Code)
+          }
+        }
+      });
+      var selectData=$("#data").val();
+      $("#channelname").val(selectData).select2();
+    },
+    error:function(request){
+      showMessageAbnomal("通道名称获取失败")
+    }
+  });
+});
+  $(document).ready(function() {
+    var rules = {
+      name: {
+        minlength: 2,
+        required: true,
+        remote: {
+          url: 'doValidateName',
+          type: 'post',
+          data: {
+            'name': function() {
+              return $('#name').val();
+            },
+            '_regulateid': function() {
+              return $('#_id').val();
+            },
+            '_satid': function() {
+              return $('#_satid').val();
+            }
+          }
+        }
+      },
+      code: {
+        minlength: 2,
+        maxlength: 10,
+        required: true,
+        remote: {
+          url: 'doValidateCode',
+          type: 'post',
+          data: {
+            'code': function() {
+              return $('#code').val();
+            },
+            '_regulateid': function() {
+              return $('#_id').val();
+            },
+            '_satid': function() {
+              return $('#_satid').val();
+            }
+          }
+        }
+      },
+   /*   channelname: {
+        minlength: 2,
+        maxlength: 10,
+        required: true,
+        remote: {
+          url: 'doValidateChannelname',
+          type: 'post',
+          data: {
+            'channelname': function() {
+              return $('#channelname').val();
+            },
+            '_regulateid': function() {
+              return $('#_id').val();
+            },
+            '_satid': function() {
+              return $('#_satid').val();
+            }
+          }
+        }
+      }
+*/
+    };
+    var message = {
+      code: {remote: '模式代号不合法或已被占用'},
+      name: {remote: '模式名称不合法或已被占用'},
+      // channelname:{remote:'通道名称不合法或已被占用'}
+    };
+    bindFormValidate('#form_satellite', rules, message);
+  });
+
+</script>
+
+{% include "./footer.html" %}

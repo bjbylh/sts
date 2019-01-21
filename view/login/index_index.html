@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>综合测试系统（STS）</title>
+		<!-- 引入样式 -->
+		<link href="/static/css/element_index.css" rel="stylesheet">
+		<link id="bootstrap-style" href="/static/css/bootstrap3.css" rel="stylesheet">
+		<!-- 引入组件库 -->
+		<style>
+			.el-carousel__item img {
+
+				width: 100vw;
+				height: 450px;
+				position:absolute;
+			}
+
+			.el-carousel__item:nth-child(n) {
+				background-color: goldenrod;
+				/*background-image: url(img/bkg2.jpg);*/
+			}
+			.martop{
+				margin-top: 30px;
+			}
+			body{
+                background-color: #FFF;
+				/*background-color: #061E3A;*/
+			}
+			.headerStyle{
+				color: white;
+				font-size: large;
+				font-family: "微软雅黑";
+				text-align: center;
+			}
+			.brand{
+				color: #7FC0EA;
+				font-family: "Open Sans", sans-serif;
+				font-size: 33px;
+				font-weight: 200;
+				text-shadow: none;
+				margin-top: 500px;
+			}
+            .navbar-inverse .navbar-brand {
+                color: #777777;
+            }
+
+            .navbar-inverse .navbar-brand:hover {
+                color: #222222;
+            }
+
+	</style>
+
+	</head>
+
+	<body>
+		<!--div style="height:50px" -->
+        <div class="navbar-nav navbar-inverse navbar-fixed-top" style="background: #FFF;height: 60px">
+            <!--div class="container"-->
+            <div style="width: 98%;margin-left: 1%; margin-top: 5px">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/index" style="padding: 15px 0px"><img src="/static/img/logo30.png"></a>
+                    <a class="navbar-brand" href="/index"> SATELLITE - 航天器在轨智慧运营中心</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <!--ul class="nav navbar-nav">
+                        <li class="active"><a href="/index"><i class="icon-home icon-white"></i> 首页</a></li>
+                        <li><a href="/static/tables.html"><i class="icon-th icon-white"></i> Tables</a></li>
+                        <li><a href="/static/login.html"><i class="icon-lock icon-white"></i> Login</a></li>
+                        <li><a href="/static/user.html"><i class="icon-user icon-white"></i> User</a></li>
+                    </ul-->
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+		<div id="app">
+			<template>
+				<div class="block">
+					<el-carousel height="700px">
+						<el-carousel-item v-for="item in 4" :key="item">
+							<div style="margin:0 auto; align-content: center;">
+							<img id="mypic" /></div>
+						</el-carousel-item>
+					</el-carousel>
+				</div>
+
+			</template>
+		</div>
+		<br/>
+		<!-- Services BEGIN -->
+            <div class="container service-bg martop" >
+                <div class="row">
+                    <div class="col-sm-3">
+                    	<a href="http://192.168.0.253:5000" target="_blank">
+                        <div class="services sm-margin-bottom-100">
+                            <div class="services-wrap">
+                                <div class="service-body">
+                                    <img src="/static/img/BI.png" alt="">
+                                </div>
+                            </div><br/>
+                            <h4>BI-数据检索分析</h4>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-3">
+                        <a href="/home/index" target="_blank">
+                            <div class="services sm-margin-bottom-100">
+                                <div class="services-wrap">
+                                    <div class="service-body">
+                                        <img src="/static/img/metrics.png" alt="">
+                                    </div>
+                                </div><br/>
+                                <h4>Reporter-数据评估报告</h4>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-3">
+                    	<a href="/manager" target="_blank">
+                        <div class="services sm-margin-bottom-100">
+                            <div class="services-wrap">
+                                <div class="service-body">
+                                    <img src="/static/img/reporter.png" alt="">
+                                </div>
+                            </div><br/>
+                            <h4>Manager-运行管理</h4>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-3">
+                    	<a href="/admin?rbacSatCode=*" target="_blank">
+                        <div class="services sm-margin-bottom-100">
+                            <div class="services-wrap">
+                                <div class="service-body">
+                                    <img src="/static/img/manager.png" alt="">
+                                </div>
+                            </div><br/>
+                            <h4>Admin-系统管理员</h4>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Services END -->
+        <script src="/static/js/jquery-1.9.1.min.js"></script>
+		<script src="/static/js/vue.js"></script>
+		<script src="/static/js/element_index.js"></script>
+		<script type="text/javascript">
+			new Vue().$mount('#app');
+			//new Vue().$mount('#app1');
+			var ims=$('.el-carousel__container').find('img');
+			for(var i=0;i<ims.length;i++){
+				$(ims[i]).attr('src',"/static/img/carousel"+i+".jpg");
+                $(ims[i]).attr('height',"100%");
+                $(ims[i]).attr('width',"100%");
+            }
+		</script>
+
+	</body>
+
+</html>

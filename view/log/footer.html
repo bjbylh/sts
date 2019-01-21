@@ -1,0 +1,58 @@
+</body>
+<script>
+  var layer = parent.layer;
+  var bindFormValidate=function (formid, rules,msg) {
+    var form_v = $(formid);
+    var error_v = $('.alert-danger', form_v);
+    form_v.validate({
+      errorElement: 'span', //default input error message container
+      errorClass: 'help-block help-block-error', // default input error message class
+      focusInvalid: false, // do not focus the last invalid input
+      ignore: "",  // validate all fields including form hidden input
+      rules: rules,
+      messages: msg,
+      invalidHandler: function(event, validator) { //display error alert on form submit
+        error_v.show();
+        App.scrollTo(error_v, -200);
+      },
+      errorPlacement: function(error, element) { // render error placement for each input type
+        var cont = $(element).parent('.input-group');
+        if (cont.size() > 0) {
+          cont.after(error);
+        } else {
+          element.after(error);
+        }
+      },
+      highlight: function(element) { // hightlight error inputs
+        $(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+      },
+      unhighlight: function(element) { // revert the change done by hightlight
+        $(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+      },
+      success: function(label) {
+        label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+      },
+      submitHandler: function(form) {
+        error_v.hide();
+      }
+    });
+  }
+
+  function form2obj(id) {
+    var obj = {};
+    var arr = $('#' + id).serializeArray();
+    $(arr).each(function() {
+      obj[this.name] = this.value.trim();
+    });
+    return obj;
+  }
+
+  var showMessageNomal= function  (msg) {
+    layer.msg(msg,{icon:1});
+  }
+  var showMessageAbnomal = function  (msg) {
+    layer.alert(msg,{icon:2});
+  }
+
+</script>
+</html>

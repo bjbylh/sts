@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="space">
+    <meta name="keywords" content="space">
+    <title>{{data.name}}指标展示</title>
+    <link rel="stylesheet" type="text/css" href="/static/home/css/reset.css">
+    <link rel="stylesheet" href="/static/home/css/global.css">
+    <link rel="stylesheet" href="/static/home/css/main.css">
+
+
+    <input type="hidden" id="_satid" name="_satid" value="{{data._id}}"/>
+    <input type="hidden" id="_satcode" name="_satcode" value="{{data.code}}"/>
+    <!--[if IE 8]>
+    <link rel="stylesheet" href="css/font.css">
+    <![endif]-->
+    <style type="text/css" media="screen">
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        body {
+            min-width: 1200px;
+            background: #00294d url(/static/home/images/banner_1.png) no-repeat;
+            background-position: center 0;
+        }
+    </style>
+</head>
+
+<body>
+	<input type="hidden" id="userimg" value="{{userimgpath}}" />
+<div class="header wrapper">
+    <img src="/static/home/images/logo.png" alt="" class="logo">
+    <ul class="nav">
+        <li class="navItem">
+            <a href="/home/rank" target="_blank" class="leaderboard"></a>
+        </li>
+        <li class="navItem">
+            <a href="/home/analysis/satNYr" target="_blank" class="analysis"></a>
+        </li>
+        <li class="navItem">
+            <a href="/home/index/wall" target="_blank" class="displaywall"></a>
+        </li>
+        <li class="navItem last">
+            <a href="/home/analysis/pdtCPx" target="_blank" class="indicatordisplay"></a>
+        </li>
+    </ul>
+    <div class="user">
+    	<img src="/static/userimages/foreground.png" class="usericon-wapper">
+				<img src="{{userimgpath}}" class="usericon">
+        <ul class="dropdownBox">
+            <li class="userInfo">
+                <span class="db font24">{{userInfo.name}}</span>
+                <span class="db font14">当前登录者</span>
+            </li>
+            <li class="dropdownList js_modify"><a class="color33">修改密码</a></li>
+            <li class="dropdownList"><a class="colorR" href="javascript:" onclick="logout()">退出</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="content wrapper marT60" id="cont">
+    <div class="productTreeBox firstBox">
+        <div class="productTree">
+            <span class="db font30">{{data.name}}指标展示</span>
+        </div>
+    </div>
+
+</div>
+
+<div class="pop_bg"></div>
+<div class="modify-password-box">
+    <form class="modify-form" id="changpwd">
+        <span class="form-title">修改密码</span>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请输入新密码" id="new_p" name="new_p"
+                   value="">
+        </div>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请再次确认新密码" id="new_p2"
+                   name="new_p2" value="">
+        </div>
+        <div class="form-actions">
+            <a href="javascript:;" class="form-btn" onclick="chpassword()">确认修改</a>
+        </div>
+    </form>
+</div>
+
+<div class="footer">
+    © CASC 2018
+</div>
+
+<script src="/static/home/compontents/jquery.min.js" type="text/javascript"></script>
+<script src="/static/home/compontents/highcharts/highcharts.js"></script>
+<script src="/static/home/compontents/highcharts/modules/exporting.js"></script>
+<script src="/static/home/compontents/highcharts/themes/dark-blue.js"></script>
+
+<script type="text/javascript" src="/static/home/js/placeholderSupport.js"></script>
+<script type="text/javascript" src="/static/home/js/mylogin.js"></script>
+<script>
+  $(document).ready(function () {
+    var zhibiaoURL='/home/single/getZhibiao';
+    if(document.all){
+      zhibiaoURL = '/home/single/getZhibiaoforIE8';
+    }
+    $.ajax({
+      async: false,
+      cache: false,
+      type: 'POST',
+      data: {
+        _satcode: $('#_satcode').val()
+      },
+      url:zhibiaoURL,
+      success: function (data) {
+        if (data.success) {
+          var showing = data.data;
+          for (var i = 0; i < showing.length; i++) {
+            var box = '';
+            if(i==showing.length-1)
+              box += '<div class="productTreeBox lastBox" >';
+            else
+              box += '<div class="productTreeBox" >';
+            if (showing[i].type == 'number') { //hightcharts
+              box += '<div class="productTitle"><span class="db font24">';
+              box += showing[i].name + '</span></div>';
+              box += '<div class="productTreeList" style="width:1100px;" id="num' + i + '"></div></div>';
+              $('#cont').append(box);
+              var catArr = [];
+              var dataArr = [];
+              for (var j = 0; j < showing[i].result.length; j++) {
+                catArr.push(showing[i].result[j].end);
+                if (showing[i].result[j].content != null)
+                  showing[i].result[j].content = parseFloat(showing[i].result[j].content.toFixed(2));
+                dataArr.push(showing[i].result[j].content);
+              }
+              new Highcharts.Chart('num' + i, {
+                chart: {
+                  backgroundColor: 'rgba(0,0,0,0)',
+                  borderColor: "",
+                  borderWidth: 0,//ie下无边框
+                  plotBorderColor:"",
+                  plotBorderWidth: 0,//ie下无边框
+                  plotBackgroundColor:'rgba(0,0,0,0.1)',
+                  type: 'line',
+                },
+                exporting: { enabled: false },
+                credits: {
+                  enabled: false
+                },
+                title: {
+                  text: ''
+                },
+                subtitle: {
+                  text: ''
+                },
+                xAxis: {
+                  categories: catArr,
+                  tickPixelInterval:1000,
+                  labels: {
+                    style: {
+                      color: '#4598db',//颜色
+                    }
+                  },
+                  gridLineColor:"#02afe3",
+                  lineColor: "#02afe3",
+                  tickColor:'#02afe3'
+                },
+                yAxis: {
+                  title: {
+                    text: ''
+                  },
+                  labels: {
+                    style: {
+                      color: '#4598db',//颜色
+                    }
+                  },
+                  gridLineColor:"#02afe3",
+                  lineColor: "#02afe3",
+                  tickColor:'#02afe3',
+                  minorGridLineColor:'#02afe3',
+                },
+                plotOptions: {
+                  line: {
+                    dataLabels: {
+                      enabled: false//true // 开启数据标签
+                    },
+                    enableMouseTracking: false // 关闭鼠标跟踪，对应的提示框、点击事件会失效
+                  }
+                },
+                series: [{
+                  name: '<a style="color:#4598db">'+showing[i].name+'</a>',
+                  data: dataArr
+                }]
+              });
+            }
+            if (showing[i].type == 'vector') { //姿态稳定度（°）
+              box += '<div class="productTitle">';
+              box += '<span class="db font24">' + showing[i].name + '</span></div>';
+              var result = showing[i].result;
+              var n = 1;
+              for (var j = 0; j < result.length; j++) {
+                if (n == 1) {
+                  box += '<ul class="clearfix stability">';
+                }
+                if (n == 5 || j == result.length - 1) {
+                  box += '<li class="last"><span class="degree">[';
+                  for (var k = 0; k < showing[i].result[j].content.length; k++) {
+                    box += showing[i].result[j].content[k] + '';
+                    if (k != showing[i].result[j].content.length - 1) {
+                      box += ',<br/>';
+                    }
+                  }
+                  box += ']</span><span class="time">' + showing[i].result[j].end + '</span></li>';
+                  box += '</ul>';
+                  if (j != result.length - 1)
+                    box += '<div class="line"></div>';
+                  n = 1;
+                } else {
+                  box += '<li><span class="degree">[';
+                  for (var k = 0; k < showing[i].result[j].content.length; k++) {
+                    box += showing[i].result[j].content[k] + '';
+                    if (k != showing[i].result[j].content.length - 1) {
+                      box += ',<br/>';
+                    }
+                  }
+                  box += ']</span><span class="time">' + showing[i].result[j].end + '</span></li>';
+                  n++;
+                }
+              }
+              box += '</div>';
+              $('#cont').append(box);
+            }
+            if (showing[i].type == 'image') { //帆板控制精度
+              box += '<div class="productTitle"><span class="db font24">' + showing[i].name + '</span></div>';
+              var result = showing[i].result;
+              var n = 1;
+              for (var j = 0; j < result.length; j++) {
+                if (n == 1) {
+                  box += '<ul class="clearfix stability">';
+                }
+                if (n == 5 || j == result.length - 1) {
+                  box += '<li class="last"><span class="degree">';
+                  box += '<img class="imgList" style="width: 200px" src="' + showing[i].result[j].content + '"/>';
+                  box += '</span><span class="time">' + showing[i].result[j].end + '</span></li>';
+                  box += '</ul>';
+                  if (j != result.length - 1)
+                    box += '<div class="line"></div>';
+                  n = 1;
+                } else {
+                  box += '<li><span class="degree">';
+
+                  box += '<img class="imgList" style="width: 200px" src="' + showing[i].result[j].content + '"/>';
+                  box += '</span><span class="time">' + showing[i].result[j].end + '</span></li>';
+                  n++;
+                }
+              }
+              box += '</div>';
+              $('#cont').append(box);
+            }
+            if (showing[i].type == 'matrix') {//
+              box += '<div class="productTitle"><span class="db font24">' + showing[i].name + '</span></div>';
+              for (var j = 0; j < showing[i].result.length; j += 5) {
+
+                if (n == 1) {
+                  box += '<ul class="clearfix stability">';
+                }
+                if (n == 5 || j == result.length - 1) {
+                  box += '<li class="last"><span class="degree">';
+
+                  box += '<table style="border: 1px solid #000">';
+                  for (var k = 0; k < showing[i].result[j].content.length; k++) {
+                    var row = showing[i].result[j].content[k];
+                    box += '<tr>';
+                    for (var l = 0; l < row.length; l++) {
+                      box += '<td style="border: 1px solid">' + row[l] + '</td>';
+                    }
+                    box += '</tr>';
+                  }
+                  box += '</table>';
+
+                  box += '</span><span class="time">' + showing[i].result[j].end + '</span></li>';
+                  box += '</ul>';
+                  if (j != result.length - 1)
+                    box += '<div class="line"></div>';
+                  n = 1;
+                } else {
+                  box += '<li><span class="degree">';
+
+                  box += '<table style="border: 1px solid #000">';
+                  for (var k = 0; k < showing[i].result[j].content.length; k++) {
+                    var row = showing[i].result[j].content[k];
+                    box += '<tr>';
+                    for (var l = 0; l < row.length; l++) {
+                      box += '<td style="border: 1px solid">' + row[l] + '</td>';
+                    }
+                    box += '</tr>';
+                  }
+                  box += '</table>';
+
+
+                  box += '</span><span class="time">' + showing[i].result[j].end + '</span></li>';
+                  n++;
+                }
+              }
+              box += '</div>';
+              $('#cont').append(box);
+            }
+          }
+        }
+      }
+    });
+  });
+
+</script>
+</body>
+
+</html>

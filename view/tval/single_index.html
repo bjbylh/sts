@@ -1,0 +1,1225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="space">
+    <meta name="keywords" content="space">
+    <title>{{data.name}}</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/home/css/reset.css">
+    <link rel="stylesheet" href="/static/home/css/global.css">
+    <link rel="stylesheet" href="/static/home/css/main.css">
+    <link id="bootstrap-style" href="/static/home/compontents/bootstrap-table/dist/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/home/compontents/bootstrap-table/dist/bootstrap-table.css" rel="stylesheet">
+    <link href="/static/home/compontents/bootstrap-table/dist/bootstrap-responsive.min.css" rel="stylesheet">
+
+    <link href="/static/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet">
+    <!--[if IE 8]>
+    <link rel="stylesheet" href="/static/home/css/font.css">
+    <![endif]-->
+    <style type="text/css" media="screen">
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        body {
+            min-width: 1200px;
+            background: #00294d url(/static/home/images/banner_1.png) no-repeat;
+            background-position: center 0;
+            font-family: "Microsoft Yahei", Arial, Verdana;
+        }
+
+        .bootstraptable table {
+            background: transparent !important;
+            color: #4598db !important;
+            border-bottom: hidden !important;
+        }
+
+        .bootstraptable table tr:hover th {
+            background: transparent !important;
+            color: #83cef3;
+        }
+
+        .bootstraptable table tr td {
+            background: transparent !important;
+            color: #4598db !important;
+            border-left: hidden !important;
+            border-right: hidden !important;
+            border-bottom: solid 1px #08487e !important;
+            height: 60px;
+        }
+
+        /*#table tr:first-of-type td:first-of-type {
+            width: 30px ;
+        }
+        #table tr td:last-of-type {
+            width: 100px;
+        }*/
+
+        .btn_t,
+        .btn_t:hover,
+        .btn_t:active,
+        .btn_t:visited {
+            display: block;
+            margin: -10px 0px !important;
+            width: 90px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            color: #fff;
+            font-size: 16px;
+            background: url(/static/home/images/btnBg_2.png) no-repeat;
+            outline: 0;
+        }
+
+        .bootstraptable table tr th {
+            background: transparent !important;
+            font-size: 18px;
+            color: #83cef3;
+            border-left: hidden !important;
+            border-right: hidden !important;
+            border-bottom: solid 1px #08487e !important;
+            height: 60px;
+        }
+
+        .content .divtable .bootstraptable {
+            padding-bottom: 0px !important;
+        }
+
+        .bootstrap-table div {
+            border: hidden !important;
+        }
+
+        .pull-left.pagination-detail {
+            display: none;
+        }
+
+        #idxtable {
+            border-bottom: solid 1px #08487e !important;
+        }
+
+        #dv {
+            margin-right: 0px !important;
+        }
+
+        .detail-view td {
+            padding: 0px !important;
+        }
+
+        .detail-icon li {
+            color: #ccedff !important;
+        }
+
+        .dataTables_length {
+            display: none;
+        }
+
+        .dataTables_filter {
+            display: none;
+        }
+
+        /*.bootstraptable table tr th {
+            visibility: hidden;
+            height: 0.1px !important;
+            border: hidden !important;
+        }*/
+        [class^="icon-"], [class*=" icon-"] {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin-top: 1px;
+            line-height: 14px;
+            vertical-align: text-top;
+            background-image: url(/static/home/compontents/bootstrap-table/dist/glyphicons-halflings-83cef3.png);
+            background-position: 14px 14px;
+            background-repeat: no-repeat;
+        }
+
+        .icon-plus {
+            background-position: -408px -96px;
+        }
+
+        .icon-minus {
+            background-position: -433px -96px;
+        }
+
+        .fixed-table-container thead th .th-inner .reportIcon {
+            background: url(/static/home/images/icon/reportIcon.png) no-repeat;
+            padding-left: 30px;
+        }
+
+        .fixed-table-container thead th .th-inner .clickIcon {
+            background: url(/static/home/images/icon/clickIcon.png) no-repeat;
+            padding-left: 30px;
+        }
+
+        a:hover, a:focus {
+            text-decoration: none !important;
+        }
+
+
+        #jieduan{
+        	width: 1100px;
+        	margin: 0px auto 0;
+        	overflow: hidden;
+        }
+        #jieduan>li{
+        	float: left;
+        	margin-right: 25px;
+        	margin-top: 20px;
+        }
+        .bottom{
+        	width: 200px;
+        	background: #43B5AD;
+        	color: white;
+        }
+        .bottom p{
+        	text-align: center;
+        	height: 30px;
+        	line-height: 30px;
+        	background: #69C4BD;
+        }
+        .bottom p:last-of-type{
+        	background: #3CA39B;
+        }
+        .bottom ul{
+        	margin: 0 15px;
+        }
+        .bottom ul li{
+        	border-bottom: 1px dashed white;
+        	margin: 5px 0;
+        }
+        .bottom li .leftt{
+        	display: inline-block;
+        	width: 50%;
+        	text-align: center;
+        }
+        .bottom ul li .rightt{
+        	display: inline-block;
+        	width: 50%;
+        	text-align: center;
+        }
+    </style>
+    <link href="/static/home/compontents/datatable/datatables.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/static/home/css/datatable.css">
+
+
+    <script src="/static/home/compontents/jquery.min.js" type="text/javascript"></script>
+    <script src="/static/home/compontents/highcharts/highcharts.js"></script>
+    <script src="/static/home/compontents/highcharts/modules/exporting.js"></script>
+    <script src="/static/home/compontents/highcharts/themes/dark-blue.js"></script>
+
+    <script src="/static/home/compontents/bootstrap-table/dist/bootstrap.min.js"></script>
+    <script src="/static/home/compontents/bootstrap-table/dist/bootstrap-table.js"></script>
+    <script src="/static/home/compontents/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
+    <script type="text/javascript" src="/static/home/compontents/datatable/datatables.min.js"></script>
+
+    <script type="text/javascript" src="/static/home/js/placeholderSupport.js"></script>
+    <script type="text/javascript" src="/static/home/js/mylogin.js"></script>
+
+
+</head>
+
+
+<body>
+<input type="hidden" id="userimg" value="{{userimgpath}}"/>
+<div class="header wrapper">
+    <img src="/static/home/images/logo.png" alt="" class="logo">
+    <ul class="nav">
+	    <li class="navItem">
+            <a href="#" target="_blank" class="leaderboard"></a>
+        </li>
+        <li class="navItem">
+            <a href="/tval/rank" target="_blank" class="analysis"></a>
+        </li>
+        <li class="navItem">
+            <a href="/tval/analysis/satCPx" target="_blank" class="displaywall"></a>
+        </li>
+        <li class="navItem last">
+            <a href="/tval/index/wall" target="_blank" class="indicatordisplay active"></a>
+        </li>
+    </ul>
+    <div class="user">
+        <img src="/static/userimages/foreground.png" class="usericon-wapper">
+        <img src="{{userimgpath}}" class="usericon">
+        <ul class="dropdownBox">
+            <li class="userInfo">
+                <span class="db font24">{{userInfo.name}}</span>
+                <span class="db font14">当前登录者</span>
+            </li>
+            <li class="dropdownList js_modify"><a class="color33">修改密码</a></li>
+            <li class="dropdownList"><a class="colorR" href="javascript:" onclick="logout()">退出</a></li>
+        </ul>
+    </div>
+</div>
+
+<input type="hidden" id="_satid" name="_satid" value="{{data._id}}"/>
+<input type="hidden" id="hcode" value="{{data.code}}"/>
+<div class="content wrapper">
+    <!--<img src="/static/home/images/title_displaywall.png" alt="" class="title">-->
+    <div class="spacecraftBox">
+        <div class="rangeTitle">
+            <span class="db font30">航天器详情</span>
+            <!-- <span class="db font12">Top 10 Spacecraft Rankings</span> -->
+        </div>
+        <div class="spacecraftWrapper">
+            <img src="{{data.imgpath}}" alt="" class="spacecraftImg fl">
+            <div class="fl spacecraftInfo">
+                <span class="name">{{data.name}}</span>
+                <span class="db mark">{{data.code_out}}&nbsp;&nbsp;&nbsp;&nbsp;{{data.stage}}</span>
+                <ul class="info">
+                    <li>测试开始时间：2016年10月10日</li>
+                    <li>所属领域：{{data.field}}</li>
+                    <li>应用目标：{{data.applyField}}</li>
+                    <li>抓总单位：{{data.factory}}</li>
+                    <li>卫星类型：{{data.size}}</li>
+                    <li>设计寿命/考核寿命：{{data.life}}/{{data.assessLife}}Y</li>
+                    <li style='width:100%' alt='{{data.orbit_remarks}}'>轨道信息：{% if data.orbit_remarks.length>42 %}{{data.orbit_remarks.substr(0,42)}}......{% else %}{{data.orbit_remarks}} {% endif %}</li>
+                </ul>
+            </div>
+        </div>
+        <ul class="infoClassify">
+            <li class="infoItem infoBg_1">
+
+                <!--div>
+                    <div class="fl paramBox">
+                        <input type="hidden" value="{{data.OXDIANTtotal}}" id="OXDIANTtotal"/>
+                        <input type="hidden" value="{{data.OXDIANTnow}}" id="OXDIANTnow"/>
+                        <input type="hidden" value="{{data.FUELnow}}" id="FUELnow"/>
+                        <input type="hidden" value="{{data.FUELtotal}}" id="FUELtotal"/>
+                        <input type="hidden" id="FUELpercent" value="{{data.FUELpercent}}"/>
+                        <span class="num" id="oper">{{data.FUELpercent}}</span>
+                        <span class="percent">percent</span>
+                        <span class="kg" id="okg">NaN kg / kg</span>
+                    </div>
+                    <div class="fl text"><span>燃料剩余</span></div>
+                </div>
+                <div style="text-align:right;margin-top:100px;color:#dff0ff">
+                    <span>{{data.powerstyle}}</span>
+                </div-->
+				
+				<div>
+                    <div class="fl paramBox">
+                        <input type="hidden" value="{{data.OXDIANTtotal}}" id="OXDIANTtotal"/>
+                        <input type="hidden" value="{{data.OXDIANTnow}}" id="OXDIANTnow"/>
+                        <input type="hidden" value="{{data.FUELnow}}" id="FUELnow"/>
+                        <input type="hidden" value="{{data.FUELtotal}}" id="FUELtotal"/>
+                        <input type="hidden" id="FUELpercent" value="{{data.FUELpercent}}"/>
+                        <span class="num" style="font-size:30px;line-height:1.5em;margin-left:30px">发射场</span>
+						<span class="num" style="font-size:30px;line-height:1.5em;margin-left:30px">技术区</span>
+                    </div>
+                    <div class="fl text"><span>当前阶段</span></div>
+                </div>
+                <div style="text-align:right;margin-top:100px;color:#dff0ff">
+                   
+                </div>
+
+            </li>
+            <li class="infoItem infoBg_2">
+                <div class="fl paramBox">
+                    <!--<span class="num" id="life-percent">0</span>-->
+                   <!-- <span class="percent">percent</span>-->
+                    <!--span class="num" style="line-height: 1.5;text-align: center;">{{data.powertime}}</span-->
+					<span class="num" style="line-height: 1.5;text-align: center;">1321.5</span>
+                    <input type="hidden" value="{{data.lifepercent}}" id="lifepercent"/>
+                    <input type="hidden" value="{{data.lifetotal}}" id="lifetotal"/>
+                    <!--<span class="kg" id="life">{{data.lifepercent}} Y / {{data.lifetotal}}Y</span>-->
+                </div>
+                <span class="fl text">加电时间</span>
+            </li>
+            <li class="infoItem infoBg_3 last">
+                <div class="fl paramBox">
+                    <ul>
+                        <li class="faultBox">
+                            <span class="faultTip">常驻故障</span>
+                            <span class="faultNum">{{faultcount}}</span>
+                        </li>
+                        <li class="faultBox">
+                            <span class="faultTip">灾难故障</span>
+                            <span class="faultNum">{{troubleres.zainan}}</span>
+                        </li>
+                        <li class="faultBox">
+                            <span class="faultTip">关键故障</span>
+                            <span class="faultNum">{{troubleres.guanjian}}</span>
+                        </li>
+                        <li class="faultBox">
+                            <span class="faultTip">非主要故障</span>
+                            <span class="faultNum">{{troubleres.feizhuyao}}</span>
+                        </li>
+                        <li class="faultBox">
+                            <span class="faultTip">轻度故障</span>
+                            <span class="faultNum">{{troubleres.qingdu}}</span>
+                        </li>
+                    </ul>
+                </div>
+                <span class="fl text">故障统计</span>
+            </li>
+        </ul>
+
+    </div>
+
+
+    {% if (troubleres.qingdu!=0 or troubleres.feizhuyao!=0 or troubleres.guanjian!=0 or troubleres.zainan!=0 ) %}
+    <div class="chartAnalysisBox">
+        <div class="chartTitle">
+            <span class="db font24">在轨故障发生情况分析</span>
+        </div>
+        <div class="analysisWrapper" id="boxcurve" style="height:300px;">
+        </div>
+        <div class="chartTitle">
+            <span class="db font24">在轨故障分布情况分析</span>
+        </div>
+        <div class="analysisWrapper" id="boxcurve-2" style="height:300px;">
+        </div>
+    </div>
+
+
+
+    <script>
+      $.ajax({
+        async: false,
+        cache: false,
+        type: 'POST',
+        data: {
+          "_id": $("#_satid").val()
+        },
+        url: 'getsingletroubletime',
+        success: function (data) {
+          if (data.success) {
+            var thissat = data.data.data;
+            var satname = data.data.name;
+            var chart3 = new Highcharts.Chart('boxcurve', {
+              chart: {
+                type: 'line',
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderColor: "",
+                borderWidth: 0,//ie下无边框
+                plotBorderColor: "",
+                plotBorderWidth: 0,//ie下无边框
+                //plotBorderColor:"#02afe3",
+                plotBackgroundColor: 'rgba(0,0,0,0.1)',
+              },
+              exporting: {enabled: false},
+              title: {
+                text: ''
+              },
+              credits: {
+                enabled: false
+              },
+              xAxis: {
+                title: {
+                  text: '按设计寿命规一化时间',
+                  style: {
+                    color: '#4598db',//颜色
+                  }
+                },
+                labels: {
+                  style: {
+                    color: '#4598db',//颜色
+                  }
+                },
+                gridLineColor: "#02afe3",
+                lineColor: "#02afe3",
+                tickColor: '#02afe3'
+              },
+              yAxis: {
+                title: {
+                  text: '问题个数',
+                  style: {
+                    color: '#4598db'
+                  }
+                },
+                labels: {
+                  style: {
+                    color: '#4598db',//颜色
+                  }
+                },
+                gridLineColor: "#02afe3",
+                lineColor: "#02afe3",
+                tickColor: '#02afe3',
+                minorGridLineColor: '#02afe3',
+              },
+              tooltip: {
+                valueSuffix: '个'
+              },
+              series: [{
+                name: '<a style="color:#4598db">' + satname + '</a>',
+                data: thissat
+              }]
+            });
+          }
+        }
+      });
+
+      $.ajax({
+        async: false,
+        cache: false,
+        type: 'POST',
+        data: {
+          "_id": $("#_satid").val()
+        },
+        url: 'getsingletroubledist',
+        success: function (data) {
+          if (data.success) {
+            var categories = data.data.categories;
+            var zainan = data.data.zainan;
+            var guanjian = data.data.guanjian;
+            var qingdu = data.data.qingdu;
+            var feizhuyao = data.data.feizhuyao;
+            var chart2 = new Highcharts.Chart('boxcurve-2', {
+              chart: {
+                type: 'column',
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderColor: "",
+                borderWidth: 0,//ie下无边框
+                plotBorderColor: "",
+                plotBorderWidth: 0,//ie下无边框
+                //plotBorderColor:"#02afe3",
+                plotBackgroundColor: 'rgba(0,0,0,0.1)',
+              },
+              exporting: {enabled: false},
+              credits: {
+                enabled: false
+              },
+              title: {
+                text: ''
+              },
+              xAxis: {
+                categories: categories,
+                labels: {
+                  style: {
+                    color: '#4598db',//颜色
+                  }
+                },
+                gridLineColor: "#02afe3",
+                lineColor: "#02afe3",
+                tickColor: '#02afe3'
+              },
+              yAxis: {
+                min: 0,
+                title: {
+                  text: '问题个数',
+                  style: {
+                    color: '#4598db'
+                  }
+                },
+                labels: {
+                  style: {
+                    color: '#4598db',//颜色
+                  }
+                },
+                gridLineColor: "#02afe3",
+                lineColor: "#02afe3",
+                tickColor: '#02afe3',
+                minorGridLineColor: '#02afe3'
+              },
+              tooltip: {
+                pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+                shared: true
+              },
+              plotOptions: {
+                column: {
+                  stacking: 'normal'
+                }
+              },
+              series: [{
+                name: '<a style="color:#4598db">灾难</a>',
+                data: zainan
+              }, {
+                name: '<a style="color:#4598db">关键</a>',
+                data: guanjian
+              }, {
+                name: '<a style="color:#4598db">非主要</a>',
+                data: feizhuyao
+              }, {
+                name: '<a style="color:#4598db">轻度</a>',
+                data: qingdu
+              }]
+            });
+
+          }
+        }
+      });
+    </script>
+    {% endif %}
+
+    {% if stagecount!=0 %}
+    <div class="searchRangeBox">
+        <div class="rangeTitle">
+            <span class="db font24">测试阶段</span>
+        </div>
+        <div class="clearfix faultSerachBox" style="margin-top: 0;">
+            <ul id="jieduan">
+            </ul>
+        </div>
+    </div>
+
+
+
+    <script>
+        $.ajax({
+            type:"post",
+            url:"/tval/single/getstage",
+            data:{
+                '_satid':$("#_satid").val()
+            },
+            success:function(data){
+                var data=data.data;
+                var wanarr=[];
+                var jinarr=[];
+                var weiarr=[];
+
+                for(var i=0;i<data.length;i++){
+                    data[i].reastartshu = parseInt((data[i].reastart).split('-').join(''));         //排序时间
+                    data[i].expstartshu = parseInt((data[i].expstart).split('-').join(''));         //排序时间
+                    if(data[i].state == "已完成"){
+                        wanarr.push(data[i]);
+                    }
+                    if(data[i].state == "进行中"){
+                        jinarr.push(data[i]);
+                    }
+                    if(data[i].state == "未开始"){
+                        weiarr.push(data[i]);
+                    }
+                }
+
+                wanarr = wanarr.sort(function(a, b) {
+                    if(a.reastartshu<b.reastartshu){
+                        return -1;          //若return -1 在哪个下边，就是那种排序
+                    }else if(a.reastartshu>b.reastartshu){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                })
+                jinarr = jinarr.sort(function(a,b){
+                    if(a.reastartshu < b.reastartshu){
+                        return -1;
+                    }else if(a.reastartshu > b.reastartshu){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                })
+                weiarr = weiarr.sort(function(a,b){
+                    if(a.expstartshu < b.expstartshu){
+                        return -1;
+                    }else if(a.expstartshu > b.expstartshu){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                })
+
+
+                var array=[];
+                for(var i=0;i<wanarr.length;i++){
+                    array.push(wanarr[i]);
+                }
+                for(var i=0;i<jinarr.length;i++){
+                    array.push(jinarr[i]);
+                }
+                for(var i=0;i<weiarr.length;i++){
+                    array.push(weiarr[i]);
+                }
+
+                for(var i=0;i<array.length;i++){
+                    if((i+1)%5 == 0){				//每排最后一个margin-right=0
+                        if(array[i].state=="已完成"){
+                            $("#jieduan").append('<li style="position:relative;margin-right: 0;">'+
+                                '<div style="z-index:999;position:absolute;top:25%;left:33%">'+
+                                '<i class="fa fa-flag fa-5x" style="color:red;opacity: 0.3"></i>'+
+                                '</div>'+
+                                '<div class="bottom" style="background:#044983" >'+
+                                '<p style="background:#006B94">'+array[i].name+'</p>'+
+                                '<ul>'+
+                                '<li><span class="leftt">完成项目</span><span class="rightt">'+array[i].pronum+'</span></li>'+
+                                '<li><span class="leftt">发现问题</span><span class="rightt">30</span></li>'+
+                                '<li><span class="leftt">加电时间</span><span class="rightt">'+array[i].powertime+'</span></li>'+
+                                '</ul>'+
+                                '<p style="background:#006B94">'+array[i].reastart+'~'+array[i].reaend+'</p>'+
+                                '</div>'+
+                                '</li>');
+                        }else if(array[i].state=="进行中"){
+                            $("#jieduan").append('<li style="position:relative;margin-right: 0;">'+
+                                '<div style="z-index:999;position:absolute;top:25%;left:33%">'+
+                                '<i class="fa fa-flag-o fa-5x" style="color:red;opacity: 0.3"></i>'+
+                                '</div>'+
+                                '<div class="bottom" style="background:#044983" >'+
+                                '<p style="background:#006B94">'+array[i].name+'</p>'+
+                                '<ul>'+
+                                '<li><span class="leftt">完成项目</span><span class="rightt">'+array[i].pronum+'</span></li>'+
+                                '<li><span class="leftt">发现问题</span><span class="rightt">30</span></li>'+
+                                '<li><span class="leftt">加电时间</span><span class="rightt">'+array[i].powertime+'</span></li>'+
+                                '</ul>'+
+                                //'<p>'+data[i].reastart+'~'+data[i].reaend+'</p>'+
+                                '<p style="background:#006B94">'+array[i].reastart+'~</p>'+
+                                '</div>'+
+                                '</li>');
+                        }else{
+                            $("#jieduan").append('<li style="position:relative;margin-right: 0;">'+
+                                '<div class="bottom" style="background:#044983">'+
+                                '<p style="background:#006B94">'+array[i].name+'</p>'+
+                                '<ul>'+
+                                '<li><span class="leftt">完成项目</span><span class="rightt">'+array[i].pronum+'</span></li>'+
+                                '<li><span class="leftt">预计开始</span><span class="rightt">'+array[i].expstart+'</span></li>'+
+                                '<li><span class="leftt">加电时间</span><span class="rightt">'+array[i].powertime+'</span></li>'+
+                                '</ul>'+
+                                //'<p>'+data[i].reastart+'~'+data[i].reaend+'</p>'+
+                                '<p style="background:#006B94">未开始</p>'+
+                                '</div>'+
+                                '</li>');
+                        }
+                    }else{
+                        if(array[i].state=="已完成"){
+                            $("#jieduan").append('<li style="position:relative">'+
+                                '<div style="z-index:999;position:absolute;top:25%;left:33%">'+
+                                '<i class="fa fa-flag fa-5x" style="color:red;opacity: 0.3"></i>'+
+                                '</div>'+
+                                '<div class="bottom" style="background:#044983" >'+
+                                '<p style="background:#006B94">'+array[i].name+'</p>'+
+                                '<ul>'+
+                                '<li><span class="leftt">完成项目</span><span class="rightt">'+array[i].pronum+'</span></li>'+
+                                '<li><span class="leftt">发现问题</span><span class="rightt">30</span></li>'+
+                                '<li><span class="leftt">加电时间</span><span class="rightt">'+array[i].powertime+'</span></li>'+
+                                '</ul>'+
+                                '<p style="background:#006B94">'+array[i].reastart+'~'+array[i].reaend+'</p>'+
+                                '</div>'+
+                                '</li>');
+                        }else if(array[i].state=="进行中"){
+                            $("#jieduan").append('<li style="position:relative">'+
+                                '<div style="z-index:999;position:absolute;top:25%;left:33%">'+
+                                '<i class="fa fa-flag-o fa-5x" style="color:red;opacity: 0.3"></i>'+
+                                '</div>'+
+                                '<div class="bottom" style="background:#044983">'+
+                                '<p style="background:#006B94">'+array[i].name+'</p>'+
+                                '<ul>'+
+                                '<li><span class="leftt">完成项目</span><span class="rightt">'+array[i].pronum+'</span></li>'+
+                                '<li><span class="leftt">发现问题</span><span class="rightt">30</span></li>'+
+                                '<li><span class="leftt">加电时间</span><span class="rightt">'+array[i].powertime+'</span></li>'+
+                                '</ul>'+
+                                //'<p>'+data[i].reastart+'~'+data[i].reaend+'</p>'+
+                                '<p style="background:#006B94">'+array[i].reastart+'~</p>'+
+                                '</div>'+
+                                '</li>');
+                        }else{
+                            $("#jieduan").append('<li>'+
+                                '<div class="bottom" style="background:#044983">'+
+                                '<p style="background:#006B94">'+array[i].name+'</p>'+
+                                '<ul>'+
+                                '<li><span class="leftt">完成项目</span><span class="rightt">'+array[i].pronum+'</span></li>'+
+                                '<li><span class="leftt">预计开始</span><span class="rightt">'+array[i].expstart+'</span></li>'+
+                                '<li><span class="leftt">加电时间</span><span class="rightt">'+array[i].powertime+'</span></li>'+
+                                '</ul>'+
+                                //'<p>'+data[i].reastart+'~'+data[i].reaend+'</p>'+
+                                '<p style="background:#006B94">未开始</p>'+
+                                '</div>'+
+                                '</li>');
+                        }
+                    }
+
+                }
+
+            }
+        });
+    </script>
+    {% endif %}
+
+
+    {% if faultcount!=0 %}
+
+    <!-- <span class="db font12">Top 10 Spacecraft Rankings</span> -->
+    <!--<div class="searchRangeBox">
+        <div class="rangeTitle">
+            <span class="db font24">常驻故障</span>
+
+        </div>
+        <div class="clearfix faultSerachBox">
+            <div class="fl serachWrapper">
+                <input class="inputBox" id="searchInput-example-fault" placeholder="请输入故障内容"/>
+            </div>
+            <span class="fl db">
+	                    <a href="javascript:void(0)" onclick="searchBtnClick('example-fault')" class="searchBtn">搜索</a>
+	                </span>
+        </div>
+        <div class="divtable three">
+            <table id="example-fault" cellspacing="0" width="100%">
+                <thead>
+                <tr style="width: 100%">
+                    <th class="faultNameIcon wrapper-1">故障名称</th>
+                    <th class="faultDateIcon wrapper-2">故障日期</th>
+                    <th class="markIcon wrapper-3">操作</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>-->
+
+    <script>
+
+      $('#example-fault').DataTable({
+        "ajax": "/manager/fault/fault/getfault?_satid=" + $('#_satid').val(),
+        //"ajax":"/home/fault/getfault?_satid=" + $('#_satid').val(),
+        columns: [{
+          "data": "name"
+        },
+          {
+            "data": "occurTime"
+          }
+        ],
+        "columnDefs": [{
+          "render": function (data, type, row) {
+            return '<a id="aedit" target="_blank" class="lookBtn">' + '查看' + '</a>';
+          },
+          "targets": 2
+        }],
+        "language": {
+          //"url": "mycontrol/DataTables-1.10.16/plugins/i18n/Chinese.lang"
+          "decimal": "",
+          "emptyTable": "表中数据为空",
+          "info": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+          "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
+          "infoFiltered": "(由 _MAX_ 项结果过滤)",
+          "infoPostFix": "",
+          "thousands": ",",
+          "lengthMenu": "显示 _MENU_ 项结果",
+          "loadingRecords": "载入中...",
+          "processing": "处理中...",
+          "search": "搜索:",
+          "zeroRecords": "没有匹配结果",
+          "paginate": {
+            "first": "首页",
+            "last": "末页",
+            "next": "＞",
+            "previous": "＜"
+          },
+          "aria": {
+            "sortAscending": ": 以升序排列此列",
+            "sortDescending": ": 以降序排列此列"
+          }
+        }
+      });
+      $('#example-fault tbody').on('click', 'a#aedit', function () {
+        var data = $('#example-fault').DataTable().row($(this).parents('tr')).data();
+        var hrefv = '/tval/single/fault?_id=' + data._id + '&_satid=' + $("#_satid").val();
+        //var hrefv = '/home/fault/edit?_id=' + data._id + '&_satid=' + $("#_satid").val();
+        window.open(hrefv);
+      });
+
+    </script>
+    {% endif %}
+
+    {% if (troubleres.qingdu!=0 or troubleres.feizhuyao!=0 or troubleres.guanjian!=0 or troubleres.zainan!=0 ) %}
+    <div class="searchRangeBox">
+        <div class="rangeTitle">
+            <span class="db font24">一般故障</span>
+        </div>
+
+        <div class="clearfix faultSerachBox">
+            <div class="fl serachWrapper">
+                <input class="inputBox" id="searchInput-example-2" placeholder="请输入故障内容"/>
+            </div>
+            <span class="fl db">
+                    <a href="javascript:void(0)" onclick="searchBtnClick('example-2')" class="searchBtn">搜索</a>
+                </span>
+        </div>
+        <div class="divtable four">
+            <table id="example-2" cellspacing="0" width="100%">
+                <thead>
+                <tr style="width: 100%">
+                    <th class="faultNameIcon wrapper-1">故障名称</th>
+                    <th class="faultDateIcon wrapper-2">故障日期</th>
+                    <th class="faultDateIcon wrapper-3">严重程度</th>
+                    <th class="markIcon wrapper-4">操作</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <script>
+      $('#example-2').DataTable({
+        "ajax": "/tval/trouble/gettrouble?_satid=" + $('#_satid').val(),
+        columns: [{
+          "data": "name"
+        },
+          {
+            "data": "occurTime"
+          },
+          {
+            "data": "grade"
+          }
+        ],
+        "columnDefs": [{
+          "render": function (data, type, row) {
+            return '<a id="aedit" target="_blank" class="lookBtn">' + '查看' + '</a>';
+          },
+          "targets": 3
+        }],
+        "language": {
+          //"url": "mycontrol/DataTables-1.10.16/plugins/i18n/Chinese.lang"
+          "decimal": "",
+          "emptyTable": "表中数据为空",
+          "info": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+          "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
+          "infoFiltered": "(由 _MAX_ 项结果过滤)",
+          "infoPostFix": "",
+          "thousands": ",",
+          "lengthMenu": "显示 _MENU_ 项结果",
+          "loadingRecords": "载入中...",
+          "processing": "处理中...",
+          "search": "搜索:",
+          "zeroRecords": "没有匹配结果",
+          "paginate": {
+            "first": "首页",
+            "last": "末页",
+            "next": "＞",
+            "previous": "＜"
+          },
+          "aria": {
+            "sortAscending": ": 以升序排列此列",
+            "sortDescending": ": 以降序排列此列"
+          }
+        }
+      });
+      $('#example-2 tbody').on('click', 'a#aedit', function () {
+        var data = $('#example-2').DataTable().row($(this).parents('tr')).data();
+        var hrefv = '/tval/trouble/edit?_id=' + data._id + '&_satid=' + $("#_satid").val();
+        window.open(hrefv);
+      });
+    </script>
+    {% endif %}
+
+    {% if reportcount!=0 %}
+    <div class="searchRangeBox">
+        <div class="rangeTitle">
+            <span class="db font24">测试报告</span>
+        </div>
+        <div class="clearfix faultSerachBox">
+            <div class="fl serachWrapper">
+                <input id="searchInput-example" class="inputBox" placeholder="请输入报告名称"/>
+            </div>
+            <span class="fl db">
+                    <a class="searchBtn" onclick="searchBtnClick('example')">搜索</a>
+                </span>
+        </div>
+        <div class="divtable four">
+            <table id="example" cellspacing="0" width="100%">
+                <thead>
+                <tr style="width: 100%">
+                    <th class="reportIcon wrapper-1">报告名称</th>
+                    <th class="faultDateIcon wrapper-2">报告日期</th>
+                    <th class="authorIcon wrapper-3">作者</th>
+                    <th class="markIcon wrapper-4">操作</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <script>
+      $('#example').DataTable({
+        "ajax": "singleReport?code=" + $('#hcode').val(),
+        columns: [{
+          "data": "name"//satname
+        },
+          {
+            "data": "lastEditTime"//lastEditTime
+          },
+          {
+            "data": "author"//author
+          }
+        ],
+        "columnDefs": [{
+          "render": function (data, type, row) {
+            /*var retstr = '<a id="linktoreport" class="lookBtn" style="display: inline-block" >查看</a>&nbsp;&nbsp;';
+            retstr+='<a id="downreport" class="lookBtn" style="display: inline-block" >下载</a>';*/
+            var retstr = '<a id="linktoreport" class="lookBtn" style="display: inline-block" >查看</a>';
+            return retstr;
+          },
+          "targets": 3
+        }],
+        "language": {
+          //"url": "mycontrol/DataTables-1.10.16/plugins/i18n/Chinese.lang"
+          "decimal": "",
+          "emptyTable": "表中数据为空",
+          "info": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+          "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
+          "infoFiltered": "(由 _MAX_ 项结果过滤)",
+          "infoPostFix": "",
+          "thousands": ",",
+          "lengthMenu": "显示 _MENU_ 项结果",
+          "loadingRecords": "载入中...",
+          "processing": "处理中...",
+          "search": "搜索:",
+          "zeroRecords": "没有匹配结果",
+          "paginate": {
+            "first": "首页",
+            "last": "末页",
+            "next": "＞",
+            "previous": "＜"
+          },
+          "aria": {
+            "sortAscending": ": 以升序排列此列",
+            "sortDescending": ": 以降序排列此列"
+          }
+        }
+      });
+      $('#example tbody').on('click', 'a#linktoreport', function () {
+        var data = $('#example').DataTable().row($(this).parents('tr')).data();
+        /*var hrefv = "/home/report/editor?_id=" + data._id + '&_groupid=' + data._groupid;
+        if (document.all) {
+          hrefv = "/home/report/editorforIE8?_id=" + data._id + '&_groupid=' + data._groupid;
+        }
+        if ('satellite' == data.reportType) {
+          hrefv = "/home/report/sateditor?_id=" + data._id + '&_satid=' + $('#_satid').val();
+          if (document.all) {
+            hrefv = "/home/report/sateditorforIE8?_id=" + data._id + '&_satid=' + $('#_satid').val();
+          }
+        }*/
+       var hrefv = "/tval/report/sateditor?_id=" + data._id + '&_satid=' + $('#_satid').val();
+        window.open(hrefv);
+      });
+
+    </script>
+    {% endif %}
+
+
+	<!--div class="clearfix faultSerachBox">
+            <div class="fl serachWrapper">
+                <input class="inputBox" placeholder="请输入故障内容"/>
+            </div>
+            <span class="fl db">
+                    <a href="" class="searchBtn">搜索</a>
+                </span>
+        </div-->
+        <!--<div class="rangeTips two">
+            <span class="reportIcon wrapper-1">主系统名称 / 分系统名称</span>
+            <span class="clickIcon wrapper-2">操作6</span>
+        </div>-->
+    <!--<div class="searchRangeBox lastBox">
+        <div class="rangeTitle">
+            <span class="db font24">型号产品树</span>
+        </div>
+
+        <div class="divtable five bootstraptable" style="margin-top: -30px">
+            <table id="idxtable" cellspacing="0" width="100%" class="outer-table">
+            </table>
+        </div>
+    </div>-->
+</div>
+
+<div class="pop_bg"></div>
+<div class="modify-password-box">
+    <form class="modify-form" id="changpwd">
+        <span class="form-title">修改密码</span>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请输入新密码" id="new_p" name="new_p"
+                   value="">
+        </div>
+        <div class="form-group">
+            <input class="form-input" type="password" autocomplete="off" placeholder="请再次确认新密码" id="new_p2"
+                   name="new_p2" value="">
+        </div>
+        <div class="form-actions">
+            <a href="javascript:;" class="form-btn" onclick="chpassword()">确认修改</a>
+        </div>
+    </form>
+</div>
+
+<div class="footer">
+    © CASC 2018
+</div>
+
+<script>
+  function searchBtnClick(tid) {
+    var v = $('#searchInput-' + tid).val();
+    $('#' + tid + '_filter label input').val(v);
+    $('#' + tid + '_filter label input').keyup();
+    return false;
+  }
+
+  $(document).ready(function () {
+    var life = ($('#lifepercent').val() * $('#lifetotal').val() / 100).toFixed(4);
+    $('#life').html(life + ' Y / ' + $('#lifetotal').val() + ' Y');
+    //var lifepercent = $('#lifepercent').val() > 100 ? 100 : $('#lifepercent').val();
+    var lifepercent = $('#lifepercent').val();
+    $('#life-percent').html(lifepercent.substr(0, 6));
+
+    var ot_ = $('#OXDIANTtotal').val();
+    var on_ = $('#OXDIANTnow').val();
+    var fn_ = $('#FUELnow').val();
+    var ft_ = $('#FUELtotal').val();
+    var fper = $('#FUELpercent').val();
+    var htm = "";
+    if (ot_) {
+      var otn = Math.round(on_ / ot_ * 100);
+      var ftn = Math.round(fn_ / ft_ * 100);
+      htm = ot_ + ' / ' + on_ + ' Kg <br/>' + fn_ + ' / ' + ft_ + 'Kg';
+      var pre_ = otn < ftn ? otn : ftn;
+      $('#okg').html(htm);
+      $('#oper').html(pre_);
+    } else { //floor ceil
+      var ftt = Math.ceil(fper * ft_ / 100);
+      htm = ftt + ' Kg/ ' + ft_ + 'Kg';
+      $('#okg').html(htm);
+      $('#oper').html(Math.floor(fper));
+    }
+
+
+    var cols = [
+      {
+        field: 'name',
+        title: '<span class="reportIcon">型号名称</span>',
+        valign: 'middle'
+      }, {
+        title: '<span class="clickIcon">操作</span>',
+        width: '100px',
+        align: 'center',
+        valign: 'middle',
+        formatter: function (value, row, index) {
+          return '<a class="btn_t" target="_blank" href="/tval/single/satshow?_satcode=' + row.code + '">查看指标</a>';
+        }
+      }];
+    $('#idxtable').bootstrapTable({
+      toolbar: "#toolbar",
+      locale: 'zh-CN',
+      detailView: true,
+      sidePagination: "server", //服务端处理分页
+      striped: true,
+      undefinedText: "",
+      singleSelect: false,
+      uniqueId: "uniqueid", //每一行的唯一标识，一般为主键列
+      showColumns: false, //不显示下拉框（选择显示的列）
+      undefinedText: '',
+//					icons:{//修改图标样式
+//						paginationSwitchDown: 'glyphicon-collapse-down icon-chevron-down',
+//						paginationSwitchUp: 'glyphicon-collapse-up icon-chevron-up',
+//						refresh: 'glyphicon-refresh icon-refresh',
+//						toggle: 'glyphicon-list-alt icon-list-alt',
+//						columns: 'glyphicon-th icon-th',
+//						detailOpen: 'glyphicon-refresh icon-refresh',
+//						detailClose: 'glyphicon-th icon-th',
+//					},
+      //					showHeader: false,
+      columns: cols,
+      url: 'satitem',
+      queryParams: function (params) {
+        return {
+          pageNumber: params.pageNumber,
+          pageSize: params.pageSize,
+          _id: $('#_satid').val(),
+          sortOrder: params.order
+        }
+      },
+      type: "get",
+      onLoadSuccess: function () { //加载成功时执行
+        $('#table').bootstrapTable('expandRow', 0);
+      },
+      onExpandRow: function (index, row, $detail) {
+        InitSubTable(index, row, $detail);
+      }
+    });
+
+    function InitSubTable(index, prow, $detail) {
+      var subCols = [{
+        field: 'name',
+        title: '<span class="reportIcon">分系统名称</span>',
+        valign: 'middle',
+        sortable: false
+      }, {
+        title: '<span class="clickIcon">操作</span>',
+        width: '100px',
+        align: 'center',
+        valign: 'middle',
+        formatter: function (value, row2, index) {
+          return '<a class="btn_t" target="_blank" href="/home/single/subsysshow?_satid=' + $('#_satid').val() + '&_id=' + row2._id + '">查看指标</a>';
+        }
+      }];
+      var cur_table = $detail.html('<div id="dv" class="box-content divtable five bootstraptable"><table id="detail" data-reorderable-columns="true"  style="padding-right: 0px;"></table></div>').find('table');
+      $.ajax({
+        url: '/manager/pcdtree/subsys/getSubsys',
+        data: {
+          '_satid': prow._id
+        },
+        type: 'get',
+        success: function (data) {
+          $(cur_table).bootstrapTable({
+            locale: 'zh-CN',
+            dataType: "json",
+            detailView: true,
+            sidePagination: "client", //客户端处理分页
+            striped: true,
+            undefinedText: "",
+            singleSelect: false,
+            //								showHeader: false,
+            cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            uniqueId: "_id", //每一行的唯一标识，一般为主键列
+            showColumns: false, //不显示下拉框（选择显示的列）
+            columns: subCols,
+            data: data.data,
+            onLoadSuccess: function () { //加载成功时执行
+            },
+            onExpandRow: function (index, row, $detai) {
+              InitDeviceTable(index, row, $detai, prow);
+            }
+          });
+        }
+      });
+
+    }
+
+    var InitDeviceTable = function (index, row, $detai, prow) {
+      var deviceCols = [{
+        field: 'name',
+        title: '<span class="reportIcon">单机名称</span>',
+        valign: 'middle',
+        sortable: false
+      }, {
+        title: '<span class="clickIcon">操作</span>',
+        width: '100px',
+        align: 'center',
+        valign: 'middle',
+        formatter: function (value, row2, index) {
+          return '<a class="btn_t" target="_blank" href="/home/single/deviceshow?_satid=' + $('#_satid').val() + '&_id=' + row2._id + '">查看指标</a>';
+        }
+      }];
+      var cur_table = $detai.html('<div id="dv"class="box-content divtable five bootstraptable"><table id="device_detail" data-reorderable-columns="true"  style="padding-right: 0px;"></table></div>').find('table');
+      $.ajax({
+        url: '/manager/pcdtree/device/listDevice',
+        data: {
+          '_satid': prow._id, //59dda10d2e0ee14d64023679
+          '_subsysid': row._id
+        },
+        type: 'get',
+        success: function (data) {
+          $(cur_table).bootstrapTable({
+            locale: 'zh-CN',
+            dataType: "json",
+            sidePagination: "client", //客户端处理分页
+            striped: true,
+            undefinedText: "",
+            singleSelect: false,
+            //								showHeader: false,
+            cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            uniqueId: "_id", //每一行的唯一标识，一般为主键列
+            showColumns: false, //不显示下拉框（选择显示的列）
+            columns: deviceCols,
+            data: data,
+            onLoadSuccess: function () { //加载成功时执行
+            }
+          });
+        }
+      });
+    }
+
+  });
+</script>
+</body>
+
+</html>

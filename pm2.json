@@ -1,0 +1,15 @@
+{
+  "apps": [{
+    "name": "sts",
+    "script": "production.js",
+    "cwd": "/home/sts",
+    "exec_mode": "fork",
+    "max_memory_restart": "2G",
+    "autorestart": true,
+    "node_args": [],
+    "args": [],
+    "env": {
+      
+    }
+  }]
+}

@@ -1,0 +1,351 @@
+{% include "/home/sts/view/log/top.html" %}
+<link type="text/css" rel="stylesheet" href="/static/log/jeDate/css/jeDate-test.css">
+<link type="text/css" rel="stylesheet" href="/static/log/jeDate/css/jedate.css">
+<script type="text/javascript" src="/static/log/jeDate/js/jedate.js"></script>
+<script type="text/javascript" src="/static/log/jeDate/js/gaoliang.js"></script>
+<style>
+    .clearfix:after{content:"";height:0;line-height:0;display:block;visibility:hidden;clear:both;}
+    .clearfix{zoom:1;}
+    .field_contener_left{float: left;width:14%;background:#F5F5F5;}
+    .field_contener_left p{line-height:1.8;margin:8px;}
+    .field_contener_left ul{padding:0;}
+    .field_contener_left ul li{list-style:none;height:32px;line-height:32px;box-sizing:border-box;padding:5px 2%;}
+    .left_field_button{display:inline-block;font-size:12px;height:22px;line-height:22px;border:none;border-radius:5px;padding:0 2.4%;}
+    .add_field{background-color:#0079a5;color:#ffffff;}
+    .remove_field{background-color:rgba(255, 255, 255, 0.5);color:#A30000;border:1px solid #A30000;}
+    .font_icon{display:inline-block;width:12px;text-align:center;color:#666666;font-size:12px;margin-right:5px;}
+    .font_icon strong{font-weight:700;}
+    .font_title{display:inline-block;font-size:12px;color:#2D2D2D;width:55%;text-overflow: ellipsis;overflow:hidden;vertical-align:top;}
+    .field_contener_right{float: left;width:86%;}
+    .field_contener_righttop{padding:42px 16px 10px 16px;}
+    .field_contener_rightbottom{padding:20px 10px ;width:100%;overflow:auto;}
+    #fieldtable{border-bottom:2px solid #dad5e4;border-top:2px solid #dad5e4;border-collapse:collapse;min-width:100%;}
+    #fieldtable tr td{border-bottom:1px solid #dad5e4;padding:8px 16px;min-width:100px;}
+    .td_source label,span{margin-right:8px;}
+</style>
+<div class="field_contener clearfix">
+    <div class="field_contener_left">
+        <p>已选字段</p>
+        <ul class="have_field">
+            <li class="dd">
+                <span class="font_icon"><strong>?</strong></span>
+                <span class="font_title">_source</span>
+                <button class="remove_field left_field_button" style="display:none;">删除</button>
+            </li>
+        </ul>
+        <p>未选字段</p>
+        <ul class="nohave_field">
+            <li>
+                <span class="font_icon"><strong>#</strong></span>
+                <span class="font_title" title="_score"> _score</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>#</strong></span>
+                <span class="font_title"> offset</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> source</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> @timestamp</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>?</strong></span>
+                <span class="font_title"> @version</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> _id</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> _index</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> _type</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> beat.hostname</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> beat.name</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> beat.version</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> host.name</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> input.type</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> message</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> prospector.type</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+            <li>
+                <span class="font_icon"><strong>t</strong></span>
+                <span class="font_title"> type</span>
+                <button class="add_field left_field_button" style="display:none;">添加</button>
+            </li>
+        </ul>
+    </div>
+    <div class="field_contener_right">
+        <form class="field_contener_righttop">
+            <div class="form-body">
+                <div class="form-group" style="display:inline-block;width:20%;">
+                    <label class="control-label col-xs-2" style="line-height:34px;width:27%;">索引</label>
+                    <select id="eindex" class="form-control input-medium" style="display:inline-block;width:68%;margin-right:8px;">
+                    </select>
+                </div>
+                <div class="form-group" style="display:inline-block;width:20%;">
+                    <label class="control-label col-xs-2" style="line-height:34px;width:27%;">类型</label>
+                    <select class="form-control input-medium" style="display:inline-block;width:68%;margin-right:8px;" id="type">
+                        <option></option>
+						<option>vela-gdi</option>
+                        <option>sts3000</option>
+                        <option>tsn-gdi</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:inline-block;width:20%;">
+                    <label class="control-label col-xs-2" style="line-height:34px;width:27%;">等级</label>
+                    <select class="form-control input-medium" style="display:inline-block;width:68%;margin-right:8px;"id="level">
+                        <option></option>
+						<option>debug</option>
+                        <option>info</option>
+                        <option>warn</option>
+                        <option>error</option>
+                        <option>fatal</option>
+                    </select>
+                </div>
+                <div class="form-group" id="timeroup" style="display:inline-block;height:34px;vertical-align:bottom;line-height:34px;width:34%;">
+                    <label class="control-label col-xs-2">时间</label>
+                    <div class="col-xs-10" style="width:20%;">
+                        <div class="jeitem">
+                            <div class="jeinpbox" style="width: 290px;">
+                                <input type="text" class="jeinput" id="testgray3" placeholder="" name="testgray3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input name="msg" id="msg" style="width:90%;height:32px;line-height:32px;vertical-align:middle;border-color:#dab10d;border: 1px solid #dab10d;border-radius: 4px;margin-top: 20px;" />
+                <button type="button" class="btn btn-warning mt-ladda-btn ladda-button btn-circle" data-style="zoom-in" id="search_button" style="margin-top: 20px">
+                    <span class="ladda-label"><i class="icon-magnifier"></i>搜索</span>
+                    <span class="ladda-spinner"></span>
+                    <div class="ladda-progress" style="width: 0px;"></div>
+                </button>
+            </div>
+        </form>
+        <div class="field_contener_rightbottom">
+            <table id="fieldtable">
+                
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        //给select传值
+        $(document).ready(function() {
+            $.ajax({
+                type: "GET",
+                url: "/log/index/getelasticindex", //此次url改为真正需要的url
+                success: function (data, status) {
+                    debugger;
+                    $.each(data, function (index, item) {
+                        $("#eindex").append("<option>" + item + "</option>");//此处向select中循环绑定数据
+                    });
+                },
+            });
+        });
+
+        //搜索search_button
+        $("#search_button").on('click',function () {
+            var index = $("#eindex option:selected").text();
+            var appname = $("#type option:selected").text();
+            var testgray3 = $("#testgray3").val();
+            var arr = [];
+            var start,end;
+            arr = testgray3.split('至');
+            if(arr.length <2){
+                start = '';
+                end = '';
+            }
+            else {
+                start = arr[0];
+                end = arr[1];
+            }
+            var level = $("#level option:selected").text();
+            var msg = $("#msg").val();
+            var data = {'index':index,'appname':appname,'start':start,'end':end,'level':level,'msg':msg};
+            console.log(data);
+            $.ajax({
+                type : "POST",
+                data:data,
+                url : "/log/index/getelasticdata", //此次url改为真正需要的url
+                success : function(data, status) {
+                    debugger
+                    //按行读取
+                    //第一级别
+                    for(var key in data){
+                        var tds,td1s,td2s,tdall,thead1s,thead2s,theadall;
+                        var type =typeof(data[key]);
+                        if (data[key]!="[object Object]"){
+                            var td= '<td>'+data[key]+'</td>';
+                        }
+                        //第二级别
+                        if (type=="object") {
+                            for(var i in data[key]){
+                                //thead1+=[0]i;
+                                if(key==0){
+                                    var thead1 = '<td>'+i+'</td>';
+                                    thead1s+=thead1;
+                                }
+                                var type1 =typeof(data[key][i]);
+                                if (data[key][i]!="[object Object]"){
+                                    var td1= '<td>'+data[key][i]+'</td>';
+                                }
+                                td1s +=td1;
+                                //第三级别
+                                if (type1=="object") {
+                                    for(var j in data[key][i]){
+                                        if(key==0){
+                                            var thead2 = '<td>'+j+'</td>';
+                                            thead2s+=thead2;
+                                        }
+                                        if (data[key][i][j]!="[object Object]"){
+                                            var td2= '<td>'+data[key][i][j]+'</td>';
+                                        }
+                                        td2s +=td2;
+                                    }
+                                }
+                            }
+                        }
+                        tds +=td;
+                        tdall = tds+ td1s+td2s;
+                        tds='',td1s='',td2s='';
+                        var apped ='<tr>' + tdall+ '</tr>';
+                        tdall='';
+                        var html;
+                        html+=apped;
+                        apped='';
+                    }
+                    theadall = thead1s+thead2s;
+                    var head = '<thead>'+theadall+'</thead>';
+                    var htmls = head+html;
+                    $("#fieldtable").html(htmls);
+                    //字体高亮显示
+                    $('#fieldtable tr td').GL({
+                        ocolor:'#F1C40F',   //设置关键词高亮颜色
+                        oshuru:msg   //设置要显示的关键词
+                    });
+                    //案列读取
+                },
+            });
+            console.log(msg);
+        });
+
+        $(document).on('click','.add_field',function () {
+
+            var str = $(this).parent().children().children("strong").text();
+            var title = $(this).parent().children(".font_title").text();
+            $(this).parent().remove();
+            var ht='<li>'
+            ht += '<span class="font_icon"><strong>'+str+'</strong></span>';
+            ht += '<span class="font_title">'+title+'</span>';
+            ht += '<button class="remove_field left_field_button" style="display:none;">删除</button>';
+            ht += '</li>';
+            $(".have_field").children(".dd").remove();
+            $(".have_field").append(ht);
+            /* if(num==0){
+               // $("#fieldtable thead tr").append(head);
+                //$("#fieldtable tbody tr").append(con);
+                $("#fieldtable").html('<tr><td>aa</td></tr><tr><td>bb</td></tr>')
+            }else{
+                $("#fieldtable tbody tr").append('<td>cc</td>');
+            }*/
+
+            $(".have_field li").hover(function () {
+                $(this).children("button").show();
+            },function(){
+                $(this).children("button").hide();
+            });
+            num++;
+        });
+
+
+        //已选字段
+        $(document).on('click','.remove_field',function () {
+            var str = $(this).parent().children().children("strong").text();
+            var title = $(this).parent().children(".font_title").text();
+            var lilength = $(".have_field li").length;
+            //$("#fieldtable tr :last-child").remove();
+            if(lilength==1){
+                var all = '<li class="dd">';
+                all += '<span class="font_icon"><strong>?</strong></span>';
+                all += '<span class="font_title">_source</span>';
+                all += '<button class="remove_field left_field_button" style="display:none;">删除</button>';
+                all += '</li>';
+                $(this).parent().remove();
+                $(".have_field").append(all);
+            }else{
+                $(this).parent().remove();
+            }
+
+            var ht='<li>'
+            ht += '<span class="font_icon"><strong>'+str+'</strong></span>';
+            ht += '<span class="font_title">'+title+'</span>';
+            ht += '<button class="add_field left_field_button" style="display:none;">添加</button>';
+            ht += '</li>';
+
+            $(".nohave_field").append(ht);
+            $(".nohave_field li").hover(function () {
+                $(this).children("button").show();
+            },function(){
+                $(this).children("button").hide();
+            });
+            num--;
+        });
+
+        $(".have_field li").hover(function () {
+            $(this).children("button").show();
+        },function(){
+            $(this).children("button").hide();
+        });
+
+        $(".nohave_field li").hover(function () {
+            $(this).children("button").show();
+        },function(){
+            $(this).children("button").hide();
+        });
+    })
+</script>
+<script type="text/javascript" src="/static/log/jeDate/js/demo1.js"></script>
+{% include "/home/sts/view/log/footer.html" %}

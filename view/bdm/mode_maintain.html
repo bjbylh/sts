@@ -1,0 +1,742 @@
+{% include "./top.html" %}
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<!--<link href="/static/metronic/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css"
+      rel="stylesheet" type="text/css"/>-->
+<!-- END PAGE LEVEL PLUGINS -->
+
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<!--<script src="/static/metronic/assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js"
+        type="text/javascript"></script>-->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<!--<script src="/static/metronic/assets/pages/scripts/table-datatables-responsive.min.js" type="text/javascript"></script>-->
+<!-- END PAGE LEVEL SCRIPTS -->
+<!-- BEGIN SPREADJS -->
+<link rel="stylesheet" href="/static/spread.sheets/css/gc.spread.sheets.excel2013white.11.0.0.css">
+<script type="text/javascript" src="/static/spread.sheets/js/gc.spread.sheets.all.11.0.0.min.js"></script>
+<script type="text/javascript"src="/static/spread.sheets/js/gc.spread.sheets.resources.zh.11.0.0.min.js"></script>
+<!-- END SPREADJS -->
+<style type="text/css">
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        width: 99%;
+        height:95%;
+        /*background-color:#F5F5F5;*/
+    }
+    #lzBtn-grounp {
+        margin: 10px 10px;
+    }
+
+    #lzBtn-grounp .btn {
+        width: 100px
+    }
+</style>
+<div id="lzBtn-grounp">
+    <button id="btnRefrash" type="button" data-loading-text="Loading..." class="demo-loading-btn btn btn-primary"><i class="fa fa-refresh"></i>&nbsp&nbsp刷新</button>
+    <button id="btnAdd" type="button" data-loading-text="Loading..." class="demo-loading-btn btn btn-primary" disabled><i class="fa fa-plus"></i>&nbsp&nbsp添加</button>
+    <button id="btnDelet" type="button" data-loading-text="Loading..." class="demo-loading-btn btn red" disabled><i class="fa fa-remove"></i>&nbsp&nbsp删除</button>
+    <button id="bteidt" type="button" data-loading-text="Loading..." class="demo-loading-btn btn red"><i class="fa fa-lock"></i>&nbsp&nbsp锁定</button>
+    <button id="btsave" type="button" data-loading-text="Loading..." class="demo-loading-btn btn btn-primary"><i class="fa fa-save"></i>&nbsp&nbsp保存</button>
+</div>
+<div class="sample-tutorial" style="width:100%;height:100%">
+    <div id="mode_maintain" style="width:100%;height:100%;border:1px solid #767676"></div>
+</div>
+<script type="text/javascript">
+  var spreadNS = GC.Spread.Sheets;
+  $(function(){
+    var spread = new GC.Spread.Sheets.Workbook(document.getElementById("mode_maintain"));
+    var sheet = spread.getSheet(0);
+    initSpread(spread);
+    //添加
+    $("#btnAdd").click(function(){
+      var irow=sheet.getDataSource().length;
+      sheet.addRows(irow, 1);
+      // 单元格格式化
+      var customFormatterTest = {};
+      customFormatterTest.prototype = GC.Spread.Formatter.FormatterBase;
+      customFormatterTest.format = function (obj, conditionalForeColor) {
+        conditionalForeColor.value = "blue";
+        return obj.toString();
+      };
+      customFormatterTest.parse = function (str) {
+        if (!str) {
+          return "";
+        }
+        return str;
+      };
+      sheet.getCell(irow, 0).formatter(customFormatterTest);
+      sheet.getCell(irow, 2).formatter(customFormatterTest);
+    });
+    //刷新
+    $("#btnRefrash").click(function(){
+      var cellStyle2 = new spreadNS.Style();
+      cellStyle2.backColor =undefined;
+      var dataEdit = sheet.getDirtyRows();
+      for(var i=0;i<dataEdit.length;i++){
+        sheet.getCell(dataEdit[i].row, -1, GC.Spread.Sheets.SheetArea.rowHeader).backColor(undefined);
+        for(var j=0;j<9;j++){
+          sheet.setStyle(dataEdit[i].row, j, cellStyle2, spreadNS.SheetArea.viewport);
+        }
+      }
+      loadData(spread);
+    });
+    //删除
+    DeleateRow(spread);
+    // 解锁
+    $("#bteidt").click(function(){
+/*      var data=sheet.getDataSource();
+      if(data.length==0){
+        sheet.options.isProtected =false;
+        $("#btnAdd").attr("disabled", false);
+        $("#btnDelet").attr("disabled", false);
+        $(this).html('<i class="fa fa-edit"></i>&nbsp&nbsp编辑').removeClass('red').addClass('btn-primary');
+        showMessageNomal('进入编辑模式，请谨慎操作');
+        isLock=0;
+      }else */
+        if(isLock==1){
+        sheet.getRange(-1,0, -1, 1).locked(false);
+        sheet.getRange(-1,2, -1, 2).locked(false);
+        sheet.getRange(-1,5, -1, 4).locked(false);
+        $("#btnAdd").attr("disabled", false);
+        $("#btnDelet").attr("disabled", false);
+        $(this).html('<i class="fa fa-edit"></i>&nbsp&nbsp编辑').removeClass('red').addClass('btn-primary');
+        showMessageNomal('进入编辑模式，请谨慎操作');
+        isLock=0;
+      }else if(isLock==0){
+        sheet.getRange(-1,0, -1, 1).locked(true);
+        sheet.getRange(-1,2, -1, 2).locked(true);
+        sheet.getRange(-1,5, -1, 4).locked(true);
+        $("#btnAdd").attr("disabled", true);
+        $("#btnDelet").attr("disabled", true);
+        $(this).html('<i class="fa fa-lock"></i>&nbsp&nbsp锁定').removeClass('btn-primary').addClass('red');
+        isLock=1;
+      }
+    });
+    //保存
+    $("#btsave").click(function(){
+      var dataEdit=sheet.getDirtyRows();
+      var dataAdd=sheet.getInsertRows();
+      if(dataEdit.length!=0){
+        // 设置数据联动
+        var dataEdit=sheet.getDirtyRows();
+        for(var n=0;n<dataEdit.length;n++){
+          var setdata=sheet.getValue(dataEdit[n].row ,5);
+          for(var j=0;j<selecArr.length;j++){
+            if(setdata==selecArr[j].text){
+              sheet.setValue(dataEdit[n].row, 4,selecArr[j].value);
+            }
+          }
+        }
+        // 数据验证并存储
+        dataEdit=sheet.getDirtyRows();
+        dataSearch(spread,dataEdit);
+        if(isBanck==1){
+          showMessageEro('不能为空存储失败')
+        }else if(isBanck==0){
+          if(isClash==1){
+            showMessageEro('信息有冲突存储失败')
+          }else{
+            showMessageNomal("信息存储成功");
+            // refreash2(spread)
+          }
+        }
+        isBanck=0;
+        isClash=0;
+      }else if(dataAdd.length!=0){
+        // 设置数据联动
+        var dataAdd=sheet.getInsertRows();
+        for(var n=0;n<dataAdd.length;n++){
+          var setdata=sheet.getValue(dataAdd[n].row ,5);
+          for(var j=0;j<selecArr.length;j++){
+            if(setdata==selecArr[j].text){
+              sheet.setValue(dataAdd[n].row, 4,selecArr[j].value);
+            }
+          }
+        }
+        // 数据验证并存储
+        dataAdd=sheet.getInsertRows();
+        dataSearch(spread,dataAdd);
+        if(isBanck==1){
+          showMessageEro('不能为空存储失败')
+        }else if(isBanck==0){
+          if(isClash==1){
+            showMessageEro('信息有冲突存储失败')
+          }else{
+            showMessageNomal("信息存储成功");
+            refreash(spread)
+          }
+        }
+        isBanck=0;
+        isClash=0;
+      }else {
+        showMessageNomal('没有修改数据');
+      }
+    });
+  });
+  var isLock=1;                          //是否锁定
+  var zdRow="";                        //行变动新
+  var oldRow="";                       //行变动旧
+  var selecArr;                         //下拉数组数据源
+  var isBanck=0;                        //是否存在空值提示，0不存在，1存在
+  var isClash=0;                        //是否存在冲突提示，0不冲突，1冲突
+  function initSpread(spread) {
+
+    var sheet = spread.getSheet(0);
+
+   // 初始化数据
+    loadData(spread);
+    sheet.suspendPaint();
+    spread.options.tabStripVisible = false;
+    sheet.options.allowCellOverflow = true;
+    sheet.options.protectionOptions.allowFilter = true;
+    spread.options.showHorizontalScrollbar = false;
+    // 换行自动存储数据
+    var selectionChanged = GC.Spread.Sheets.Events.SelectionChanged;
+    sheet.bind(selectionChanged, function(e,args) {
+      zdRow=args.newSelections[0].row;
+      oldRow=args.oldSelections[0].row;
+      if(zdRow!=oldRow){
+        if(sheet.getDirtyRows().length!=0){
+          var dataEdit=sheet.getDirtyRows();
+          //设置脏数据标记
+          for (var i = 0; i < dataEdit.length; i++) {
+            sheet.getCell(dataEdit[i].row, -1, GC.Spread.Sheets.SheetArea.rowHeader).backColor('yellow');
+          }
+          // 设置数据联动
+          for (var i = 0; i < dataEdit.length; i++) {
+            if (oldRow == dataEdit[i].row) {
+              var setdata = sheet.getValue(dataEdit[i].row, 5);
+              for(var j=0;j<selecArr.length;j++){
+                if(setdata==selecArr[j].text){
+                  sheet.setValue(dataEdit[i].row, 4,selecArr[j].value);
+                }
+              }
+            }
+          }
+          // 数据验证并存储
+          dataEdit=sheet.getDirtyRows();
+          for(var i=0;i<dataEdit.length;i++){
+            if(oldRow==dataEdit[i].row){
+              var Editdata=dataEdit[i]
+              singleSearch(spread,Editdata);
+              if(isBanck==1){
+                showMessageEro('不能为空存储失败')
+              }else if(isBanck==0){
+                if(isClash==1){
+                  showMessageEro('信息有冲突存储失败')
+                }
+              }
+              if(isBanck==0){
+                if(isClash==0){
+                  $.ajax({
+                    type : "post",
+                    async: false,
+                    url : "doSave",
+                    data:{"_satid":"{{sat._id}}","data":JSON.stringify(Editdata.item)},
+                    success : function(data) {
+                    },
+                    error:function(request){
+                    }
+                  })
+                }
+              }
+              isClash=0;
+              isBanck=0
+            }
+          }
+        } else if(sheet.getInsertRows().length!=0 && sheet.getInsertRows()[0].item.code!=null){        //存储新增数据
+          var dataAdd=sheet.getInsertRows();
+          //设置新增数据标记
+          for (var i = 0; i < dataAdd.length; i++) {
+            sheet.getCell(dataAdd[i].row, -1, GC.Spread.Sheets.SheetArea.rowHeader).backColor('yellow');
+          }
+          //设置联动
+          for(var n=0;n<dataAdd.length;n++){
+            if(oldRow==dataAdd[n].row) {
+              var setdata = sheet.getValue(dataAdd[n].row, 5);
+              for(var j=0;j<selecArr.length;j++){
+                if(setdata==selecArr[j].text){
+                  sheet.setValue(dataAdd[n].row, 4,selecArr[j].value);
+                }
+              }
+            }
+          }
+          // 数据验证并存储
+          dataAdd=sheet.getInsertRows();
+          for(var i=0;i<dataAdd.length;i++){
+            if(oldRow==dataAdd[i].row){
+              var addData=dataAdd[i];
+              singleSearch(spread,addData);
+              if(isBanck==1){
+                showMessageEro('不能为空存储失败')
+              }else if(isBanck==0){
+                if(isClash==1){
+                  showMessageEro('信息有冲突存储失败')
+                }
+              }
+              isClash=0;
+              isBanck=0
+            }
+          }
+        }else if(sheet.getInsertRows().length!=0 && sheet.getInsertRows()[0].item.code==null){
+          if(sheet.getInsertRows()[0].row!=zdRow){
+            layer.msg("新增模式代号不能为空，会导致存储失败")
+          }
+        }
+      }
+    });
+    // 锁定
+    sheet.options.isProtected = true;
+    sheet.resumePaint();
+  }
+  // 刷新
+  function loadData(spread){
+    var sheet = spread.getSheet(0);
+    sheet.suspendPaint();
+    // 下拉列表
+    selectDData();
+    var lines=selecArr;
+    var lineCellType = new GC.Spread.Sheets.CellTypes.ComboBox();
+    lineCellType.items(lines).editorValueType(spreadNS.CellTypes.EditorValueType.text);
+    var colInfos=[
+      {name:"name",displayName:"模式名称",size:80},
+      {name:"_id",displayName:"ID",size:80},
+      {name:"code",displayName:"模式代号",size:80},
+      {name:"describe",displayName:"模式说明",size:80},
+      {name:"channelcode",displayName:"所属数据通道代号",size:80},
+      {name:"channelname",displayName:"所属数据通道名称",cellType: lineCellType,size:80},
+      {name:"evidence",displayName:"模式字",size:80},
+      {name:"packno",displayName:"包标识",size:80},
+      {name:"length",displayName:"数据长度",size:80},
+      {name:"innercount",displayName:"包内帧计数最大值",size:80}
+    ];
+    $.ajax({
+      type : "get",
+      async: false,
+      url : "getList",
+      data:{"_satid":"{{sat._id}}"},
+      success : function(data) {
+        var dataSourse=data.data;
+        sheet.setDataSource(dataSourse);
+        sheet.bindColumns(colInfos);
+        // 筛选
+        if(dataSourse.length!=0){
+          var filter = new GC.Spread.Sheets.Filter.HideRowFilter(new GC.Spread.Sheets.Range(0, 0,dataSourse.length, 9));
+          sheet.rowFilter(filter);
+        }
+        // 隐藏列
+        sheet.setColumnVisible(1, false);
+        //自定义单元格格式
+        var customFormatterTest = {};
+        customFormatterTest.prototype = GC.Spread.Formatter.FormatterBase;
+        customFormatterTest.format = function (obj, conditionalForeColor) {
+          conditionalForeColor.value = "blue";
+          return obj.toString();
+        };
+        customFormatterTest.parse = function (str) {
+          if (!str) {
+            return "";
+          }
+          return str;
+        };
+        for(var i=0;i<dataSourse.length;i++){
+          sheet.getCell(i, 0).formatter(customFormatterTest);
+          sheet.getCell(i, 2).formatter(customFormatterTest);
+        }
+        // 行高列宽
+        sheet.defaults.rowHeight = 30;
+        sheet.setColumnWidth(0, 140);
+        sheet.setColumnWidth(2, 140);
+        sheet.setColumnWidth(3, 140);
+        sheet.setColumnWidth(4, 160);
+        sheet.setColumnWidth(5, 160);
+        sheet.setColumnWidth(6, 120);
+        sheet.setColumnWidth(7, 120);
+        sheet.setColumnWidth(8, 120);
+        sheet.setColumnWidth(9, 160);
+        showMessageNomal('数据加载成功')
+      },
+      error:function(request){
+        showMessageAbnomal('数据加载失败');
+      }
+    });
+    sheet.resumePaint();
+  }
+  function refreash(spread){
+    var sheet = spread.getSheet(0);
+    sheet.suspendPaint();
+    // 下拉列表
+    selectDData();
+    var lines=selecArr;
+    var lineCellType = new GC.Spread.Sheets.CellTypes.ComboBox();
+    lineCellType.items(lines).editorValueType(spreadNS.CellTypes.EditorValueType.text);
+    var colInfos=[
+      {name:"name",displayName:"模式名称",size:80},
+      {name:"_id",displayName:"ID",size:80},
+      {name:"code",displayName:"模式代号",size:80},
+      {name:"describe",displayName:"模式说明",size:80},
+      {name:"channelcode",displayName:"所属数据通道代号",size:80},
+      {name:"channelname",displayName:"所属数据通道名称",cellType: lineCellType,size:80},
+      {name:"evidence",displayName:"模式字",size:80},
+      {name:"packno",displayName:"包标识",size:80},
+      {name:"length",displayName:"数据长度",size:80},
+      {name:"innercount",displayName:"包内帧计数最大值",size:80}
+    ];
+    $.ajax({
+      type : "get",
+      async: false,
+      url : "getList",
+      data:{"_satid":"{{sat._id}}"},
+      success : function(data) {
+        var dataSourse=data.data;
+        sheet.setDataSource(dataSourse);
+        sheet.bindColumns(colInfos);
+        // 筛选
+        var filter = new GC.Spread.Sheets.Filter.HideRowFilter(new GC.Spread.Sheets.Range(0, 0,dataSourse.length, 9));
+        sheet.rowFilter(filter);
+        // 隐藏列
+        sheet.setColumnVisible(1, false);
+        //自定义单元格格式
+        var customFormatterTest = {};
+        customFormatterTest.prototype = GC.Spread.Formatter.FormatterBase;
+        customFormatterTest.format = function (obj, conditionalForeColor) {
+          conditionalForeColor.value = "blue";
+          return obj.toString();
+        };
+        customFormatterTest.parse = function (str) {
+          if (!str) {
+            return "";
+          }
+          return str;
+        };
+        for(var i=0;i<dataSourse.length;i++){
+          sheet.getCell(i,0).formatter(customFormatterTest);
+          sheet.getCell(i,2).formatter(customFormatterTest);
+        }
+        // 行高列宽
+        sheet.defaults.rowHeight = 30;
+        sheet.setColumnWidth(0, 140);
+        sheet.setColumnWidth(2, 140);
+        sheet.setColumnWidth(3, 140);
+        sheet.setColumnWidth(4, 160);
+        sheet.setColumnWidth(5, 160);
+        sheet.setColumnWidth(6, 160);
+        sheet.setColumnWidth(7, 120);
+        sheet.setColumnWidth(8, 120);
+        sheet.setColumnWidth(9, 160);
+      },
+      error:function(request){
+        showMessageAbnomal('数据加载失败');
+      }
+    });
+    sheet.resumePaint();
+  }
+  // 下拉列表读取
+  function selectDData(){
+    $.ajax({
+      type : "get",
+      async: false,
+      url : "/bdm/channel/getList",
+      data:{"_satid":"{{sat._id}}"},
+      success : function(data) {
+        function getListdata(data) {
+          var oArr = [];
+          for (var i = 0; i < data.data.length; i++) {
+            var obj = {};
+            obj.text = data.data[i].name;
+            obj.value = data.data[i].code;
+            oArr.push(obj)
+          }
+          return oArr;
+        }
+        selecArr=getListdata(data);
+      },
+      error:function(request){
+        alert("获取项目信息失败")
+      }
+    });
+  }
+  // 删除
+  function DeleateRow(spread){
+    $("#btnDelet").click(function(){
+      layer.confirm('<h3 style="width:100%;text-align:center;font-size:30px;color:red;margin-top:0"><i class="fa fa-warning"></i></h3><p style="width:100%;text-align:center;font-size:15px">该操作不可逆你确定要删除么？</p>', {
+        btn: ['确定','取消'] //按钮
+      }, function(){
+        var sheet = spread.getSheet(0);
+        var idData=sheet.getDataItem(zdRow);
+        $.ajax({
+          type : "post",
+          async: false,
+          url : "doDelete",
+          data:{"_satid":"{{sat._id}}","data":JSON.stringify(idData)},
+          success : function(data) {
+            if(data.success==true){
+              sheet.deleteRows(zdRow, 1);
+              showMessageNomal('删除成功')
+            }else{
+              showMessageEro('删除失败')
+            }
+          },
+          error:function(request){
+            showMessageAbnomal('获取项目信息失败')
+          }
+        });
+      }, function(){
+        layer.msg('你取消了删除操作', {
+          time: 1500, //20s后自动关闭
+        });
+      });
+    });
+  }
+  //单行数据检查
+  function singleSearch(spread,idata){
+    var sheet = spread.getSheet(0);
+    var cellStyle1 = new spreadNS.Style();
+    cellStyle1.name = 'style1';
+    cellStyle1.backColor ="#ff5a5f";
+    var cellStyle2 = new spreadNS.Style();
+    cellStyle2.name = 'style2';
+    cellStyle2.backColor =undefined;
+    var cellStyle3 = new spreadNS.Style();
+    cellStyle3.name = 'style1';
+    cellStyle3.backColor ="#ffc711";
+      var isTrue="";                       //是否空值，1为空，0非空
+      var isClash1="";                      //是否冲突，0不冲突，1冲突
+      var isClash2="";                      //是否冲突，0不冲突，1冲突
+      var idata2 = {
+        "模式名称":idata.item.name,
+        "模式代号":idata.item.code,
+        "所属数据通道代号":idata.item.channelcode,
+        "所属数据通道名称":idata.item.channelname
+      };
+      for (var i in idata2) {
+        switch (i) {
+          case "模式名称":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata.row,0, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue = 1;
+              isBanck=1;
+              break;
+            }else {
+              $.ajax({
+                type : "post",
+                async: false,
+                url : "doValidateName",
+                data: {"_satid": "{{sat._id}}", "_modeid": idata.item._id, "name": idata.item.name},
+                success: function(data) {
+                  if (data == true) {
+                    sheet.setStyle(idata.row, 0, cellStyle2, spreadNS.SheetArea.viewport);
+                    isClash2 = 0;
+                  } else if (data == false) {
+                    isClash2 = 1;
+                    isClash=1;
+                    sheet.setStyle(idata.row, 0, cellStyle3, spreadNS.SheetArea.viewport);
+                  }
+                },
+                error: function(request) {
+                  isClash2 = 1;
+                  showMessageAbnomal("后台数据校验失败")
+                }
+              });
+              break;
+            }
+          case "模式代号":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata.row, 2, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue =1;
+              isBanck=1;
+              break;
+            } else {
+              $.ajax({
+                type: "post",
+                async: false,
+                url: "doValidateCode",
+                data: {"_satid": "{{sat._id}}", "_modeid":idata.item._id, "code": idata.item.code},
+                success: function(data) {
+                  if (data == true) {
+                    sheet.setStyle(idata.row, 2, cellStyle2, spreadNS.SheetArea.viewport);
+                    isClash1 = 0;
+                  } else if (data == false) {
+                    isClash1 = 1;
+                    isClash=1;
+                    sheet.setStyle(idata.row, 2, cellStyle3, spreadNS.SheetArea.viewport);
+                  }
+                },
+                error: function(request) {
+                  isClash1 = 1;
+                  showMessageAbnomal("后台数据校验失败")
+                }
+              });
+              break;
+            }
+          case "所属数据通道代号":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata.row, 4, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue = 1;
+              isBanck=1;
+              break;
+            } else {
+              sheet.setStyle(idata.row, 4, cellStyle2, spreadNS.SheetArea.viewport);
+              break;
+            }
+          case "所属数据通道名称":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata.row, 5, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue =1;
+              isBanck=1;
+              break;
+            }
+            else {
+              sheet.setStyle(idata.row, 5, cellStyle2, spreadNS.SheetArea.viewport);
+              break;
+            }
+        }
+      }
+  }
+  // 数据检查
+  function dataSearch(spread,idata){
+    var sheet = spread.getSheet(0);
+    sheet.clearPendingChanges();
+    var cellStyle1 = new spreadNS.Style();
+    cellStyle1.name = 'style1';
+    cellStyle1.backColor ="#ff5a5f";
+    var cellStyle2 = new spreadNS.Style();
+    cellStyle2.name = 'style2';
+    cellStyle2.backColor =undefined;
+    var cellStyle3 = new spreadNS.Style();
+    cellStyle3.name = 'style1';
+    cellStyle3.backColor ="#ffc711";
+    for(var j=0;j<idata.length;j++) {
+      var isTrue="";                       //是否空值，1为空，0非空
+      var isClash1="";                      //是否冲突，0不冲突，1冲突
+      var isClash2="";                      //是否冲突，0不冲突，1冲突
+      var idata2 = {
+        "模式名称":idata[j].item.name,
+        "模式代号":idata[j].item.code,
+        "所属数据通道代号":idata[j].item.channelcode,
+        "所属数据通道名称":idata[j].item.channelname
+      };
+      for (var i in idata2) {
+        switch (i) {
+          case "模式名称":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata[j].row,0, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue = 1;
+              isBanck=1;
+              break;
+            }else {
+            $.ajax({
+              type : "post",
+              async: false,
+              url : "doValidateName",
+              data: {"_satid": "{{sat._id}}", "_modeid": idata[j].item._id, "name": idata[j].item.name},
+              success: function(data) {
+                if (data == true) {
+                  sheet.setStyle(idata[j].row, 0, cellStyle2, spreadNS.SheetArea.viewport);
+                  isClash2 = 0;
+                } else if (data == false) {
+                  isClash2 = 1;
+                  isClash=1;
+                  sheet.setStyle(idata[j].row, 0, cellStyle3, spreadNS.SheetArea.viewport);
+                }
+              },
+              error: function(request) {
+                isClash2 = 1;
+                showMessageAbnomal("后台数据校验失败")
+              }
+            });
+              break;
+          }
+          case "模式代号":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata[j].row, 2, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue =1;
+              isBanck=1;
+              break;
+            } else {
+              $.ajax({
+                type: "post",
+                async: false,
+                url: "doValidateCode",
+                data: {"_satid": "{{sat._id}}", "_modeid":idata[j].item._id, "code": idata[j].item.code},
+                success: function(data) {
+                  if (data == true) {
+                    sheet.setStyle(idata[j].row, 2, cellStyle2, spreadNS.SheetArea.viewport);
+                    isClash1 = 0;
+                  } else if (data == false) {
+                    isClash1 = 1;
+                    isClash=1;
+                    sheet.setStyle(idata[j].row, 2, cellStyle3, spreadNS.SheetArea.viewport);
+                  }
+                },
+                error: function(request) {
+                  isClash1 = 1;
+                  showMessageAbnomal("后台数据校验失败")
+                }
+              });
+              break;
+            }
+          case "所属数据通道代号":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata[j].row, 4, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue = 1;
+              isBanck=1;
+              break;
+            } else {
+                    sheet.setStyle(idata[j].row, 4, cellStyle2, spreadNS.SheetArea.viewport);
+              break;
+            }
+          case "所属数据通道名称":
+            if (idata2[i] == null || idata2[i] == undefined || idata2[i] == '') {
+              //设置底色
+              sheet.setStyle(idata[j].row, 5, cellStyle1, spreadNS.SheetArea.viewport);
+              isTrue =1;
+              isBanck=1;
+              break;
+            }
+            else {
+              sheet.setStyle(idata[j].row, 5, cellStyle2, spreadNS.SheetArea.viewport);
+              break;
+            }
+        }
+      }
+      if(isTrue==0){
+        if(isClash1==0 && isClash2==0){
+          $.ajax({
+            type : "post",
+            async: false,
+            url : "doSave",
+            data:{"_satid":"{{sat._id}}","data":JSON.stringify(idata[j].item)},
+            success : function(data) {
+              sheet.getCell(idata[j].row, -1, GC.Spread.Sheets.SheetArea.rowHeader).backColor(undefined);
+            },
+            error:function(request){
+              // showMessageAbnomal("信息存储失败")
+            }
+          })
+        }
+      }
+    }
+  }
+</script>
+<!--这里使用SpreadJS进行模式信息列表的维护，对应“2.2.6 模式”-->
+
+{% include "./footer.html" %}

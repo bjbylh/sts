@@ -1,0 +1,402 @@
+{% include "manager/top.html" %}
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/static/metronic/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css"
+	  rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" type="text/css" />
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+	  type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/extensions/filter-control/bootstrap-table-filter-control.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+		type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/pages/scripts/table-bootstrap.min.js" type="text/javascript"></script>
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/pages/scripts/components-date-time-pickers.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+
+<style>
+	.bars{
+		height: 0px !important;
+		margin: 0px !important;
+	}
+</style>
+
+<style type="text/css">
+	.tableDetail {
+		border: 0;
+	}
+	
+	.tableDetail tr td:nth-child(even) {
+		color: #000000;
+		font-size: 19px;
+		width: 16%;
+		border: brown;
+		border-style: none;
+	}
+	
+	.tableDetail tr td:nth-child(odd) {
+		color: grey;
+		border-style: none;
+		font-size: 19px;
+		widows: 8%;
+	}
+	
+	.tableDetail tr td i:nth-child(even) {
+		color: #000000;
+		font-size: 19px;
+	}
+	
+	.tableDetail tr td i:nth-child(odd) {
+		color: grey;
+		font-size: 19px;
+	}
+	
+	.tableDetail tr td a {
+		color: blue;
+		text-decoration: none;
+		font-size: 19px;
+	}
+	
+	.myhist {
+		/*border: 2px solid cadetblue;*/
+	}
+	
+	.myhist tr td {
+		color: #000000 !important;
+		/*border-style: dashed !important;*/
+		border: 2px gray solid !important;
+	}
+	
+	.myhist tr th {
+		border: 2px gray solid !important;
+		/*background-color: transparent !imporant;*/
+	}
+	
+	.mydiv {
+		/*border-top:1px solid cadetblue;*/
+	}
+	
+	.tita {
+		color: #000000;
+		font-size: 22px;
+		align-content: center;
+	}
+</style>
+
+<input type="hidden" id="_hid" value="{{pro._id}}" />
+<input type="hidden" id="_hproname" value="{{pro.name}}" />
+
+<div class="col-md-12">
+	<!-- BEGIN EXAMPLE TABLE PORTLET-->
+	<div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+		<div class="portlet-title">
+			<div class="caption font-dark">
+				<i class="icon-settings font-dark"></i>
+				<span class="caption-subject bold uppercase">任务列表</span>
+			</div>
+			<div class="tools"></div>
+		</div>
+		<div class="portlet-body">
+			<!--div style="float: left; padding-bottom: 10px;"></div-->
+			<div style="float: right; padding-bottom: 10px;">
+				开始时间:&nbsp;&nbsp;<input class="form-control-inline date-picker" size="16" type="text" id="startdate"
+					   name="startdate">&nbsp;&nbsp;&nbsp;&nbsp;截止时间:&nbsp;&nbsp;<input class="form-control-inline date-picker" size="16" type="text" id="enddate"
+					   name="enddate">&nbsp;&nbsp;<a class="btn green btn-xs btn-outline" onclick="reloadtable()" href="#"><span>查询</span></a>&nbsp;
+			</div>
+			<table id="table" class="display table table-striped" cellspacing="0" width="100%"></table>
+		</div>
+	</div>
+</div>
+
+<script>
+	var cols = [{
+			field: 'name',
+			title: '任务名'
+		},
+		{
+			field: 'type',
+			title: '任务类型' //评估报告、数据分析、数据提取、重载
+		},
+		{
+			field: 'state',
+			title: '任务状态' //成功、失败、未开始、进行中
+		},
+		{
+			field: 'updatetime',
+			title: '更新时间' //成功、失败、未开始、进行中
+		},
+		{
+			title: '操作',
+			formatter: function(value, row, index) {
+				return '<a  class="btn green btn-xs btn-outline" onclick=\'result(' + JSON.stringify(row) + ')\'>结果预览</a>' +
+					'<a  class="btn green btn-xs btn-outline" onclick=\'deletetask("' + row._id + '")\'>删除</a>' +
+					'<a  class="btn green btn-xs btn-outline" onclick=\'stoptask("' + row._id + '")\'>停止</a>';
+			}
+		}
+	];
+	$(document).ready(function() {
+		$('#table').bootstrapTable({
+			toolbar: "#toolbar",
+			locale: 'zh-CN',
+			detailView: true,
+			sidePagination: "client", //服务端处理分页
+			//			height: 600,
+			striped: true,
+			undefinedText: "",
+			pagination: true,
+			singleSelect: false,
+			pageSize: 20,
+			cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+			pageNumber: 1,
+			pageList: [10, 30, 50],
+			search: false, //不显示 搜索框
+			uniqueId: "_id", //每一行的唯一标识，一般为主键列
+			showColumns: false, //不显示下拉框（选择显示的列）
+			undefinedText: '',
+			columns: cols,
+			url: 'recentList',
+			queryParams: function(params) {
+				return {
+					'parentid': null
+				}
+			},
+			type: "get",
+			//注册加载子表的事件。注意下这里的三个参数！
+			onExpandRow: function(index, row, $detail) {
+				InitSubtask(index, row, $detail);
+			},
+
+		});
+
+	});
+	function reloadtable(){
+		var url='recentList?startdate='+$('#startdate').val()+'&enddate='+$('#enddate').val();
+		console.log(url);
+		$.ajax({
+			url:url,
+			type:'get',
+			success:function(data){
+				$('#table').bootstrapTable('load',data);
+			}
+		})
+	}
+	function InitSubtask(index, prow, $detail) {
+		var htm = baseinfo(prow);
+		//---------------------------------------------子任务---------------------------------------
+		//htm += children(prow);
+		//---------------------------------------------任务体----------------------------------------
+		htm += '<tr><td>任务体：</td><td colspan="7">' + taskBody(prow) + '</td></tr>';
+		//---------------------------------------------历史任务--------------------------------------
+		htm += gethistory(prow);
+		htm += '</table>'; //data-reorderable-columns="true"
+		htm += '<br/><div><h2 align="center" class="tita">子任务列表</h2></div>';
+		//---------------------------------------------拼接子表--------------------------------------
+		htm += '<div ><table id="sub' + prow._id + '" ></table><div>';
+
+		$detail.html(htm);
+		var cur_table = $('#' + prow._id);
+
+		$('#sub' + prow._id).bootstrapTable({
+			toolbar: "#toolbar",
+			locale: 'zh-CN',
+			detailView: true,
+			sidePagination: "client", //服务端处理分页
+			//			height: 600,
+			striped: true,
+			undefinedText: "",
+			pagination: true,
+			singleSelect: false,
+			pageSize: 20,
+			cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+			pageNumber: 1,
+			pageList: [10, 30, 50],
+			search: false, //不显示 搜索框
+			uniqueId: "_id", //每一行的唯一标识，一般为主键列
+			showColumns: false, //不显示下拉框（选择显示的列）
+			undefinedText: '',
+			columns: cols,
+			url: 'recentchildrenList',
+			queryParams: function(params) {
+				return {
+					'parentid': prow._id
+				}
+			},
+			type: "get",
+			//注册加载子表的事件。注意下这里的三个参数！
+			onExpandRow: function(index, row, $subdetail) {
+				InitSubtask(index, row, $subdetail);
+			},
+
+		});
+	}
+
+	function more(ele) {
+		var htm = $(ele).html();
+		if('展开更多' == htm) {
+			$(ele).html('折叠');
+			$(ele).parent().parent().next().show();
+		} else {
+			$(ele).html('展开更多');
+			$(ele).parent().parent().next().hide();
+		}
+	}
+
+	function taskBody(row) {
+		var type = row.type;
+		var bod = row.body;
+		if(type != 'extract') {
+			bod = JSON.parse(row.body); //<i>状态：</i><i>
+		}
+		var htm = '<i>开始时间：</i><i>' + bod.starttime + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+		htm += '<i>结束时间：</i><i>' + bod.endtime + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+		switch(type) {
+			case 'evaluation': //评估
+				htm += '<i>code：</i><i>' + bod.code + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+				htm += '<i>type：</i><i>' + bod.type + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+				htm += '<i>模板名称：</i><i>' + bod.tplid + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+				break;
+			case 'analysis': //数据分析
+				htm += '<i>code：</i><i>' + bod.code + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+				htm += '<i>分析名：</i><i>' + bod.analysiscode + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+				break;
+			case 'reload': //重载
+				htm = '<i>code：</i><i>' + bod.code + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+				htm += '<i>type：</i><i>' + bod.type + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+				htm += '<i>报告名：</i><i>' + reportname(row._id) + '</i>&nbsp;&nbsp;&nbsp;&nbsp;';
+				break;
+				break;
+			case 'extract': //数据提取  = new Date( 1477386005*1000 ) ;
+				htm = '<i>开始时间：</i><i>' + new Date(bod.start).toLocaleString(); + '</i>';
+				htm += '&nbsp;&nbsp;&nbsp;&nbsp;<i>结束时间：</i><i>' + new Date(bod.end).toLocaleString(); + '</i>';
+				htm += '&nbsp;&nbsp;&nbsp;&nbsp;<i>params：</i><i>' + JSON.stringify(bod.params) + '</i>';
+				break;
+		}
+		return htm;
+	}
+
+	function gethistory(row) {
+		var history = row.history;
+		htm = '';
+		if(history.length > 0) {
+			var his = history[history.length - 1];
+			htm += '<tr><td >执行历史</td>';
+			htm += '<td colspan="7"><i>操作者：</i><i>' + his.operator + '</i>&nbsp;&nbsp;&nbsp;<i>时间：</i><i>';
+			htm += his.time + '</i>&nbsp;&nbsp;&nbsp;<i>状态：</i><i>' + his.state + '</i>&nbsp;&nbsp;&nbsp;'
+			htm += '<a href="javascript:void(0);" onclick="more(this)">展开更多</a></td></tr>';
+			htm += '<tr style="display: none;"><td colspan="8"><div class="mydiv">';
+			htm += '<table  class="myhist"><tr><th>时间</th><th>操作者</th><th>状态</th></tr>';
+			for(var i = 0; i < history.length; i++) {
+				htm += '<tr></td><td>' + history[i].time + '</td><td>' + history[i].operator + '</td><td>' + history[i].state + '</td></tr>';
+			}
+			htm += '</table>';
+			htm += '</div></td></tr>';
+		}
+		return htm;
+	}
+
+	function baseinfo(row) {
+		var htm = '<table class="tableDetail">';
+		htm += '<tr><td>任务名：</td><td>' + row.name + '</td>';
+		htm += '<td>任务类型：</td><td>' + row.type + '</td>';
+		htm += '<td>任务状态：</td><td>' + row.state + '</td>';
+		htm += '<td>更新时间：</td><td>' + row.updatetime + '</td></tr>';
+		return htm;
+	}
+
+	function reportname(_id) {
+		var name = '';
+		$.ajax({
+			url: 'reportname?_id=' + _id,
+			type: 'get',
+			dataType: 'json',
+			async: false,
+			success: function(data) {
+				name = data.name;
+			},
+			error: function(request) {
+				alert("Connection error");
+			}
+
+		});
+		return name;
+	}
+	Date.prototype.toLocaleString = function() {
+		return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate();
+	};
+
+	function children(row) {
+		var htm = '<tr><td>子任务：</td><td colspan="7">'
+		var children = row.children;
+		for(var i = 0; i < children.length; i++) {
+			htm += '<a>' + children[i] + '</a>';
+			if(i < (children.length - 1)) {
+				htm += '&nbsp;，&nbsp;';
+			}
+		}
+		htm += '</td></tr>';
+		return htm;
+	}
+
+
+	function deletetask(_id) {
+		$.ajax({
+			url: 'delete?_id=' + _id,
+			type: 'get',
+			success: function(data) {
+				alert(data.msg);
+				window.location.reload();
+			}
+		});
+	}
+
+	function stoptask(_id) {
+		$.ajax({
+			url: 'stop?_id=' + _id,
+			type: 'get',
+			success: function(data) {
+				alert(data.msg);
+				window.location.reload();
+			}
+		});
+	}
+
+	function result(row) {
+		console.log(row);
+		var body = JSON.parse(row.body);
+		if(row.type == 'evaluation') { //报告
+			var result = JSON.parse(row.result);
+			$.ajax({
+				type: "get",
+				url: "getidbycode",
+				async: false,
+				data: {
+					'type': body.type,
+					'code': body.code
+				},
+				success: function(data) {
+					var hrefv = "/home/report/editor?_id=" + result._id + '&_groupid=' + data.data._id;
+					if(body.type == 'sat') {
+						hrefv = "/home/report/sateditor?_id=" + result._id + '&_satid=' + data.data._id;
+					}
+					openLayui( '',hrefv);
+				}
+			});
+		} else if(row.type == 'analysis') {
+			var result = JSON.parse(row.result);
+			var url = '/manager/task/index/result?_id=' + result._id + '&code=' + result.code;
+          openLayui( '结果预览',url);
+		}
+	}
+
+</script>
+
+{% include "manager/footer.html" %}

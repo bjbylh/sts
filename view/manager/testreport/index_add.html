@@ -1,0 +1,466 @@
+{% include "manager/top.html" %}
+<!-- start: Content -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+
+<link href="/static/metronic/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css"
+      rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"
+      rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet"
+      type="text/css"/>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+
+<link href="/static/metronic/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/home/compontents/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet">
+<script src="/static/home/compontents/jquery.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/home/compontents/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/pages/scripts/components-date-time-pickers.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
+<script src="/static/arena/js/form.js" type="text/javascript"></script>
+
+<link href="/static/arena/editor.md/css/editormd.css" rel="stylesheet">
+<script src="/static/arena/editor.md/editormd.js"></script>
+
+<style>
+	.editormd-preview-close-btn {
+        display: none !important;
+    }
+    
+    .CodeMirror-sizer {
+    	margin-left:10px !important;
+    }
+    
+    #repName{
+    	height: 35px;
+    	width: 80%;
+    	border: none;
+    	padding-left: 15px;
+    	margin-top: 5px;
+    	outline: none;
+    }
+</style>
+
+
+<div class="col-md-12">
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <!-- title -->
+        <div class="portlet-title">
+            <div class="caption font-dark">
+                <i class="icon-settings font-dark"></i>
+                <!--<span class="caption-subject bold uppercase">{% if data._id==null %}添加测试报告{% else %}编辑测试报告{% endif %}</span>-->
+                
+            </div>
+            <input type="text" id="repName" name="repName" value="{{data.name}}" placeholder="请在此键入报告名称"/>
+            <div class="tools"></div>
+        </div>
+        <!-- from -->
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <form class="form-horizontal" id="form_satellite">
+                <input type="hidden" id="author" name="author" value="{{userInfo.name}}">
+
+                <input type="hidden" id="satid" name="satid" value="{{sat._id}}">
+                <input type="hidden" id="name" name="name" value="{{data.name}}">			<!--加上name才能传回去-->
+            	
+                <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+                <input type="hidden" id="template" name="template" value="{{data.template}}">
+                <!--<input type="hidden" id="templatehtml" name="templatehtml" value="{{data.templatehtml}}">-->
+                <input type="hidden" id="lastEditTime" name="lastEditTime" value="{{data.lastEditTime}}">
+                <input type="hidden" id="state" name="state" value="{{data.state}}">
+                
+                <!--form-body-->
+                <div class="form-body" style="padding: 0px !important;">
+                    <!-- error msg -->
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表单验证失败，请检查表单内容.
+                    </div>
+                    <!--<div class="form-group">
+                        <label class="control-label col-xs-3" for="year">财务年度<span> ： </span></label>
+                        <div class="col-xs-9">
+                            <div class="input-group date selectData yearpicker" data-provide="datepicker">
+							    <input type="text" class="form-control" id="year" name="year" value="{{data.year}}">
+							    <div class="input-group-addon" id="dis">
+							        <span class="glyphicon glyphicon-th"></span>
+							    </div>
+							</div>
+                        </div>
+                    </div>-->
+                </div>
+            </form>
+                    <div id="test-editormd">
+                        <textarea style="display:none;" id="txt-editor"></textarea>
+                        <!--textarea class="editormd-html-textarea" name="$id-html-code"></textarea-->
+                    </div>
+                    
+                    
+
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+  var callbackdata = function () {
+  	
+  	$("#template").val(testEditor.getMarkdown().replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+  	//$("#templatehtml").val(testEditor.getHTML());
+  	
+  	var repName = $("#repName").val();
+  	$("#name").val(repName);
+  	if($("#name").val() == ""){
+  		alert("报告名称不能为空");
+  		return null;
+  	}
+  	
+  	
+  	var date = new Date();
+  	var year=date.getFullYear();
+  	var month=date.getMonth()+1;
+  	var ri = date.getDate();
+  	var h=date.getHours();
+  	var m=date.getMinutes();
+  	var s=date.getSeconds();
+  	
+  	if(month<10){
+  		month="0"+month;
+  	}
+  	if(ri<10){
+  		ri="0"+ri;
+  	}
+  	if(h<10){
+  		h="0"+h;
+  	}
+  	if(m<10){
+  		m="0"+m;
+  	}
+  	if(s<10){
+  		s="0"+s;
+  	}
+  	var timee = year+'-'+month+'-'+ri+' '+h+':'+m+':'+s;
+  	$("#lastEditTime").val(timee);
+  	
+  	if($("#_id").val() == ""){
+  		$("#state").val("未发布");
+  	}
+  	
+    $("#form_satellite").submit();
+    var validate = $("#form_satellite").valid();
+    
+    if (validate)
+      return formBuild($("#form_satellite"));
+    else
+      return null;
+  };
+  var testEditor = null;
+  $(document).ready(function () {
+  	function guid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+  	
+    $("#txt-editor").append($("#template").val());
+    
+        if (testEditor == null) {
+          testEditor = editormd("test-editormd", {
+            htmlDecode: true, // Decode all html tags & attributes
+            // Filter tags/attributes expression : tagName,tagName,...|attrName,attrName,...
+            //htmlDecode: "style,script,iframe,sub,sup|on*", // Filter tags, and all on* attributes
+           // lineNumbers: false,
+            //watch: false,
+           // codeFold: true,
+            width: "100%",
+            height: 500,
+            syncScrolling: "single",
+            path: "/static/arena/editor.md/lib/",
+            saveHTMLToTextarea : true,
+            toolbarIcons: function () {
+              var mytoolbar = ["|", "localimg", "testIcon", "loadMaterial","indicator"]
+              return editormd.toolbarModes["full"].concat(mytoolbar);
+            },
+            toolbarIconsClass: {
+              localimg: "fa-file-image-o", // 指定一个FontAawsome的图标类
+              testIcon: "fa-gears", // 指定一个FontAawsome的图标类
+              loadMaterial: "fa-yelp", // 指定一个FontAawsome的图标类
+              indicator:'fa-hourglass-end'
+            },
+
+            // 自定义工具栏按钮的事件处理
+            toolbarHandlers: {
+              /*
+               * @param {Object}      cm         CodeMirror对象
+               * @param {Object}      icon       图标按钮jQuery元素对象
+               * @param {Object}      cursor     CodeMirror的光标对象，可获取光标所在行和位置
+               * @param {String}      selection  编辑器选中的文本
+               */
+              testIcon: function (cm, icon, cursor, selection) {				//引入章节模板
+              	var _self = this;
+              	//_self.insertValue(markdownstr);
+               	_self.insertValue("# 1 引言\r\n"+
+									"&emsp;&emsp;本文对XX至XX的测试情况进行总结\r\n"+
+									"# 2 参考及引用文献\r\n"+
+									"## 2.1 参考文件\r\n"+
+									"|  序号 | 文件编号  | 文件名称  |\r\n"+
+									"| ------------ | ------------ | ------------ |\r\n"+
+									"| ————  | ————  | ————  |\r\n"+
+									"## 2.2 引用文件\r\n"+
+									"# 3 测试状态\r\n"+
+									"# 4 测试过程\r\n"+
+									"# 5 测试项目及结果\r\n"+
+									"## 5.1\r\n"+
+									"## 5.2\r\n"+
+									"# 6 测试问题\r\n"+
+									"# 7 遗留待办事项\r\n"+
+									"# 8 测试结论\r\n");
+              },
+              localimg: function (cm, icon, cursor, selection) {
+                var _self = this;
+                layer.open({
+                  title: '请选择图片',
+                  content: '<input type="file" accept="image/*" id="localfile" name="localfile"/>',
+                  btn: ['确定', '取消'],
+                  yes: function (index, layero) {
+                    //按钮【按钮一】的回调
+                    if (typeof FileReader == 'undifined') //判断浏览器是否支持filereader
+                    {
+                      alert("抱歉，你的浏览器不支持 FileReader");
+                      return;
+                    }
+                    var file = parent.document.getElementById("localfile").files[0];
+                    if (!/image\/\w+/.test(file.type)) //判断获取的是否为图片文件
+                    {
+                      alert("请确保文件为图像文件");
+                      return;
+                    }
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function (e) {
+                      //alert(this.result);
+                      var markdownstr = "\r\n";
+                      var uuid = guid();
+                      markdownstr += "![][" + uuid + "]\r\n\r\n";
+                      _self.insertValue(markdownstr);
+                      _self.gotoLine("last");
+                      _self.insertValue("[" + uuid + "]:" + this.result + "\r\n");
+                      layer.close(index);
+                    }
+                  }
+                });
+              },
+              loadMaterial: function (cm, icon, cursor, selection) {
+                var _self = this;
+                layer.open({
+                  type: 2,
+                  title: '请选择报告',
+                  area: ['800px', '600px'],
+                  content: '/manager/testreport/index/getRepps?satid=' +$("#satid").val() +'&_id='+$("#_id").val(),
+                  btn: ['确定', '取消'],
+                  yes: function (index, layero) {
+                    var rows = $(layero).find("iframe")[0].contentWindow.callbackdata();
+                    if (rows.length == 0) {
+                      layer.msg("请选择一个报告");
+                    } else {
+                      var mod = rows[0];
+                      var markdownstr = mod.template;
+                      _self.insertValue(markdownstr);
+                      layer.close(index);
+                    }
+                  }
+                });
+              },
+              indicator:function(cm, icon, cursor, selection){
+              	var _self = this;
+                layer.open({
+                  type: 2,
+                  title: '请选择结果',
+                  area: ['1200px', '700px'],
+                  content: '/manager/testreport/index/getResult?satid=' +$("#satid").val() +'&_id='+$("#_id").val(),
+                  btn: ['确定', '取消'],
+                  yes: function (index, layero) {
+                    var rows = $(layero).find("iframe")[0].contentWindow.callbackdata();
+                    if (rows.length == 0) {
+                      layer.msg("请选择一个结果");
+                    } else {
+                      var mod = rows[0];
+                      var restpval='';
+                      var respaval='';
+                      var resuvval='';
+                      var resglval='';
+                      var imgval='';
+                      
+	                    _self.insertValue('测试时间：'+mod.time+'\r\n'+'关联阶段：'+mod.stage_name+'\r\n'+'测试场地：'+mod.place+'\r\n'+'测试人员：'+mod.person+'\r\n'+'结果标记：'+mod.tag+'\r\n\r\n');
+                        mod.restp = mod.restp.replace(/\\n/g, "<br/>");
+                        mod.respa = mod.respa.replace(/\\n/g, "<br/>");
+                        mod.resuv = mod.resuv.replace(/\\n/g, "<br/>");
+
+                        mod.resgl=mod.resgl.replace(/\\n/g,"<br/>");
+                        //mod.resgl = mod.resgl.replace(/[\n]/g, "<br/>");
+	                    if(mod.restp != '[]'){		//测试步骤表格
+                            var restp= JSON.parse(mod.restp);
+                            for(var i=0;i<restp.length;i++){
+                                restpval+='| '+restp[i]['序号']+'  | '+restp[i]['工作项目']+'  |  '+restp[i]['测试工作程序内容及要求']+' | '+restp[i]['指令或参数']+'  | '+restp[i]['判读要求']+'  |  '+restp[i]['单位']+' | '+restp[i]['实测结果']+'  |  '+restp[i]['判读结论']+' | '+restp[i]['备注']+' |\n';
+                            }
+                     	}
+	                    if(mod.respa != '[]'){		//遥测统计表格
+                            var respa= JSON.parse(mod.respa);
+                            for(var i=0;i<respa.length;i++){
+                                respaval+='| '+respa[i]['序号']+'  | '+respa[i]['参数代号']+'  |  '+respa[i]['参数名称']+' | '+respa[i]['单位']+'  | '+respa[i]['正常值范围']+'  |  '+respa[i]['测试结果']+' | '+respa[i]['判读结论']+' |\n';
+                            }
+                     	}
+	                    if(mod.resuv != '[]'){		//测量结果表格
+                            var resuv= JSON.parse(mod.resuv);
+                            for(var i=0;i<resuv.length;i++){
+                                resuvval+='| '+resuv[i]['序号']+'  | '+resuv[i]['测点名称']+'  |  '+resuv[i]['插头号']+' | '+resuv[i]['节点号']+'  | '+resuv[i]['单位']+'  |  '+resuv[i]['预期值']+' | '+resuv[i]['实际值']+'  |  '+resuv[i]['判读结论']+' | '+resuv[i]['备注']+' |\n';
+                            }
+                     	}
+	                    if(mod.resgl != '[]'){		//通用结果表格
+                            var resgl= JSON.parse(mod.resgl);
+                            var imgarr = JSON.parse(mod.imgarr);
+
+                           // var a=0;
+                            for(var i=0;i<resgl.length;i++){
+                                if(resgl[i]['类型（数字、字符、图片）'] == "图片"){
+                                      //var uuid = guid();
+                                      //var markdownstrr = "![][" + uuid + "]";
+                                      //resglval+='| '+resgl[i]['序号']+'  | '+resgl[i]['结果名称']+'  |  '+resgl[i]['类型（数字、字符、图片）']+' | '+resgl[i]['单位']+'  | '+resgl[i]['预期值']+'  |  '+markdownstrr+' | '+resgl[i]['判读结论']+' | '+resgl[i]['备注']+' |\n';
+                                      resglval+='| '+resgl[i]['序号']+'  | '+resgl[i]['结果名称']+'  |  '+resgl[i]['类型（数字、字符、图片）']+' | '+resgl[i]['单位']+'  | '+resgl[i]['预期值']+'  |  见下图  | '+resgl[i]['判读结论']+' | '+resgl[i]['备注']+' |\n';
+                                      //var line = testEditor.getCursor().line;				//获取当前行数
+                                      //imgval +="[" + uuid + "]:" + imgarr[a].img + "\n";
+
+                                      //a+=1;
+                                }else{
+                                    resglval+='| '+resgl[i]['序号']+'  | '+resgl[i]['结果名称']+'  |  '+resgl[i]['类型（数字、字符、图片）']+' | '+resgl[i]['单位']+'  | '+resgl[i]['预期值']+'  |  '+resgl[i]['实际值']+' | '+resgl[i]['判读结论']+' | '+resgl[i]['备注']+' |\n';
+                                }
+                            }
+                     	}
+	                    var restpvalue = '#### 测试步骤表格\r\n'+
+                      	'| 序号  | 工作项目 | 测试工作程序内容及要求  | 指令或参数  | 判读要求  | 单位  | 实测结果  | 判读结论  | 备注  |\n'+
+						'| ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |\n'+restpval;
+											
+                        var respavalue ='#### 遥测统计表格\r\n'+
+                      	'| 序号  | 参数代号 | 参数名称  | 单位  | 正常值范围  | 测试结果  | 判读结论  |\n'+
+						'| ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |\n'+respaval;
+												
+                        var resuvvalue ='#### 测量结果表格\r\n'+
+                      	'| 序号  | 测点名称 | 插头号  | 节点号  | 单位  | 预期值  | 实际值  | 判读结论  | 备注  |\n'+
+						'| ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |\n'+resuvval;
+											
+                        var resglvalue='#### 通用结果表格\r\n'+
+                      	'| 序号  | 结果名称 | 类型  | 单位  | 预期值  | 实际值 | 判读结论  | 备注  |\n'+
+						'| ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |\n'+resglval;
+                        var restvvvvvv = '';
+
+
+                      if(mod.restp != '[]'){		//测试步骤表格
+                        restvvvvvv+=restpvalue;
+                      }
+                      if(mod.respa != '[]'){		//遥测统计表格
+                        restvvvvvv+=respavalue;
+                      }
+                      if(mod.resuv != '[]'){		//测量结果表格
+                        restvvvvvv+=resuvvalue;
+                      }
+                      if(mod.resgl != '[]'){		//通用结果表格
+                        restvvvvvv+=resglvalue;
+                      }
+
+                        _self.insertValue(restvvvvvv);
+
+                      for(var i=0;i<imgarr.length;i++){
+                          var uuid = guid();
+                          var markdownstrr = "![][" + uuid + "]";
+                          _self.insertValue(markdownstrr+ "\r\n"+imgarr[i].name+'.'+imgarr[i].type+'\r\n');
+                          imgval +="[" + uuid + "]:" + imgarr[i].img + "\r\n";
+                      }
+
+                        _self.gotoLine("last");
+                        _self.insertValue(imgval);
+
+                        layer.close(index);
+                    }
+                  }
+                });
+              }
+            },
+            lang: {
+              toolbar: {
+                localimg: "上传图片",
+                testIcon: "引入章节模板",
+                loadMaterial: "引入报告",
+                indicator: "引入结果"
+              }
+            }
+
+          });
+
+        }
+     
+  	
+  	
+  	
+    var form_v = $("#form_satellite");
+    var error_v = $('.alert-danger', form_v);
+    form_v.validate({
+      errorElement: 'span', //default input error message container
+      errorClass: 'help-block help-block-error', // default input error message class
+      focusInvalid: false, // do not focus the last invalid input
+      ignore: "", // validate all fields including form hidden input
+      messages: {
+      },
+      rules: {
+	      
+      },
+      invalidHandler: function (event, validator) { //display error alert on form submit
+        error_v.show();
+        App.scrollTo(error_v, -200);
+      },
+      errorPlacement: function (error, element) { // render error placement for each input type
+        var cont = $(element).parent('.input-group');
+        if (cont.size() > 0) {
+          cont.after(error);
+        } else {
+          element.after(error);
+        }
+      },
+      highlight: function (element) { // hightlight error inputs
+        $(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+      },
+      unhighlight: function (element) { // revert the change done by hightlight
+        $(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+      },
+      success: function (label) {
+        label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+      },
+      submitHandler: function (form) {
+        error_v.hide();
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+
+<div class="modal-dialog">
+    <form method="post" id="edittitleform" class="form-horizontal" action="/rbac/position/editTitle" data-validate="parsley">
+
+        <input type="hidden" id="_id" class="form-control" name="_id" value="{{_id}}">
+        <input type="hidden" id="tid" name="tid" value="{{data._id}}">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{% if data._id==null %}岗位添加{% else %}岗位编辑{% endif %}</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label" for="name">岗位名称</label>
+                    <div class="controls">
+                        <input type="text" name="name" class="form-control" placeholder="岗位名称" data-required="true" value="{{data.name}}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="class">级别</label>
+                    <div class="controls">
+                        <input type="text" name="class" class="form-control" data-required="true" value="{{data.class}}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a href="javascript:;" class="btn btn-default" data-dismiss="modal">关闭</a>
+                <button class="btn btn-primary btn-s-md" type="submit" onclick="edittitle()" data-dismiss="modal" target-form="form-horizontal">确定</button>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    function edittitle() {
+        var form = $("#edittitleform")
+        var query = form.serialize();
+        var target = form.attr("action");
+        $.post(target, query).success(function (data) {
+            $("#child_table_" + $("#_id").val()).bootstrapTable('refresh', data.data);
+        });
+    }
+</script>

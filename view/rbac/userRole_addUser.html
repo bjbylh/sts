@@ -1,0 +1,188 @@
+{% include "admin/top.html" %}
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+<!-- END THEME GLOBAL STYLES -->
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<link href="/static/metronic/assets/global/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/bootstrap-table.js"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+
+<style>
+	.bars {
+		height: 0px !important;
+		margin: 0px !important;
+	}
+</style>
+
+<div class="col-md-12">
+	<div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+		<!-- title -->
+		<div class="portlet-title">
+			<div class="caption font-dark">
+				<i class="icon-settings font-dark"></i>
+				<span class="caption-subject bold uppercase">添加用户</span>
+			</div>
+			<div class="tools"></div>
+		</div>
+		<!-- from -->
+		<div class="portlet-body form" style="padding-top: 8px !important;">
+			<form class="form-horizontal" id="form">
+				<input type="hidden" name="type" value="{{type}}" />
+				<input type="hidden" id="roleid" name="roleid" value="{{r._id}}">
+				<input type="hidden" id="satcode" name="satcode" value="{{sat.code}}">
+				<input type="hidden" id="satname" name="satname" value="{{sat.name}}">
+				<input type="hidden" id="role_name" name="role_name" value="{{r.name}}">
+				<input type="hidden" id="users" name="users" >
+				<!--form-body-->
+				<div class="form-body" style="padding: 0px !important;">
+					<!-- error msg -->
+					<div class="alert alert-danger display-hide">
+						<button class="close" data-close="alert"></button> 表单验证失败，请检查表单内容.
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="name">型号名称</label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" id="sat" name="sat" value="{{sat.name}}" disabled="disabled">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="code">代号</label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" id="code" name="code" value="{{sat.code}}" disabled="disabled">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="name">角色</label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" id="role" name="role" value="{{r.name}}" disabled="disabled">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="name">人员</label>
+						<div class="col-xs-9">
+							<table id="table" class="display table table-striped" cellspacing="0" width="100%"></table>
+						</div>
+					</div>
+
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!--/.fluid-container-->
+
+<!-- end: Content -->
+
+<script>
+	var callbackdata = function() {
+		$("#form").submit();
+		var rows = $('#table').bootstrapTable('getAllSelections');
+		$('#users').val(JSON.stringify(rows));
+		var arr=[];
+		arr[0]=$('#form').serialize();
+		arr[1]=$('#satcode').val();
+		return arr;
+//		var arr= $('#form').serializeArray();
+//		var data={};
+//		for(var i=0;i<arr.length;i++){
+//			var key=arr[i].name;
+//			var value=arr[i].value;
+//			data[key]=value;
+//		}
+//		return JSON.stringify(data);
+	};
+
+	$(document).ready(function() {
+		var userdatas = [];
+		var selecteds = [];
+		$.ajax({
+			url: "/rbac/user/getUsers",
+			type: 'get',
+			dataType: 'json',
+			async: false,
+			success: function(data) {
+				userdatas = data.data;
+			}
+
+		});
+		$.ajax({
+			url: 'getBySatAndRole',
+			data: {
+				'roleid': $('#roleid').val(),
+				'satcode': $('#satcode').val()
+			},
+			type: 'get',
+			dataType: 'json',
+			async: false,
+			success: function(data) {
+				var sleusers = data.data;
+				for(var i = 0, j = sleusers.length; i < j; i++) {
+					selecteds.push(sleusers[i].user_account);
+				}
+			}
+		});
+		var cols = [{
+			checkbox: true
+		}, {
+			field: 'name',
+			title: '用户名'
+		}, {
+			field: 'account',
+			title: '账号'
+		}];
+		$('#table').bootstrapTable({
+			toolbar: "#toolbar",
+			locale: 'zh-CN',
+			sidePagination: "client", //服务端处理分页
+			striped: true,
+			undefinedText: "",
+			pagination: true,
+			singleSelect: false,
+			pageSize: 10,
+			cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+			pageNumber: 1,
+			pageList: [10, 30, 50],
+			search: true, //不显示 搜索框
+			uniqueId: "_id", //每一行的唯一标识，一般为主键列
+			showColumns: false, //不显示下拉框（选择显示的列）
+			undefinedText: '',
+			columns: cols,
+			data: userdatas,
+		});
+		$('#table').bootstrapTable("checkBy", {
+			field: "account",
+			values: selecteds
+		});
+//		$("#btn_submit").click(function() {
+//			var rows = $('#table').bootstrapTable('getAllSelections');
+//			$('#users').val(JSON.stringify(rows));
+//			$.ajax({
+//				cache: true,
+//				type: "POST",
+//				url: "/rbac/userRole/savaUsers",
+//				data: $('#form').serialize(), // 你的formid
+//				async: false,
+//				error: function(request) {
+//					alert("Connection error");
+//				},
+//				success: function(data) {
+//					alert(data.msg);
+//					//					parent.window.location.reload();
+//					var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+//					parent.layer.close(index);
+//					parent.reExpandRow('detail' + $('#satcode').val());
+//				}
+//			});
+//
+//		})
+	});
+</script>
+
+</body>
+
+</html>

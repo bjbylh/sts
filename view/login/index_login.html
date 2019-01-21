@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="space">
+		<meta name="keywords" content="space">
+		<title>综合测试系统（STS）</title>
+		<link rel="stylesheet" type="text/css" href="/static/home/css/reset.css">
+		<link rel="stylesheet" href="/static/home/css/global.css">
+		<link rel="stylesheet" href="/static/home/css/main.css">
+		<!--[if IE 8]>
+    <link rel="stylesheet" href="/static/home/css/font.css">
+    <![endif]-->
+		<style type="text/css" media="screen">
+			body,
+			html {
+				margin: 0;
+				padding:0;
+                width: 100%;
+                height: 100%;
+				position: relative;
+				background:url(/static/welcome/images/loginbg.jpg) no-repeat;
+				background-size:100% 81%;
+				-moz-background-size:100% 81%;
+				/**background-position: center 0;**/
+				background-position: 0px 90px;
+
+			}
+			
+		</style>
+	</head>
+
+	<body onload="isTopp()">
+		<div style="height:70px;padding-left:60px;padding-top:10px;padding-bottom:10px"><img src="/static/welcome/images/loginlogo.png" style="width: auto;height: auto;max-width: 100%;max-height: 100%;"/></div>
+		<div>
+		<!--div id="logbg"></div-->
+		<div class="login-box" style="margin-top:-250px;background: #FAFCFD; margin-left:270px;width:420px;height:390px;border-radius: 0px;">
+			<form class="login-form" onsubmit="return false">
+				<span class="form-title">系统登入</span>
+				<span class="form-tip">请输入用户ID</span>
+				<input id="_state" type="hidden" value="{{logout}}"/>
+				<div>
+					<input id="account" class="form-input" type="text" autocomplete="off" placeholder=" 用户名" name="account" value="" style="border:1px solid #D9D9D9;height:40px;line-height:40px;font-size:12px">
+				</div>
+				<div style="padding-top:20px">
+					<input id="password" class="form-input" type="password" autocomplete="off" placeholder=" 密码" name="password" value="" style="border:1px solid #D9D9D9;height:40px;line-height:40px;font-size:12px">
+				</div>
+				<div class="form-remember">
+					<i class="select-icon" style="width:12px;height:12px;background-size:100% 100%;"></i>
+					<span class="select-text" style="font-size:12px">自动登录</span>
+				</div>
+				<div class="form-actions">
+					<div style="background:#3B6EF1;width:100%;height:50px;line-height:50px" id="btn_submit"><a href="" style="color:#FFF">登录</a></div>
+				</div>
+			</form>
+			　<iframe id="rfFrame" name="rfFrame" src="about:blank" style="display:none;"></iframe>
+		</div>
+
+		<div class="footer fixed" style="color:#000">
+			Copyright &#169 2018.中国空间技术研究院总体部运营与应用事业部
+		</div>
+
+		<script type="text/javascript" src="/static/home/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/static/home/js/placeholderSupport.js"></script>
+
+		<script>
+			function isTopp(){
+                if(window !=top){
+                    top.location.href='/home/intex/intex';
+                }
+			}
+
+			$(document).ready(function() {
+
+				$("#btn_submit").attr("target","rfFrame");
+				var _state=$('#_state').val();
+				if(isIE()&&!_state) {
+					var wshNetwork = new ActiveXObject("WScript.Network");
+					if(null != wshNetwork) {
+						//console.log(wshNetwork.UserName);
+						var data={'adName':wshNetwork.UserName.toString()};
+						$.ajax({
+							url: '/login/index/dologin',
+							type: 'post',
+							datatype: 'json',
+							async: false,
+							data: {'account':wshNetwork.UserName},
+							success: function(data) {
+								if(data.state == 'ok') {
+									window.location.reload();
+								} else {
+									//console.log(data.msg);
+									alert(data.msg);
+									window.location.href = getUrl();
+								}
+							},
+							error: function() {
+								alert('网络错误1'+ JSON.stringify(error));
+							}
+						});
+						return wshNetwork.UserName;
+					} else {
+						return "";
+					}
+				} else {
+					//console.log('不是IE浏览器');
+				}
+				$('#btn_submit').on('click', function() {
+					$.ajax({
+						url: '/login/index/dologin',
+						type: 'post',
+						datatype: 'json',
+						async: false,
+						data: $("form").serialize(),
+						success: function(data) {
+							if(data.state == 'ok') {
+								window.location.reload();
+							} else {
+								alert('账号或密码错误'  + JSON.stringify(data));
+							}
+						},
+						error: function(error) {
+							alert('网络错误2' + JSON.stringify(error));
+						}
+					});
+				});
+			});
+
+			function isIE() { //ie?
+				if(!!window.ActiveXObject || "ActiveXObject" in window)
+					return true;
+				else
+					return false;
+			}
+			function getUrl(){
+				//console.log(window.location.href);
+				//console.log(document.URL);
+				//console.log(document.URI);
+				var url=document.URL;
+				if(url.indexOf('logout=')>0){
+					return url;
+				}else{
+					if(url.indexOf('?')>0){
+						return url+'&logout=1';
+					}else{
+						return url+'?logout=1';
+					}
+				}
+			}
+			/*
+			addEventListener("load", function () {
+			  setTimeout(hideURLbar, 0);
+			}, false);
+
+			function hideURLbar() {
+			  window.scrollTo(0, 1);
+			}
+
+			function GetUserName() {
+			  var wshNetwork = new ActiveXObject("WScript.Network");
+			  if (null != wshNetwork) {
+			    alert('获取域账号名称为' + wshNetwork.UserName);
+			    return wshNetwork.UserName;
+			  } else {
+			    alert('域账号为空');
+			    return "";
+			  }
+			}*/
+		</script>
+
+	</body>
+
+</html>

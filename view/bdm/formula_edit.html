@@ -1,0 +1,206 @@
+{% include "./top.html" %}
+
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet"
+      type="text/css"/>
+
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<div class="col-md-12">
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <form class="form-horizontal" id="form_satellite">
+                <div class="form-body" style="padding: 0px !important;">
+                    <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+                    <input type="hidden" id="_satid" name="_satid" value="{{sat._id}}">
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表单验证失败，请检查表单内容.
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="code">计算公式代号<span> * </span></label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="code" name="code"
+                                           value="{{data.code}}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-3" for="type">类型</label>
+                                <div class="col-xs-9">
+                                    <select id="type" name="type" class="form-control">
+                                        <option value=0 {% if data.type==0 %}selected{% endif %}>直读</option>
+                                        <option value=3 {% if data.type==3 %}selected{% endif %}>内置一般公式</option>
+                                        <option value=1 {% if data.type==1 %}selected{% endif %}>查表法</option>
+                                        <option value=2 {% if data.type==2 %}selected{% endif %}>曲线</option>
+                                        <option value=4 {% if data.type==4 %}selected{% endif %}>扩展函数</option>
+                                        <option value=5 {% if data.type==5 %}selected{% endif %}>内置的自定义表达式</option>
+                                        <option value=6 {% if data.type==6 %}selected{% endif %}>自定义LUA</option>
+                                        <option value=7 {% if data.type==7 %}selected{% endif %}>自定义JS脚本</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-2" for="name">公式名称<span> * </span></label>
+                                <div class="col-xs-10">
+                                    <input type="text" class="form-control" id="name" name="name" value="{{data.name}}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-2" for="describe">公式说明</label>
+                                <div class="col-xs-10">
+                                    <input type="text" class="form-control" id="describe" name="describe" value="{{data.describe}}">
+                                </div>
+                            </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="guidance">公式配置</label>
+                        <div class="col-xs-10">
+                            <textarea name="guidance" class="form-control" id="guidance" cols="30" rows="3" value="{{data.guidance}}">{{data.guidance}}</textarea>
+                        </div>
+                    </div>
+                    <div class="row" id="prompt" style="display: none">
+                        <p class="control-label col-xs-12" style="color:red;text-align:center">请用正确格式:&nbsp数字,数字;数字,数字;...//符号为英文</p>
+                    </div>
+                    <hr style="border:0.5px solid #959595">
+                    <div class="row">
+                        <div class="col-xs-12" style="text-align:center;font-size:18px">
+                            <p>公式映射</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="code2dfh" >东方红公式代号</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="code2dfh" name="code2dfh" value="{{data.code2dfh}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="code2com" >通信部公式代号</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="code2com" name="code2com" value="{{data.code2com}}">
+                        </div>
+                    </div>
+                    <!--有问题待解决-->
+                        <div class="form-group">
+                            <label class="control-label col-xs-2" for="code226" >卫测中心代号</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" id="code226" name="code226" value="{{data.code226}}">
+                            </div>
+                        </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+  var callbackdata = function() {
+    $('#form_satellite').submit();
+    var validate = $('#form_satellite').valid();
+    var typeVal=$("#type").val();
+    var guidanceVal=$("#guidance").val();
+    var newNuber=guidanceVal.split(";").length-1;
+    var reg=new RegExp("(\\d+,\\d+;){"+newNuber+"}");
+    var isTrue=false;
+    if(typeVal=="曲线"||typeVal=="查表法"){
+      isTrue=true
+    }
+    if (validate) {
+      if(isTrue){
+        if(newNuber>1&&guidanceVal.split(";")[newNuber]==""){
+          if(reg.test(guidanceVal)){
+            return [form2obj('form_satellite')];
+            $("#prompt").hide();
+          }else{
+            $("#prompt").show();
+            return null;
+          }
+        }else{
+          $("#prompt").show();
+          return null;
+        }
+      }else {
+        return [form2obj('form_satellite')];
+      }
+    } else {
+     return null;
+   }
+ /*   if (validate) {
+      return [form2obj('form_satellite')];
+    } else {
+      return null;
+    }*/
+  };
+
+  $(document).ready(function() {
+    var rules = {
+      name: {
+        minlength: 2,
+        required: true,
+        remote: {
+          url: 'doValidateName',
+          type: 'post',
+          data: {
+            'name': function() {
+              return $('#name').val();
+            },
+            '_formulaid': function() {
+              return $('#_id').val();
+            },
+            '_satid': function() {
+              return $('#_satid').val();
+            }
+          }
+        }
+      },
+      code: {
+        minlength: 2,
+        maxlength: 10,
+        required: true,
+        remote: {
+          url: 'doValidateCode',
+          type: 'post',
+          data: {
+            'code': function() {
+              return $('#code').val();
+            },
+            '_formulaid': function() {
+              return $('#_id').val();
+            },
+            '_satid': function() {
+              return $('#_satid').val();
+            }
+          }
+        }
+      }
+    };
+    var message = {
+      code: {remote: '计算公式代号不合法或已被占用'},
+      name: {remote: '计算公式名称不合法或已被占用'}
+    };
+    bindFormValidate('#form_satellite', rules, message);
+  });
+
+</script>
+
+{% include "./footer.html" %}

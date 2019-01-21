@@ -1,0 +1,515 @@
+{% include "./top.html" %}
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/static/metronic/assets/global/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet"
+      type="text/css"/>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+<link rel="stylesheet" href="/static/metronic/assets/global/plugins/select2/css/select2.css">
+<link rel="stylesheet" href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css">
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/pages/scripts/table-bootstrap.min.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<sctipt src="/static/metronic/assets/global/plugins/select2/js/select2.js"></sctipt>
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.js"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-table/extensions/editable/bootstrap-table-editable.js"></script>
+<link href="/static/metronic/assets/global/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="/static/metronic/assets/global/plugins/bootstrap-editable/bootstrap-editable/js/bootstrap-editable.min.js"></script>
+<style type="text/css">
+    #table-grounp{
+        position:relative;
+        height:450px;
+        width:100%;
+        overflow: hidden;
+        text-align: center;
+        margin-top:20px;
+        /*background-color: #0a6aa1;*/
+    }
+    #table-L-wrap,#table-R-wrap{
+        position:absolute;
+        width:600px;
+        height:450px;
+        top:0;
+    }
+    #table-L-wrap{
+        left:0;
+    }
+    #table-R-wrap{
+        right:0
+    }
+    .batch_buttons{
+        width:100px;
+        height:100%;
+       margin:60px auto;
+    }
+    .batch_buttons button{
+        width:80px;
+        padding:0;
+        height:30px
+    }
+    .batch_buttons button+button{
+        margin-top:10px
+    }
+    .batch_buttons .btn-sgle{
+        margin-top:50px;
+    }
+    .batch_buttons .btn-sav{
+        margin-top:50px
+    }
+    .editableform{
+        z-index: 9999;
+    }
+   .select2-container .select2-selection--single{
+        height:34px;
+    }
+</style>
+<div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <form class="form-horizontal" id="form_satellite">
+                <div class="form-body" style="padding: 0px !important;">
+                    <input type="hidden" id="RUL_GROUP_ID" value="{{RUL_GROUP_ID}}"/>
+                    <input type="hidden" id="RUL_SAT" value="{{RUL_SAT}}"/>
+                    <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+                    <input type="hidden" id="_satid" name="_satid" value="{{sat._id}}">
+                    <input type="hidden" id="sData" value="{{tm.positions}}">
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表单验证失败，请检查表单内容.
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-xs-3" for="select-note">型号</label>
+                                <div class="col-xs-9">
+                                    <select id="select-note" class="form-control" name="select-note" style="height:34px">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-xs-3" for="select-no">数据流</label>
+                                <div class="col-xs-9">
+                                    <select id="select-no" class="form-control" name="select-no">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label col-xs-3" for="select-sys">分系统</label>
+                                <div class="col-xs-9">
+                                    <select id="select-sys" class="form-control" name="select-sys">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  <div class="row">
+                      <button id="btn-search" type="button" class="btn btn-primary pull-right" style="margin-right:16px;width:100px">搜索</button>
+                  </div>
+                </div>
+            </form>
+        </div>
+        <div id="table-grounp">
+            <div id="table-L-wrap" class=table-responsive">
+                <table id="table-L" class="table text-nowrap"></table>
+            </div>
+            <div class="batch_buttons">
+                <button id="moveAllData" class="demo-loading-btn btn green" type="button" >>></button>
+                <button id="delAllData" class="demo-loading-btn btn green" type="button"><<</button>
+                <button id="moveData" class="btn-sgle demo-loading-btn btn green" type="button">></button>
+                <button id="delData" class="demo-loading-btn btn green" type="button"><</button>
+                <button id="btn-sav" class="btn-sav demo-loading-btn btn green" type="button">确定</button>
+            </div>
+            <div id="table-R-wrap" class="table-responsive">
+                <table id="table-R" class="table text-nowrap"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var channel_id="";     //数据流id
+    var sysid="";           //分系统id
+    var arr=[];             //型号id,name
+    var sysWrapArr=[];      //分系统id,name
+  $.ajax({
+    type : "get",
+    async: false,
+    url : "/bdm/satellite/getList",
+    // data:{"_satid":"{{sat._id}}"},
+    success : function(data) {
+      for(var i=0;i<data.data.length;i++){
+        var obj={};
+        obj.name=data.data[i].name;
+        obj._id=data.data[i]._id;
+        arr.push(obj)
+      }
+      var NoteArr=[];
+      for(var i=0;i<arr.length;i++){
+        NoteArr.push(arr[i].name)
+      }
+      $('#select-note').select2({
+        data:NoteArr
+      });
+    },
+    error:function(request){
+      showMessageAbnomal("获取信息失败")
+    }
+  });
+    $("#select-note").change(function() {
+      sysWrapArr=[];
+      var item = $(this).val();
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].name == item) {
+          channel_id = arr[i]._id;
+        }
+      }
+      $.ajax({
+        type : "get",
+        async: false,
+        url : "/bdm/channel/getList",
+        data:{"_satid":channel_id},
+        success : function(data) {
+          var channeInerArr=[];
+          for(var i=0;i<data.data.length;i++){
+            channeInerArr.push(data.data[i].name)
+          }
+          $('#select-no').select2().empty();
+          $('#select-no').select2({
+            data:channeInerArr
+          });
+        },
+        error:function(request){
+          showMessageAbnomal("获取信息失败")
+        }
+      });
+      $.ajax({
+        type : "get",
+        async: false,
+        url : "/bdm/subsys/getList",
+        data:{"_satid":channel_id},
+        success : function(data) {
+          console.log(data)
+          for(var i=0;i<data.data.length;i++){
+           var obj={};
+           obj.name=data.data[i].name;
+           obj._id=data.data[i]._id;
+            sysWrapArr.push(obj)
+         }
+          var sysinnerArr=[];
+          for(var i=0;i<data.data.length;i++){
+            sysinnerArr.push(data.data[i].name)
+            }
+          $('#select-sys').select2().empty();
+          $('#select-sys').select2({
+            data:sysinnerArr
+          })
+        },
+        error:function(request){
+          showMessageAbnomal("获取信息失败")
+        }
+      });
+    });
+    $('#select-sys').change(function(){
+      var item=$(this).val();
+      for(var i=0;i<sysWrapArr.length;i++){
+        if(sysWrapArr[i].name==item){
+          // device_id=channelWrapArr[i]._id;
+          sysid=sysWrapArr[i]._id;
+        }
+      }
+
+    });
+  $("#btn-search").click(function(){
+/*    var satid=channel_id;
+    var sysData=sysid;*/
+    var Data=[];
+    $.ajax({
+      type: 'get',
+      async: false,
+      url: '/bdm/parameter/getList',
+      data: {'_satid':channel_id, '_subsysid':sysid},
+      success: function(data) {
+        Data=data.data;
+        var tableArr=[];
+        for(var i=0;i<Data.length;i++){
+          var obj={};
+          obj.Tmid=Data[i].tmcode;
+          obj.code=Data[i].paramid;
+          obj.note=Data[i].tmcaption;
+          obj.Deviceid=Data[i].subsysname;
+          obj.Dataflow=Data[i].channelcode;
+          obj.RUL_LIMIT_UP=0;
+          obj.RUL_LIMIT_DOWN=0;
+          tableArr.push(obj)
+        }
+        var $tableL=$("#table-L");
+        $tableL.bootstrapTable('load',tableArr)
+        // console.log(data)
+      },
+      error:function(request){
+        showMessageAbnomal("获取信息失败")
+      }
+    })
+   /* var tableArr=[];
+    for(var i=0;i<Data.length;i++){
+      var obj={};
+      obj.Tmid=Data[i].tmcode;
+      obj.code=Data[i].paramid;
+      obj.note=Data[i].tmcaption;
+      obj.Deviceid=Data[i].subsysname;
+      obj.Dataflow=Data[i].channelcode;
+      obj.RUL_LIMIT_UP=0;
+      obj.RUL_LIMIT_DOWN=0;
+      tableArr.push(obj)
+    }
+    var $tableL=$("#table-L");
+    $tableL.bootstrapTable('load',tableArr)*/
+  });
+  var cols1 = [
+    {checkbox: 'true',
+      width:"50px",
+      cellStyle:function cellStyle(){
+        return {
+          css: {"color": "blue", "font-size": "50px"}
+        }
+      }
+      },
+    {
+      field: 'Tmid',
+      title: '参数id'
+    }, {
+      field: 'code',
+      title: '参数编号'
+    },
+    {
+      field: 'note',
+      title: '参数名称',
+    },
+    {
+      field: 'Deviceid',
+      title: '所属分系统',
+    },
+    {
+      field: 'Dataflow',
+      title: '数据流'
+    }
+  ];
+  var cols2 = [
+    {
+      checkbox: 'true',
+    },
+    {
+      field: 'Tmid',
+      title: '参数id'
+    }, {
+      field: 'code',
+      title: '参数编号',
+     /* formatter:function(v){
+        return '<span style="line-height:20px">'+v+'</span>'
+      }*/
+    },
+    {
+      field: 'note',
+      title: '参数名称',
+    },
+    {
+      field: 'Deviceid',
+      title: '所属分系统'
+    },
+    {
+      field: 'Dataflow',
+      title: '数据流',
+    },
+    {
+      field: 'RUL_LIMIT_UP',
+      title: '上限',
+      editable: {
+        type: 'text',
+        title: '上限',
+        validate: function (v) {
+          if (!v) return '用户名不能为空';
+
+        }
+      }
+    },
+    {
+      field: 'RUL_LIMIT_DOWN',
+      title: '下限',
+      editable: {
+        type: 'text',
+        title: '下限',
+        validate: function (v) {
+          if (!v) return '用户名不能为空';
+        }
+      }
+    },
+  ];
+$(function(){
+ function initTableL(){
+   $("#table-L").bootstrapTable({
+     // url: '/bdm/grounddev/getList',
+     // method: 'get',
+     // queryParams: {'_satid': satrow._id},
+     locale: 'zh-CN',
+     dataType: 'json',
+     detailView: false,
+     sidePagination: 'client',
+     striped: true,
+     undefinedText: '',
+     singleSelect: false,
+     pagination: true,
+     pageSize: 7,
+     pageNumber: 1,
+     pageList: [7],
+     cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+     search: false, //不显示 搜索框
+     uniqueId: 'Tmid', //每一行的唯一标识，一般为主键列
+     showColumns: false, //不显示下拉框（选择显示的列）
+     // clickToSelect:true,
+     columns: cols1,
+
+     onLoadSuccess: function() { //加载成功时执行
+     },
+     onExpandRow: function(index, subsysrow, $subdetail) {
+     }
+   });
+ }
+  initTableL();
+  initTableR();
+ function initTableR(){
+   $("#table-R").bootstrapTable({
+     // url: '/bdm/grounddev/getList',
+     // method: 'get',
+     // queryParams: {'_satid': satrow._id},
+     locale: 'zh-CN',
+     dataType: 'json',
+     detailView: false,
+     sidePagination: 'client',
+     striped: true,
+     undefinedText: '',
+     useCurrentPage:true,     //获取用户当前页面数据
+     singleSelect: false,
+     pagination: true,
+     pageSize:7,
+     pageNumber: 1,
+     pageList: [7],
+     cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+     search: false, //不显示 搜索框
+     uniqueId: 'Tmid', //每一行的唯一标识，一般为主键列
+     showColumns: false, //不显示下拉框（选择显示的列）
+     columns: cols2,
+     onLoadSuccess: function() { //加载成功时执行
+
+     },
+     onExpandRow: function(index, subsysrow, $subdetail) {
+     }
+   });
+ }
+  $("#moveData").click(function(){
+    var $tableL=$("#table-L");
+    var $tableR=$("#table-R");
+    var ids = $.map($tableL.bootstrapTable('getSelections'), function (row) {
+  /*    var dataL=$tableL.bootstrapTable('getRowByUniqueId', row.Tmid);
+      $tableR.bootstrapTable('append',dataL);*/
+      return row.Tmid
+    });
+   var selectDataL=$tableL.bootstrapTable('getSelections');
+       $tableR.bootstrapTable('prepend',selectDataL);
+     $tableL.bootstrapTable('remove', {
+       field: 'Tmid',
+       values: ids
+    });
+  });
+  $("#moveAllData").click(function(){
+    var $tableL=$("#table-L");
+    var $tableR=$("#table-R");
+ /*    $.each($tableL.bootstrapTable('getData'), function (index,value) {
+      var dataL=$tableL.bootstrapTable('getRowByUniqueId', value.Tmid);
+      $tableR.bootstrapTable('append',dataL);
+    });*/
+    var tableArr=$tableL.bootstrapTable('getData');
+      if(tableArr.length!=0){
+        $tableR.bootstrapTable('load',tableArr);
+        $tableL.bootstrapTable('destroy');
+        initTableL();
+      }
+  });
+  $("#delAllData").click(function(){
+    var $tableL=$("#table-L");
+    var $tableR=$("#table-R");
+    var tableArr=$tableR.bootstrapTable('getData');
+       if(tableArr.length!=0){
+         $tableL.bootstrapTable('load',tableArr);
+         // var $tableR=$("#table-R").bootstrapTable();
+         /*  $tableR.bootstrapTable('removeAll');*/
+         $tableR.bootstrapTable('destroy');
+         initTableR();
+       }
+  });
+  $("#delData").click(function(){
+    var $tableL=$("#table-L");
+    var $tableR=$("#table-R");
+      var ids = $.map($tableR.bootstrapTable('getSelections'), function (row) {
+        return row.Tmid
+      });
+    var selectDataL=$tableR.bootstrapTable('getSelections');
+    $tableL.bootstrapTable('prepend',selectDataL);
+      $tableR.bootstrapTable('remove', {
+        field: 'Tmid',
+        values: ids
+      })
+    });
+  $("#btn-sav").click(function(){
+    var $table=$('#table-R');
+    var tableDatas=$table.bootstrapTable('getData');
+    var icallarr=[];
+    var d = new Date();
+    var my_day=d.getDate();
+    var my_month=d.getMonth()+1;
+    var my_year=d.getFullYear();
+    var my_hours=d.getHours();
+    var my_minutes=d.getMinutes();
+    var my_seconds=d.getSeconds();
+    var itime=my_year+'-'+my_month+'-'+my_day+'T'+my_hours+':'+my_minutes+':'+my_seconds;
+    for(var i=0;i<tableDatas.length;i++){
+      var obj={};
+      obj.RUL_ID=tableDatas[i].code;
+      obj.RUL_NAME=tableDatas[i].code+'参数上下下判读';
+      obj.RUL_GROUP_ID=$("#RUL_GROUP_ID").val();                               //分组标识
+      obj.RUL_SAT=$("#RUL_SAT").val();                                         //卫星代号
+      obj.RUL_TYPE=2;
+      obj.RUL_TIME=itime;
+      obj.RUL_SCRIPT='if('+tableDatas[i].Dataflow+'.'+tableDatas[i].code+'>'+tableDatas[i].RUL_LIMIT_DOWN+'&&'+tableDatas[i].Dataflow+'.'+tableDatas[i].code+'<'+tableDatas[i].RUL_LIMIT_UP+')'+'r=true;else r=false';
+      obj.RUL_PARS=tableDatas[i].Dataflow+'.'+tableDatas[i].code;   //判读参数数组
+      obj.RUL_CMDS='';                                              //判读指令数组
+      obj.RUL_DELAY='';                                             //是否延时判读，待扩充;
+      obj.RUL_LIMIT_UP=tableDatas[i].RUL_LIMIT_UP;
+      obj.RUL_LIMIT_DOWN=tableDatas[i].RUL_LIMIT_DOWN;
+      obj.RUL_JUMP_VALUE='-1.1';                                        //参数跳变范围
+      icallarr.push(obj)
+    }
+    console.log(icallarr)
+  })
+})
+</script>
+<script>
+  var callbackdata = function() {
+    var $table=$('#table-R');
+    var tableDatas=$table.bootstrapTable('getData');
+    return tableDatas;
+  };
+</script>
+{% include "./footer.html" %}

@@ -1,0 +1,133 @@
+{% include "manager/top.html" %}
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link rel="stylesheet" type="text/css" href="/static/spread.sheets/css/gc.spread.sheets.excel2013white.11.0.0.css" />
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+
+<script src="/static/arena/js/form.js" type="text/javascript"></script>
+<script src="/static/spread.sheets/js/FileSaver.min.js"></script>
+<script src="/static/spread.sheets/js/gc.spread.sheets.all.11.0.0.min.js"></script>
+<script src="/static/spread.sheets/js/gc.spread.excelio.11.0.0.min.js"></script>
+<script src="/static/spread.sheets/js/gc.spread.sheets.resources.zh.11.0.0.min.js"></script>
+<style>
+    * {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    .sample-tutorial {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+        margin-top:10px;
+    }
+
+
+</style>
+<div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-title">
+            <div class="caption font-dark">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject bold uppercase">{% if data._id==null %}添加模板{% else %} 编辑模板 {% endif %}</span></span>
+            </div>
+            <div class="tools"></div>
+        </div>
+        <form class="form-horizontal" id="form_satellite">
+            <div class="form-body" style="padding: 0px !important;">
+                <input type="hidden" id="id" name="id" value="{{data._id}}">
+                <input type="hidden" id="excel" name="excel">
+                <div class="row">
+                    <div class="col-md-6" style="width:50%;float:left;">
+                        <div class="form-group">
+                            <label class="control-label col-md-3" style="float:left;">名称</label>
+                            <div class="col-md-9" style="float:left;width:75%;">
+                                <input type="text" class="form-control" id="name" name="name" value="{{data.name}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" style="width:50%;float:left;">
+                        <div class="form-group">
+                            <label class="control-label col-md-3" style="float:left;" >描述</label>
+                            <div class="col-md-9" style="float:left;width:75%;">
+                                <input type="text" class="form-control" id="desc" name="desc" value="{{data.desc}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sample-tutorial">
+                    <div id="ss" style="width:100%;height:100%;min-height:420px;border: 1px solid gray;"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var projectId = $("#projectId").val();
+        var sat = $("#_satid").val();
+
+        var spread = new GC.Spread.Sheets.Workbook(document.getElementById("ss"));
+        spread.setSheetCount(1);
+        initSpread(spread);
+
+        //验证表单name input 和  desc input 是否为空  form.js
+        var rules = {
+            name: {
+                required: true
+            },
+            desc: {
+                required: true
+            }
+        };
+        formValid('#form_satellite', rules);
+
+    });
+
+    var callbackdata = function () {
+        var spread1 = GC.Spread.Sheets.findControl(document.getElementById('ss'));
+        var jsonString = JSON.stringify(spread1.toJSON(serializationOption));
+        var serializationOption = {
+        ignoreFormula: false, // indicate to ignore the style when convert workbook to json, default value is false
+            ignoreStyle: false, // indicate to ignore the formula when convert workbook to json, default value is false
+            rowHeadersAsFrozenColumns: true, // indicate to treat the row headers as frozen columns when convert workbook to json, default value is false
+            columnHeadersAsFrozenRows: true // indicate to treat the column headers as frozen rows when convert workbook to json, default value is false
+    }
+        $("#excel").val(jsonString);
+
+        $("#form_satellite").submit();
+        var validate = $("#form_satellite").valid();
+        if (validate)
+            return formBuild('#form_satellite');
+        else
+            return null;
+    };
+
+    function initSpread(spread) {
+
+        //var sheet = spread.getActiveSheet();
+        var sheet = spread.getSheet(0);
+
+
+        sheet.setValue(0,0,"我是第一列表头");
+        sheet.setValue(0,1,"我是第二列");
+        sheet.setValue(0,2,"我是第三列表头");
+        sheet.setValue(0,3,"我是第四列");
+        sheet.setValue(0,4,"我是第五列表头");
+        sheet.getCell(0).text('Align').vAlign(GC.Spread.Sheets.VerticalAlign.center).hAlign(GC.Spread.Sheets.HorizontalAlign.center);
+        // sheet.addSpan(0, 0, 1, 3, GC.Spread.Sheets.SheetArea.colHeader);
+        sheet.setRowHeight(0,40);
+        // sheet.setColumnWidth(1, 40);
+        sheet.setColumnWidth(0, 160);
+        sheet.setColumnWidth(1, 100);
+        sheet.setColumnWidth(2, 120);
+        sheet.setColumnWidth(3, 110);
+        sheet.setColumnWidth(4, 180);
+    }
+</script>
+
+{% include "manager/footer.html" %}

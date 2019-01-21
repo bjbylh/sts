@@ -1,0 +1,123 @@
+{% include "admin/top.html" %}
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+<!-- END THEME GLOBAL STYLES -->
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js" type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<div class="col-md-12">
+	<div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+		<!-- title -->
+		<div class="portlet-title">
+			<div class="caption font-dark">
+				<i class="icon-settings font-dark"></i>
+				<span class="caption-subject bold uppercase">{% if data._id==null %}项目添加{% else %}项目编辑{% endif %}</span>
+			</div>
+			<div class="tools"></div>
+		</div>
+		<!-- from -->
+		<div class="portlet-body form" style="padding-top: 8px !important;">
+			<form class="form-horizontal" id="form_satellite">
+				<input type="hidden" id="_id" name="_id" value="{{data._id}}">
+				<!--form-body-->
+				<div class="form-body" style="padding: 0px !important;">
+					<!-- error msg -->
+					<div class="alert alert-danger display-hide">
+						<button class="close" data-close="alert"></button> 表单验证失败，请检查表单内容.
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="name">项目名称<span> * </span></label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" id="name" name="name" value="{{data.name}}">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="code">项目代号</label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" id="code" name="code" value="{{data.code}}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="baseUrl">项目根路径</label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" id="baseUrl" name="baseUrl" value="{{data.baseUrl}}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="remark">备注</label>
+						<div class="col-xs-9">
+							<textarea class="form-control" id="remark" name="remark">{{data.remark}}</textarea>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- end: Content -->
+
+<script>
+	var callbackdata = function() {
+		$("#form_satellite").submit();
+		var validate = $("#form_satellite").valid();
+		if(validate)
+			return $('#form_satellite').serialize();
+		else
+			return null;
+	};
+	$(document).ready(function() {
+		var form_v = $("#form_satellite");
+		var error_v = $('.alert-danger', form_v);
+		form_v.validate({
+			errorElement: 'span', //default input error message container
+			errorClass: 'help-block help-block-error', // default input error message class
+			focusInvalid: false, // do not focus the last invalid input
+			ignore: "", // validate all fields including form hidden input
+			rules: {
+				name: {
+					minlength: 2,
+					required: true
+				}
+			},
+			invalidHandler: function(event, validator) { //display error alert on form submit
+				error_v.show();
+				App.scrollTo(error_v, -200);
+			},
+			errorPlacement: function(error, element) { // render error placement for each input type
+				var cont = $(element).parent('.input-group');
+				if(cont.size() > 0) {
+					cont.after(error);
+				} else {
+					element.after(error);
+				}
+			},
+			highlight: function(element) { // hightlight error inputs
+				$(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+			},
+			unhighlight: function(element) { // revert the change done by hightlight
+				$(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+			},
+			success: function(label) {
+				label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+			},
+			submitHandler: function(form) {
+				error_v.hide();
+			}
+		});
+	});
+</script>
+
+</body>
+
+</html>

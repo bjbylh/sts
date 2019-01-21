@@ -1,0 +1,299 @@
+{% include "./top.html" %}
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/static/metronic/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css"
+      rel="stylesheet" type="text/css"/>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js"
+        type="text/javascript"></script>
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/pages/scripts/table-datatables-responsive.min.js" type="text/javascript"></script>
+<script src="/static/socket.io-client/dist/socket.io.js"></script>
+
+<style>
+    /*.dataTables_wrapper{
+        margin-top: 30px !important;
+    }
+    .dataTables_wrapper:first-child{
+        margin-top: 15px !important;
+    }*/
+
+    td {
+        text-align: center
+    }
+
+    th {
+        text-align: center
+    }
+
+    .online {
+        background-color: #b6f0e5 !important;
+        color:#000 !important;
+    }
+
+    .stopped {
+        background-color: #FFF !important;
+        color:#000 !important;
+    }
+
+    #ss {
+        margin-top: 0px;
+        margin-left: 950px;
+    }
+
+    #search {
+        margin-top: 20px;
+    }
+
+    /*.tablehe{
+        margin-top: 30px !important;
+    }*/
+</style>
+<!-- END PAGE LEVEL SCRIPTS -->
+<input type="hidden" id="groupid" value="{{group}}">
+
+<div class="col-md-12" id="content">
+    <!--<table id="table" class="display table table-striped" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th>name</th>
+            <th>cpu</th>
+            <th>id</th>
+            <th>mem</th>
+            <th>pid</th>
+            <th>restartNum</th>
+            <th>status</th>
+            <th>uptime</th>
+            <th>operation</th>
+        </tr>
+        </thead>
+    </table>-->
+</div>
+
+<script>
+  $(document).ready(function () {
+    /*var serverip = window.location.href
+    var reg = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/
+    serverip = serverip.match(reg);
+    var socket = io.connect("http://" + serverip + ":8360");*/
+      var serverip = $("#groupid").val();
+      var socket = io.connect(serverip);
+
+      var satarr = [];
+      $.ajax({
+          url: 'getall?group='+$("#groupid").val(),//$("#groupid").val() + 'getall'
+          type: 'get',
+          async:false,
+          datatype: 'json',
+          success: function (result) {
+              satarr=result;
+          }
+      });
+
+    var gro = JSON.stringify(satarr);
+
+      $.ajax({
+          url: "getService?group=" + gro,
+          type: 'get',
+          datatype: 'json',
+          success: function (data) {
+              var data = data.data;
+
+              for(var i=0;i<data.length;i++){
+                  $("#content").append(
+                      '<div style="margin-top: 10px;position:relative;top: 30px;font-size: 23px">'+data[i].satid+'</div>'+
+                      '<table id="'+data[i].satid+'" class="display table table-striped tablehe" cellspacing="0" width="100%">'+
+                      '<thead>'+
+                      '<tr>'+
+                      '<th>name</th>'+
+                      '<th>cpu</th>'+
+                      '<th>id</th>'+
+                      '<th>mem</th>'+
+                      '<th>pid</th>'+
+                      '<th>restartNum</th>'+
+                      '<th>status</th>'+
+                      '<th>uptime</th>'+
+                      '<th>operation</th>'+
+                      '</tr>'+
+                      '</thead>'+
+                      '</table>'
+                  );
+
+
+                  var tablearr = data[i].arr;
+
+                  $('#'+data[i].satid).DataTable({
+                      //"ajax": "getService?group=" + gro,//"getService?group=" + $("#groupid").val()
+                      'data':tablearr,
+                      "dom": 'B',//Brltip
+                      bSort:false,
+                      buttons: [
+                          {
+                              text: '全部启动',
+                              className: 'dt-button buttons-copy buttons-html5 btn green btn-outline',
+                              action: function (e, dt, node, config) {
+                                  var newid = $(e.currentTarget).attr('aria-controls');
+
+                                  var cmdstr = newid + ".ALL start";
+                                  var r = confirm("确认启动"+newid + "下的全部服务吗?");
+                                  if (r==true){
+                                      socket.emit("command", cmdstr);
+                                  }
+                              }
+                          },
+                          {
+                              text: '全部停止',
+                              className: 'dt-button buttons-copy buttons-html5 btn green btn-outline',
+                              action: function (e, dt, node, config) {
+                                  var newid = $(e.currentTarget).attr('aria-controls');
+                                  var cmdstr = newid + ".ALL stop";
+                                  var r = confirm("确认停止"+newid + "下的全部服务吗?");
+                                  if (r==true){
+                                      socket.emit("command", cmdstr);
+                                  }
+                              }
+                          }
+                      ],
+                      rowId: 'name',
+                      columns: [{
+                          "data": "name"
+                          },
+                          {
+                              "data": "cpu"
+                          },
+                          {
+                              "data": "id"
+                          },
+                          {
+                              "data": "mem"
+                          },
+                          {
+                              "data": "pid"
+                          },
+                          {
+                              "data": "restartNum"
+                          },
+                          {
+                              "data": "status"
+                          },
+                          {
+                              "data": "uptime"
+                          },
+                      ],
+                      "columnDefs": [{
+                          "render": function (data, type, row) {
+                              return '<a id="start" style="color:#00ca6d">启动</a>  ' +
+                                  '<a id="stop" style="color:#00ca6d">停止</a>  '+
+                                  '<a id="restart" style="color:#00ca6d">重启</a>'; //+
+                              // '<a id="index"><button class="btn green btn-xs btn-outline">配置</button></a>';
+                          },
+                          "targets": 8
+                      }],
+                      "language": {
+                          //"url": "/static/control/DataTables-1.10.16/plugins/i18n/Chinese.lang"
+                          "decimal": "",
+                          "emptyTable": "表中数据为空",
+                          "info": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                          "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                          "infoFiltered": "(由 _MAX_ 项结果过滤)",
+                          "infoPostFix": "",
+                          "thousands": ",",
+                          "lengthMenu": "显示 _MENU_ 项结果",
+                          "loadingRecords": "载入中...",
+                          "processing": "处理中...",
+                          "search": "搜索:",
+                          "zeroRecords": "没有匹配结果",
+                          "paginate": {
+                              "first": "首页",
+                              "last": "末页",
+                              "next": "下页",
+                              "previous": "上页"
+                          },
+                          "aria": {
+                              "sortAscending": ": 以升序排列此列",
+                              "sortDescending": ": 以降序排列此列"
+                          }
+                      }
+                  });
+
+                  $(function (i) {
+                      $('#'+data[i].satid+' tbody').on('click', 'a#start', function () {
+                          var dat = $('#'+data[i].satid).DataTable().row($(this).parents('tr')).data();
+                          var cmdstr = satarr[i].satid + "." + dat.name + " start";//$("#groupid").val()
+                          var r = confirm("确认启动"+satarr[i].satid + "." + dat.name+"吗?");
+                          if (r==true){
+                              socket.emit("command", cmdstr);
+                          }
+                      });
+
+                      $('#'+data[i].satid+' tbody').on('click', 'a#stop', function () {
+                          var dat = $('#'+data[i].satid).DataTable().row($(this).parents('tr')).data();
+                          var cmdstr = satarr[i].satid + "." + dat.name + " stop";
+                          var r = confirm("确认停止"+satarr[i].satid + "." + dat.name+"吗?");
+                          if (r==true){
+                              socket.emit("command", cmdstr);
+                          }
+                      });
+
+                      $('#'+data[i].satid+' tbody').on('click', 'a#restart', function () {
+                          var dat = $('#'+data[i].satid).DataTable().row($(this).parents('tr')).data();
+                          var cmdstr = satarr[i].satid + "." + dat.name + " restart";
+                          var r = confirm("确认重启"+satarr[i].satid + "." + dat.name+"吗?");
+                          if (r==true){
+                              socket.emit("command", cmdstr);
+                          }
+                      });
+                  }(i))
+
+              }
+          }
+      });
+
+
+    socket.on('refresh', function (data) {
+      var arr = JSON.parse(data);
+      for (var i = 0; i < arr.length; i++) {
+          if (arr[i].satid == satarr[i].satid) {
+              var srv = arr[i].textobj.apps;
+              for (var j = 0; j < srv.length; j++) {
+                  var rows = $('#'+satarr[i].satid).DataTable().rows().data().toArray();
+                  for (var k = 0; k < rows.length; k++) {
+                      if (rows[k].name == srv[j].name) {
+                          var obj = {};
+                          obj.name = rows[k].name;
+                          obj.cpu = srv[j].monitorState.cpu;
+                          obj.id = srv[j].monitorState.id;
+                          obj.mem = srv[j].monitorState.mem;
+                          obj.pid = srv[j].monitorState.pid;
+                          obj.restartNum = srv[j].monitorState.restartNum;
+                          obj.status = srv[j].monitorState.status;
+                          obj.uptime = srv[j].monitorState.uptime;
+                          $('#' + satarr[i].satid).DataTable().row("#" + rows[k].name).data(obj);
+                          if (obj.status == 'online') {
+                              $('#' + satarr[i].satid+" #" + rows[k].name).removeClass('stopped');
+                              $('#' + satarr[i].satid+" #" + rows[k].name).addClass('online');
+                          } else {
+                              $('#' + satarr[i].satid+" #" + rows[k].name).removeClass('online');
+                              $('#' + satarr[i].satid+" #" + rows[k].name).addClass('stopped');
+                          }
+                      }
+                  }
+              }
+          }
+      }
+    });
+
+  });
+
+</script>
+
+{% include "./footer.html" %}

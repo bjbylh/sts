@@ -1,0 +1,146 @@
+{% include "hr/top.html" %}
+
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+
+<!-- BEGIN GLOBAL LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+<!-- END BLOBAL LEVEL SCRIPTS -->
+
+<!-- BEGIN GLOBAL LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+<!-- END GLOBAL LEVEL PLUGINS -->
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+
+<div class="col-md-12">
+    <div class="portlet light">
+        <div class="portlet-title">
+            <div class="caption font-dark">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject font-dark sbold uppercase">
+                    {% if data._id==null %}岗序添加{% else %}岗序编辑{% endif %}
+                </span>
+            </div>
+            <div class="actions"></div>
+        </div>
+        <div class="portlet-body form">
+            <form class="form-horizontal" id="editform">
+                <div class="form-body">
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        部分表格字段填充不正确，请检查!
+                    </div>
+                    <div class="alert alert-success display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表格填充正确！
+                    </div>
+
+                    <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label col-xs-3" for="name">岗序名称
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-xs-9">
+                                    <div class="input-icon right">
+                                        <i class="fa"></i>
+                                        <input type="text" name="name" class="form-control" placeholder="岗位名称"
+                                               data-required="true" value="{{data.name}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3" for="describe">描述
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-xs-9">
+                                    <div class="input-icon right">
+                                        <i class="fa"></i>
+                                        <input type="text" name="describe" class="form-control" placeholder="岗位名称"
+                                               data-required="true" value="{{data.describe}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var callbackdata = function () {
+        $("#editform").submit();
+        var validate = $("#editform").valid();
+        if (validate)
+            return $('#editform').serialize();
+        else
+            return null;
+    };
+
+    function formvaliate() {
+
+        var form = $("#editform");
+        var error = $('.alert-danger', form);
+        var success = $('.alert-success', form);
+
+        form.validate({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-block help-block-error', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: "",  // validate all fields including form hidden input
+
+            //display error alert on form submit
+            invalidHandler: function (event, validator) {
+                success.hide();
+                error.show();
+                App.scrollTo(error, -200);
+            },
+
+            // render error placement for each input type
+            errorPlacement: function (error, element) {
+                var icon = $(element).parent('.input-icon').children('i');
+                icon.removeClass('fa-check').addClass("fa-warning");
+                icon.attr("data-original-title", error.text()).tooltip({'container': 'body'});
+            },
+
+            // hightlight error inputs
+            highlight: function (element) {
+                $(element)
+                    .closest('.form-group').removeClass("has-success").addClass('has-error');
+            },
+
+            // revert the change done by hightlight
+            unhighlight: function (element) {
+            },
+
+            success: function (label, element) {
+                var icon = $(element).parent('.input-icon').children('i');
+                $(element).closest('.form-group').removeClass('has-error').addClass('has-success'); // set success class to the control group
+                icon.removeClass("fa-warning").addClass("fa-check");
+            },
+
+            submitHandler: function (form) {
+                success.show();
+                error.hide();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        formvaliate();
+    });
+
+</script>
+
+{% include "hr/footer.html" %}

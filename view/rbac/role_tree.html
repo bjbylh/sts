@@ -1,0 +1,198 @@
+{% include "admin/top.html" %}
+<link rel="stylesheet" type="text/css" href="/static/metronic/assets/global/plugins/jstree/dist/themes/default/style.css" />
+<script src="/static/metronic/assets/global/plugins/jstree/dist/jstree.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/static/metronic/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+<link href="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+<link href="/static/metronic/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+<link href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+<!-- END THEME GLOBAL STYLES -->
+<script src="/static/metronic/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js" type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/pages/scripts/components-date-time-pickers.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<div class="col-md-12">
+	<div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+		<!-- title -->
+		<div class="portlet-title">
+			<div class="caption font-dark">
+				<i class="icon-settings font-dark"></i>
+				<span class="caption-subject bold uppercase">{{role.name}}<i class="icon-angle-right"></i>授权管理</span>
+			</div>
+			<div class="tools"></div>
+		</div>
+		<!-- from -->
+		<div class="portlet-body form" style="padding-top: 8px !important;">
+			<form class="form-horizontal" id="form_satellite">
+				<input type="hidden" id="roleid" name="roleid" value="{{role._id}}">
+				<input type="hidden" id="resources" name="resources">
+				<!--form-body-->
+				<div class="form-body" style="padding: 0px !important;">
+					<!-- error msg -->
+					<div class="alert alert-danger display-hide">
+						<button class="close" data-close="alert"></button> 表单验证失败，请检查表单内容.
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="name">角色名称<span> * </span></label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" id="name" name="name" value="{{role.name}}" readonly="readonly">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="project">项目</label>
+						<div class="col-xs-9">
+							<select id="project" name="projectid" class="form-control">
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-3" for="remark">权限管理</label>
+						<div class="col-xs-9">
+							<div id="container"></div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	$(document).ready(function() {
+		projectsInit();
+		initTree();
+		$('#project').bind('change', function() {
+			//			加载数据前要清空，不然不会加载数据
+			$('#container').data('jstree', false).empty();
+			loadTree();
+		});
+//		$("#btn_submit").click(save);
+	});
+
+	function projectsInit() {
+		$.ajax({
+			url: "/rbac/project/getAll",
+			type: 'get',
+			dataType: 'json',
+			async: false,
+			success: function(data) {
+				var rs = [];
+				data.data.forEach(function(t) {
+					var d = {};
+					d.id = t._id;
+					d.text = t.name;
+					rs.push(d);
+				});
+				$('#project').select2({
+					data: rs
+				});
+			}
+
+		});
+	}
+
+	function initTree() {
+		loadTree();
+		//		$('#container').on('ready.jstree', function() {
+		//			console.error('选择节点');
+		//			$('#container').jstree('check_node', ['5a5f1da0f13dec29fc44f036']);
+		//		});
+		$('#container').on('ready.jstree', function() {
+			console.error('所有节点加载完成');
+			$.ajax({
+				url: '/rbac/role/getSelect',
+				data: {
+					'roleid': $('#roleid').val(),
+					'projectid': $('#project').val()
+				},
+				type: 'get',
+				datatype: 'json',
+				success: function(data) {
+					//					alert(data);
+					$('#container').jstree('uncheck_all');
+					$('#container').jstree('check_node', data);
+				}
+			})
+		});
+		$('#container').on('deselect_node.jstree', function(node, unnode) {
+			$('#container').jstree('deselect_node', unnode.node.children);
+		});
+		$('#container').on("close_node.jstree", function(e, data) { //监听关闭事件  
+		});
+		$('#container').on("select_node.jstree", function(node, selectednode, event) { //监听选择事件
+			$('#container').jstree('check_node', selectednode.node.parent);
+		});
+	}
+
+	function loadTree() {
+
+		var datas = [];
+		$.ajax({
+			url: '/rbac/menu/getTree?projectId=' + $('#project').val(),
+			type: 'get',
+			dataType: 'json',
+			async: false,
+			success: function(data) {
+				console.error('加载数据');
+				datas = data.data;
+			}
+		});
+		$('#container').jstree({
+			"core": {
+				"check_callback": true,
+				'data': datas,
+			},
+			'checkbox': {
+				'three_state': false,
+			},
+			"plugins": ["unique", "checkbox", "state"]
+		});
+
+	}
+
+	function addnode() {
+		$('#container').jstree("create_node", null, {
+			"text": "项目名称",
+			"id": "1",
+			"children": true
+		}, "last", function(data) {
+			var h = data;
+			alert(h.node.text);
+		}, true);
+	}
+
+	function getSelected() {
+		//get_selected
+		var r = $('#container').jstree("get_selected");
+		alert(r.length);
+	}
+
+	var callbackdata = function() {
+		var rs = $('#container').jstree("get_selected");
+		$('#resources').val(JSON.stringify(rs));
+		$("#form_satellite").submit();
+		return $('#form_satellite').serialize();
+		
+	};
+</script>
+
+</body>
+
+</html>

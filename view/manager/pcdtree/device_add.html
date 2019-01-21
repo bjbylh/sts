@@ -1,0 +1,464 @@
+{% include "manager/top.html" %}
+<link href="/static/metronic/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+<link href="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+<link href="/static/metronic/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+<link href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+<!-- END THEME GLOBAL STYLES -->
+
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js" type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/pages/scripts/components-select2.min.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<script src="\static\metronic\assets\global\plugins\bootstrap-datetimepicker\js\bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="\static\metronic\assets\global\plugins\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/pages/scripts/components-date-time-pickers.js" type="text/javascript"></script>
+<div class="col-md-12">
+	<!-- BEGIN EXAMPLE TABLE PORTLET-->
+	<div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+		<div class="portlet-title">
+			<div class="caption font-dark">
+				<i class="icon-settings font-dark"></i>
+				<span class="caption-subject bold uppercase">{{sat.name}}<i class="fa fa-chevron-right"></i>
+                   <span id="subsyspath">分系统</span><i class="fa fa-chevron-right"></i> {% if data._id==null %}添加单机{% else %}编辑单机{% endif %}</span>
+			</div>
+			<div class="tools"></div>
+		</div>
+		<div class="portlet-body form" style="padding-top: 8px !important;">
+			<input type="hidden" id="_satcode" value="{{sat.code}}">
+			<input type="hidden" id="_subsys" value="{{data.subsys}}">
+			<input type="hidden" id="_hproduct" value="{{data.product}}" />
+			<input type="hidden" id="_hspectrum" value="{{data.spectrum}}" />
+			<form class="form-horizontal" id="form_satellite">
+				<div class="form-body" style="padding: 0px !important;">
+					<input type="hidden" id="_id" name="_id" value="{{data._id}}">
+					<input type="hidden" id="_satid" name="_satid" value="{{sat._id}}">
+
+					<div class="alert alert-danger display-hide">
+						<button class="close" data-close="alert"></button> 表单验证失败，请检查表单内容.
+					</div>
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="subsys">所属分系统</label>
+							<div class="col-xs-8">
+								<select class="form-control" id="subsys" name="subsys">
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="name">单机名称 <span> * </span></label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="name" name="name" value="{{data.name}}">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="code">单机代号</label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="code" name="code" value="{{data.code}}">
+							</div>
+						</div>
+
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="number">数量</label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="number" name="number" value="{{data.number}}">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="backup">主份/备份</label>
+							<div class="col-xs-8">
+								<select class="form-control" id="backup" name="backup" autocomplete="off">
+									<option value="主份" {% if data.backup=="主份" %}selected="selected" {% endif %}>主份</option>
+									<option value="备份" {% if data.backup=="备份" %}selected="selected" {% endif %}>备份</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="isspectrum">是否型谱产品</label>
+							<div class="col-xs-8">
+								<select class="form-control" id="isspectrum" name="isspectrum" autocomplete="off">
+									<option value="否" {% if data.isspectrum=="否" %}selected="selected" {% endif %}>否</option>
+									<option value="是" {% if data.isspectrum=="是" %}selected="selected" {% endif %}> 是</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row display">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="product">产品化单机</label>
+							<div class="col-xs-8">
+								<!--<input class="form-control" type="text" id="product" name="product"
+                                       value="{{data.product}}">-->
+								<select class="form-control" id="product" name="product">
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="spectrum">型谱</label>
+							<div class="col-xs-8">
+								<select class="form-control" id="spectrum" name="spectrum">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="origin">国产/进口</label>
+							<div class="col-xs-8">
+								<select class="form-control" id="origin" name="origin" autocomplete="off">
+									<option value="国产" {% if data.origin=="国产" %}selected="selected" {% endif %}>国产</option>
+									<option value="进口" {% if data.origin=="进口" %}selected="selected" {% endif %}>进口</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="manufacturers">产品厂家</label>
+							<div class="col-xs-8">
+								<input type="text" class="form-control" id="manufacturers" name="manufacturers" value="{{data.manufacturers}}">
+							</div>
+						</div>
+					</div>
+					
+					
+					<!--div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="startingUp_time">累计开机时间</label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="startingUp_time" name="startingUp_time" value="{{data.startingUp_time}}">
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="startingUp_num">开关机次数</label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="startingUp_num" name="startingUp_num" value="{{data.startingUp_num}}">
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="fault_time">故障时间</label>
+							<div class="col-xs-8">
+								<div class="input-group date form_datetime form_datetime bs-datetime">
+									<input type="text" size="16" class="form-control" id="fault_time" name="fault_time" value="{{data.fault_time}}">
+									<span class="input-group-addon">
+	                                                            <button class="btn default date-set" type="button">
+	                                                                <i class="fa fa-calendar"></i>
+	                                                            </button>
+	                                                        </span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="lose_time">失效时间</label>
+							<div class="col-xs-8">
+								<div class="input-group date form_datetime form_datetime bs-datetime">
+									<input type="text" size="16" class="form-control" id="lose_time" name="lose_time" value="{{data.lose_time}}">
+									<span class="input-group-addon">
+	                                                            <button class="btn default date-set" type="button">
+	                                                                <i class="fa fa-calendar"></i>
+	                                                            </button>
+	                                                        </span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="product_state">产品状态</label>
+							<div class="col-xs-8">
+								<select class="form-control" id="product_state" name="product_state" autocomplete="off">
+									<option value="正常" {% if data.product_state=="正常" %}selected="selected" {% endif %}>正常</option>
+									<option value="故障" {% if data.product_state=="故障" %}selected="selected" {% endif %}>故障</option>
+									<option value="失效" {% if data.product_state=="失效" %}selected="selected" {% endif %}>失效</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="work_time">累计工作时间</label>
+							<div class="col-xs-8">
+								<input type="text" class="form-control" id="work_time" name="work_time" value="{{data.work_time}}">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="proficiency">成熟度</label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="proficiency" name="proficiency" value="{{data.proficiency}}">
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="worksate_1">交付时工作状态</label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="worksate_1" name="worksate_1" value="{{data.worksate_1}}">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="worksate_2">当前工作状态</label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="worksate_2" name="worksate_2" value="{{data.worksate_2}}">
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="batch">设备批次</label>
+							<div class="col-xs-8">
+								<input type="text" class="form-control" id="batch" name="batch" value="{{data.batch}}">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="product_unit">产品化单机单位</label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="product_unit" name="product_unit" value="{{data.product_unit}}">
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="sources">产地</label>
+							<div class="col-xs-8">
+								<input class="form-control" type="text" id="sources" name="sources" value="{{data.sources}}">
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="technical">主要技术指标</label>
+							<div class="col-xs-8">
+								<textarea class="form-control" name="technical" id="technical" rows="3">{{data.technical}}</textarea>
+							</div>
+						</div>
+						<div class="form-group col-xs-6">
+							<label class="control-label col-xs-4" for="describe">设备描述</label>
+							<div class="col-xs-8">
+								<textarea class="form-control" name="describe" id="describe" rows="3">{{data.describe}}</textarea>
+							</div>
+						</div>
+					</div-->
+					<!--div class="row">
+						<div class="form-group">
+							<label class="control-label col-xs-2" for="remark">备注</label>
+							<div class="col-xs-10">
+								<textarea class="form-control" name="remark" id="remark" rows="3">{{data.remark}}</textarea>
+							</div>
+						</div>
+					</div-->
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% include "manager/footer.html" %}
+<script>
+//	var callbackdata = function() {
+//		$("#form_satellite").submit();
+//		var validate = $("#form_satellite").valid();
+//		if(validate)
+//			return [$('#form_satellite').serialize(), $('#subsys').val(), $('#subsys_id').val(), $('#_id').val()];
+//		else
+//			return null;
+//	};
+	var callbackdata = function() {
+		$("#form_satellite").submit();
+		var validate = $("#form_satellite").valid();
+		if(validate)
+			return [form2obj('form_satellite'), $('#subsys').val(), $('#_id').val()];//[$('#form_satellite').serialize(), $('#subsys').val(), $('#subsys_id').val(), $('#_id').val()];
+		else
+			return null;
+	};
+	function form2obj(id) {
+		var obj = {};
+		var arr = $('#' + id).serializeArray();
+		$(arr).each(function() {
+			obj[this.name] = this.value.trim();
+		});
+		return obj;
+	}
+
+	function bindDevice() {
+		$('#product').empty();
+		$.ajax({
+			url: '/manager/pcdtree/modelcraft/getDevices',
+			type: 'get',
+			async: false,
+			error: function(request) {
+				alert("Connection error");
+			},
+			success: function(data) {
+				data.forEach(function(t) {
+					t.text = t.name;
+					t.id = t.name;
+					if(t.name == $("#_hproduct").val()) {
+						t.selected = true;
+					}
+				});
+				$('#product').select2({
+					data: data
+				});
+				bindSpectrum();
+			}
+		});
+	}
+
+	function bindSpectrum() {
+		$('#spectrum').empty();
+		$.ajax({
+			url: '/manager/pcdtree/modelcraft/listSpectrumSlt',
+			type: 'get',
+			async: false,
+			data: {
+				'device': $('#product').val()
+			},
+			error: function(request) {
+				alert("Connection error");
+			},
+			success: function(data) {
+				data.forEach(function(t) {
+					t.text = t.name;
+					t.id = t.name;
+					console.log(t.text + '' + (t.name == $("#_hspectrum").val()));
+					if(t.name == $("#_hspectrum").val()) {
+						t.selected = true;
+					}
+				});
+				$('#spectrum').select2({
+					data: data
+				});
+			}
+		});
+	}
+
+	$(document).ready(function() {
+		$('.form_date').datetimepicker({
+			language: 'zh-CN',
+			weekStart: 1,
+			todayBtn: 1,
+			autoclose: 1,
+			todayHighlight: 1,
+			startView: 2,
+			minView: 2,
+			forceParse: 0
+		});
+		var form_v = $("#form_satellite");
+		var error_v = $('.alert-danger', form_v);
+		form_v.validate({
+			errorElement: 'span', //default input error message container
+			errorClass: 'help-block help-block-error', // default input error message class
+			focusInvalid: false, // do not focus the last invalid input
+			ignore: "", // validate all fields including form hidden input
+			rules: {
+				name: {
+					required: true
+				}
+			},
+			invalidHandler: function(event, validator) { //display error alert on form submit
+				error_v.show();
+				App.scrollTo(error_v, -200);
+			},
+			errorPlacement: function(error, element) { // render error placement for each input type
+				var cont = $(element).parent('.input-group');
+				if(cont.size() > 0) {
+					cont.after(error);
+				} else {
+					element.after(error);
+				}
+			},
+			highlight: function(element) { // hightlight error inputs
+				$(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+			},
+			unhighlight: function(element) { // revert the change done by hightlight
+				$(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+			},
+			success: function(label) {
+				label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+			},
+			submitHandler: function(form) {
+				error_v.hide();
+			}
+		});
+
+		$.ajax({
+			url: 'getSubsys',
+			type: 'GET',
+			dataType: 'json',
+			data: {
+				_satid: $("#_satid").val()
+			},
+			async: false,
+			error: function(request) {
+				alert("Connection error");
+			},
+			success: function(data) {
+				var subsys_data = data.data;
+				subsys_data.forEach(function(t) {
+					if(t.id == $("#_subsys").val()) {
+						t.selected = true;
+						$('#subsyspath').text(t.text);
+					}
+				});
+				$('#subsys').select2({
+					data: subsys_data
+				});
+				bindDevice();
+			}
+		});
+		$('#subsys').change(function() {
+			$('#subsyspath').text($('#subsys option:selected').text());
+			bindDevice();
+		});
+		$('#product').change(function() {
+			bindSpectrum();
+		});
+		$('#isspectrum').on('click', function() {
+			var backup = $('#isspectrum').val();
+			if(backup == '否') {
+				$('.display').css('display', 'none');
+			} else {
+				$('.display').css('display', 'block');
+			}
+		})
+		var backup = $('#isspectrum').val();
+		if(backup == '否') {
+			$('.display').css('display', 'none');
+		} else {
+			$('.display').css('display', 'block');
+		}
+		//键盘事件
+		$('input').keydown(function() {
+			//页面所有input按回车键跳下一行
+			if(event.keyCode == 13) {
+				var inputs = $("input"); //得到所有input对象
+				for(var i = 0; i < inputs.length; i++) {
+					// 如果是最后一个，则回到第一个
+					if(i == (inputs.length - 1)) {
+						inputs[0].focus();
+						break;
+					} else if(this == inputs[i]) {
+						inputs[i + 1].focus();
+						break;
+					}
+				}
+			}
+		});
+	});
+</script>

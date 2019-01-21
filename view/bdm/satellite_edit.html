@@ -1,0 +1,710 @@
+{% include "./top.html" %}
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<link href="/static/metronic/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css"
+      rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"
+      rel="stylesheet" type="text/css"/>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME GLOBAL STYLES -->
+<script src="/static/metronic/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="/static/metronic/assets/pages/scripts/components-date-time-pickers.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<script src="/static/arena/js/form.js" type="text/javascript"></script>
+
+<div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <form class="form-horizontal" id="form_satellite">
+                <div class="form-body" style="padding: 0px !important;">
+                    <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表单验证失败，请检查表单内容.
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="name">卫星名称<span>*</span></label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="name" name="name" value="{{data.name}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="code">内部代号<span>*</span></label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="code" name="code" value="{{data.code}}" {% if data._id !=null %} readonly {% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="alias">异常案例库代号</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="alias" name="alias" value="{{data.alias}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="code_out">展示代号*</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="code_out" name="code_out" value="{{data.code_out}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="code_26">26基地代号<span>*</span></label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="code_26" name="code_26" value="{{data.code_26}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="code_14">测试中心代号<span>*</span></label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="code_14" name="code_14" value="{{data.code_14}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="name_out">对外名称</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="name_out" name="name_out" value="{{data.name_out}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="name_en">英文名称</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="name_en" name="name_en" value="{{data.name_en}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="commander">总指挥</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="commander" name="commander" value="{{data.commander}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="designer">总师</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="designer" name="designer" value="{{data.designer}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="manager">在轨管理责任人</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="manager" name="manager" value="{{data.manager}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="telephone">联系电话</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="telephone" name="telephone" value="{{data.telephone}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="factory">抓总单位</label>
+                                <div class="col-xs-8">
+                                    <select id="factory" name="factory" class="form-control">
+                                        <option></option>
+                                        <option value="总体部" {% if data.factory=="总体部" %}selected{% endif %}>总体部</option>
+                                        <option value="通信卫星事业部" {% if data.factory=="通信卫星事业部" %}selected{% endif %}>通信卫星事业部</option>
+                                        <option value="载人航天总体部" {% if data.factory=="载人航天总体部" %}selected{% endif %}>载人航天总体部</option>
+                                        <option value="航天东方红" {% if data.factory=="航天东方红" %}selected{% endif %}>航天东方红</option>
+                                        <option value="深圳东方红" {% if data.factory=="深圳东方红" %}selected{% endif %}>深圳东方红</option>
+                                        <option value="其它" {% if data.factory=="其它" %}selected{% endif %}>其它</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="field">领域</label>
+                                <div class="col-xs-8">
+                                    <select id="field" name="field" class="form-control">
+                                        <option></option>
+                                        <option value="对地观测" {% if data.field=="对地观测" %}selected{% endif %}>对地观测</option>
+                                        <option value="导航定位" {% if data.field=="导航定位" %}selected{% endif %}>导航定位</option>
+                                        <option value="通信广播" {% if data.field=="通信广播" %}selected{% endif %}>通信广播</option>
+                                        <option value="深空探测" {% if data.field=="深空探测" %}selected{% endif %}>深空探测</option>
+                                        <option value="空间科学与技术试验" {% if data.field=="空间科学与技术试验" %}selected{% endif %}>空间科学与技术试验</option>
+                                        <option value="返回式卫星" {% if data.field=="返回式卫星" %}selected{% endif %}>返回式卫星</option>
+                                        <option value="载人航天" {% if data.field=="载人航天" %}selected{% endif %}>载人航天</option>
+                                        <option value="气象卫星" {% if data.field=="气象卫星" %}selected{% endif %}>气象卫星</option>
+                                        <option value="其它" {% if data.field=="其它" %}selected{% endif %}>其它</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="platform">卫星平台</label>
+                                <div class="col-xs-8">
+                                    <select id="platform" name="platform" class="form-control">
+                                        <option></option>
+                                        <option value="921航天器" {% if data.platform=="921航天器" %}selected{% endif %}>921航天器</option>
+                                        <option value="CAST100" {% if data.platform=="CAST100" %}selected{% endif %}>CAST100</option>
+                                        <option value="CAST20" {% if data.platform=="CAST20" %}selected{% endif %}>CAST20</option>
+                                        <option value="CAST2000A" {% if data.platform=="CAST2000A" %}selected{% endif %}>CAST2000A</option>
+                                        <option value="CAST2000B" {% if data.platform=="CAST2000B" %}selected{% endif %}>CAST2000B</option>
+                                        <option value="CAST3000A" {% if data.platform=="CAST3000A" %}selected{% endif %}>CAST3000A</option>
+                                        <option value="CAST3000B" {% if data.platform=="CAST3000B" %}selected{% endif %}>CAST3000B</option>
+                                        <option value="DFH-3" {% if data.platform=="DFH-3" %}selected{% endif %}>DFH-3</option>
+                                        <option value="DFH-3A" {% if data.platform=="DFH-3A" %}selected{% endif %}>DFH-3A</option>
+                                        <option value="DFH-3B" {% if data.platform=="DFH-3B" %}selected{% endif %}>DFH-3B</option>
+                                        <option value="DFH-4" {% if data.platform=="DFH-4" %}selected{% endif %}>DFH-4</option>
+                                        <option value="DFH-4Y" {% if data.platform=="DFH-4Y" %}selected{% endif %}>DFH-4Y</option>
+                                        <option value="ZY1000A" {% if data.platform=="ZY1000A" %}selected{% endif %}>ZY1000A</option>
+                                        <option value="ZY1000B" {% if data.platform=="ZY1000B" %}selected{% endif %}>ZY1000B</option>
+                                        <option value="导航卫星专用平台" {% if data.platform=="导航卫星专用平台" %}selected{% endif %}>导航卫星专用平台</option>
+                                        <option value="返回式平台" {% if data.platform=="返回式平台" %}selected{% endif %}>返回式平台</option>
+                                        <option value="皮纳平台" {% if data.platform=="皮纳平台" %}selected{% endif %}>皮纳平台</option>
+                                        <option value="探月航天器" {% if data.platform=="探月航天器" %}selected{% endif %}>探月航天器</option>
+                                        <option value="微纳平台" {% if data.platform=="微纳平台" %}selected{% endif %}>微纳平台</option>
+                                        <option value="其它" {% if data.platform=="其它" %}selected{% endif %}>其它</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="applyField">应用目标</label>
+                                <div class="col-xs-8">
+                                    <select id="applyField" name="applyField" class="form-control">
+                                        <option></option>
+                                        <option value="军用" {% if data.applyField=="军用" %}selected{% endif %}>军用</option>
+                                        <option value="民用" {% if data.applyField=="民用" %}selected{% endif %}>民用</option>
+                                        <option value="商用" {% if data.applyField=="商用" %}selected{% endif %}>商用</option>
+                                        <option value="载人" {% if data.applyField=="载人" %}selected{% endif %}>载人</option>
+                                        <option value="深空" {% if data.applyField=="深空" %}selected{% endif %}>深空</option>
+                                        <option value="科研" {% if data.applyField=="科研" %}selected{% endif %}>科研</option>
+                                        <option value="其它" {% if data.applyField=="其它" %}selected{% endif %}>其它</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="orbitType">轨道类型</label>
+                                <div class="col-xs-8">
+                                    <select id="orbitType" name="orbitType" class="form-control">
+                                        <option></option>
+                                        <option value="LEO" {% if data.orbitType=="LEO" %}selected{% endif %}>LEO</option>
+                                        <option value="MEO" {% if data.orbitType=="MEO" %}selected{% endif %}>MEO</option>
+                                        <option value="GEO" {% if data.orbitType=="GEO" %}selected{% endif %}>GEO</option>
+                                        <option value="IGSO" {% if data.orbitType=="IGSO" %}selected{% endif %}>IGSO</option>
+                                        <option value="环月轨道" {% if data.orbitType=="环月轨道" %}selected{% endif %}>环月轨道</option>
+                                        <option value="其它" {% if data.orbitType=="其它" %}selected{% endif %}>其它</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="size">卫星大小</label>
+                                <div class="col-xs-8">
+                                    <select id="size" name="size" class="form-control">
+                                        <option></option>
+                                        <option value="大卫星" {% if data.size=="大卫星" %}selected{% endif %}>大卫星</option>
+                                        <option value="小卫星" {% if data.size=="小卫星" %}selected{% endif %}>小卫星</option>
+                                        <option value="微小卫星" {% if data.size=="微小卫星" %}selected{% endif %}>微小卫星</option>
+                                        <option value="其它" {% if data.size=="其它" %}selected{% endif %}>其它</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="display">是否展示</label>
+                                <div class="col-xs-8">
+                                    <select id="display" name="display" class="form-control">
+                                        <option></option>
+                                        <option value="否" {% if data.display=="否" %}selected{% endif %}>否</option>
+                                        <option value="是" {% if data.display=="是" %}selected{% endif %}>是</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="stage">卫星状态</label>
+                                <div class="col-xs-8">
+                                    <select id="stage" name="stage" class="form-control">
+                                        <option></option>
+                                        <option value="在轨" {% if data.stage=="在轨" %}selected{% endif %}>在轨</option>
+                                        <option value="退役" {% if data.stage=="退役" %}selected{% endif %}>退役</option>
+                                        <option value="失效" {% if data.stage=="失效" %}selected{% endif %}>失效</option>
+                                        <option value="研制" {% if data.stage=="研制" %}selected{% endif %}>研制</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="health">健康状态</label>
+                                <div class="col-xs-8">
+                                    <select id="health" name="health" class="form-control">
+                                        <option></option>
+                                        <option value="完全健康态" {% if data.health=="完全健康态" %}selected{% endif %}>完全健康态</option>
+                                        <option value="健康达标态" {% if data.health=="健康达标态" %}selected{% endif %}>健康达标态</option>
+                                        <option value="亚健康" {% if data.health=="亚健康" %}selected{% endif %}>亚健康</option>
+                                        <option value="故障态" {% if data.health=="故障态" %}selected{% endif %}>故障态</option>
+                                        <option value="失效态" {% if data.health=="失效态" %}selected{% endif %}>失效态</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="quality">入轨质量(Kg)</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="quality" name="quality" value="{{data.quality}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                          <div class="col-sm-6">
+                              <div class="form-group">
+                                  <label class="control-label col-xs-4" for="ip">IP地址</label>
+                                  <div class="col-xs-8"><input type="text" class="form-control" id="ip" name="ip" value="{{data.ip}}">
+                                  </div>
+                              </div>
+                          </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="port">端口</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="port" name="port" value="{{data.port}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="designTime">设计时间</label>
+                                <div class="col-xs-8">
+                                    <div class="input-group date form_datetime form_datetime bs-datetime">
+                                        <input type="text" size="16" class="form-control" id="designTime" name="designTime" value="{{data.designTime}}">
+                                        <span class="input-group-addon">
+                                            <button class="btn default date-set" type="button"><i class="fa fa-calendar"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="lanuchTime">发射时间</label>
+                                <div class="col-xs-8">
+                                    <div class="input-group date form_datetime form_datetime bs-datetime">
+                                        <input type="text" size="16" class="form-control" id="lanuchTime" name="lanuchTime" value="{{data.lanuchTime}}">
+                                        <span class="input-group-addon">
+                                            <button class="btn default date-set" type="button"><i class="fa fa-calendar"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="row">
+                         <div class="col-sm-6">
+                             <div class="form-group">
+                                 <label class="control-label col-xs-4" for="retireTime">退役时间</label>
+                                 <div class="col-xs-8">
+                                     <div class="input-group date form_datetime form_datetime bs-datetime">
+                                         <input type="text" size="16" class="form-control" id="retireTime" name="retireTime" value="{{data.retireTime}}">
+                                         <span class="input-group-addon">
+                                            <button class="btn default date-set" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="col-sm-6">
+                             <div class="form-group">
+                                 <label class="control-label col-xs-4" for="invaildTime">失效时间</label>
+                                 <div class="col-xs-8">
+                                     <div class="input-group date form_datetime form_datetime bs-datetime">
+                                         <input type="text" size="16" class="form-control" id="invaildTime" name="invaildTime" value="{{data.invaildTime}}">
+                                         <span class="input-group-addon">
+                                            <button class="btn default date-set" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="life">设计寿命(年)</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="life" name="life" value="{{data.life}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="assessLife">考核寿命(年)</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="assessLife" name="assessLife" value="{{data.assessLife}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="powerstyle">推进系统类型</label>
+                                <div class="col-xs-8">
+                                    <select id="powerstyle" name="powerstyle" class="form-control">
+                                        <option></option>
+                                        <option value="单组元" {% if data.powerstyle=="单组元" %}selected{% endif %}>单组元</option>
+                                        <option value="双组元" {% if data.powerstyle=="双组元" %}selected{% endif %}>双组元</option>
+                                        <option value="双组元+电推" {% if data.powerstyle=="双组元+电推" %}selected{% endif %}>双组元+电推</option>
+                                        <option value="无" {% if data.powerstyle=="无" %}selected{% endif %}>无</option>
+                                        <option value="未知" {% if data.powerstyle=="未知" %}selected{% endif %}>未知</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="powercalc">计算方法</label>
+                                <div class="col-xs-8">
+                                    <select id="powercalc" name="powercalc" class="form-control">
+                                        <option></option>
+                                        <option value="手工填写" {% if data.powercalc=="手工填写" %}selected{% endif %}>手工填写</option>
+                                        <option value="指标计算" {% if data.powercalc=="指标计算" %}selected{% endif %}>指标计算</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="totalfuel">燃烧剂总量(Kg)</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="totalfuel" name="totalfuel" value="{{data.totalfuel}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="nowfuel">燃烧剂剩余(Kg)</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="nowfuel" name="nowfuel" value="{{data.nowfuel}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="totaloxdiant">氧化剂总量(Kg)</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="totaloxdiant" name="totaloxdiant" value="{{data.totaloxdiant}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="nowoxdiant">氧化剂剩余(Kg)</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="nowoxdiant" name="nowoxdiant" value="{{data.nowoxdiant}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="deliver_ygzx">交付运管时间</label>
+                                <div class="col-xs-8">
+                                    <div class="input-group date form_datetime form_datetime bs-datetime">
+                                        <input type="text" size="16" class="form-control" id="deliver_ygzx" name="deliver_ygzx" value="{{data.deliver_ygzx}}">
+                                        <span class="input-group-addon">
+                                            <button class="btn default date-set" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="deliver_user">交付用户时间</label>
+                                <div class="col-xs-8">
+                                    <div class="input-group date form_datetime form_datetime bs-datetime">
+                                        <input type="text" size="16" class="form-control" id="deliver_user" name="deliver_user" value="{{data.deliver_user}}">
+                                        <span class="input-group-addon">
+                                            <button class="btn default date-set" type="button">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="height_1">远地点高度(km)</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="height_1" name="height_1" value="{{data.height_1}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="height_2">近地点高度(km)</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="height_2" name="height_2" value="{{data.height_2}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="period">覆盖周期</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="period" name="period" value="{{data.period}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="local_time">降交点地方时</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="local_time" name="local_time" value="{{data.local_time}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="orbit_remarks">轨道描述</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="orbit_remarks" name="orbit_remarks" value="{{data.orbit_remarks}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="user">卫星用户</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="user" name="user" value="{{data.user}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="trackForm">轨道形式</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="trackForm" name="trackForm" value="{{data.trackForm}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="controll">控制方式</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="controll" name="controll" value="{{data.controll}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="technical">主要技术指标</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="technical" name="technical" value="{{data.technical}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="power">电源</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="power" name="power" value="{{data.power}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="observe">测控体质</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="observe" name="observe" value="{{data.observe}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="capacity">有效载荷</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="capacity" name="capacity" value="{{data.capacity}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2" for="classify">所属谱系</label>
+                        <div class="col-xs-10">
+                            <select id="classify" name="classify" class="form-control">
+                                <option></option>
+                                <option value="高分系列" {% if data.classify=="高分系列" %}selected{% endif %}>高分系列</option>
+                                <option value="导航系列" {% if data.classify=="导航系列" %}selected{% endif %}>导航系列</option>
+                                <option value="资源系列" {% if data.classify=="资源系列" %}selected{% endif %}>资源系列</option>
+                                <option value="载人系列" {% if data.classify=="载人系列" %}selected{% endif %}>载人系列</option>
+                                <option value="深空探测系列" {% if data.classify=="深空探测系列" %}selected{% endif %}>深空探测系列</option>
+                                <option value="尖兵系列" {% if data.classify=="尖兵系列" %}selected{% endif %}>尖兵系列</option>
+                                <option value="实践系列" {% if data.classify=="实践系列" %}selected{% endif %}>实践系列</option>
+                                <option value="中继系列" {% if data.classify=="中继系列" %}selected{% endif %}>中继系列</option>
+                                <option value="其它" {% if data.classify=="其它" %}selected{% endif %}>其它</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+  var callbackdata = function() {
+    $('#form_satellite').submit();
+    var validate = $('#form_satellite').valid();
+    if (validate) {
+      return [form2obj('form_satellite')];
+    } else {
+      return null;
+    }
+  };
+
+  $(document).ready(function() {
+    var rules = {
+      name: {
+        minlength: 2,
+        required: true,
+        remote: {
+          url: 'doValidateSatelliteName',
+          type: 'post',
+          data: {
+            'name': function() {
+              return $('#name').val();
+            },
+            '_satid': function() {
+              return $('#_id').val();
+            }
+          }
+        }
+      },
+      code:{
+        minlength: 6,
+        maxlength: 10,
+        required: true,
+        remote: {
+          url: 'doValidateSatelliteCode',
+          type: 'post',
+          data: {
+            'code': function() {
+              return $('#code').val();
+            },
+            '_satid': function() {
+              return $('#_id').val();
+            }
+          }
+        }
+      },
+      code_26:{
+        minlength: 6,
+        maxlength: 10,
+        required: true,
+        remote: {
+          url: 'doValidateSatelliteCode_26',
+          type: 'post',
+          data: {
+            'code_26': function() {
+              return $('#code_26').val();
+            },
+            '_satid': function() {
+              return $('#_id').val();
+            }
+          }
+        }
+      },
+      code_14:{
+        minlength: 6,
+        maxlength: 10,
+        required: true,
+        remote: {
+          url: 'doValidateSatelliteCode_14',
+          type: 'post',
+          data: {
+            'code_14': function() {
+              return $('#code_14').val();
+            },
+            '_satid': function() {
+              return $('#_id').val();
+            }
+          }
+        }
+      },
+      code_out:{
+        required: true
+      }
+    };
+    var message = {
+      code:{remote:"内部代号不合法或已被占用"},
+      code_14:{remote:"测试中心代号不合法或已被占用"},
+      code_26:{remote:"卫测中心代号不合法或已被占用"},
+      name:{remote:"型号名称不合法或已被占用"}
+    }
+    bindFormValidate('#form_satellite', rules,message);
+  });
+</script>
+
+{% include "./footer.html" %}

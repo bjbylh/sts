@@ -1,0 +1,154 @@
+{% include "./top.html" %}
+<link href="/static/metronic/assets/global/css/components.min.css" rel="stylesheet" id="style_components"
+      type="text/css"/>
+<link href="/static/metronic/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+<link href="/static/metronic/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet"
+      type="text/css"/>
+
+<script src="/static/metronic/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        type="text/javascript"></script>
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/additional-methods.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js"
+        type="text/javascript"></script>
+
+<script src="/static/metronic/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light " style="margin-bottom: 0px;padding-bottom: 0px;">
+        <div class="portlet-body form" style="padding-top: 8px !important;">
+            <form class="form-horizontal" id="form_satellite">
+                <div class="form-body" style="padding: 0px !important;">
+                    <input type="hidden" id="_id" name="_id" value="{{data._id}}">
+                    <input type="hidden" id="_satid" name="_satid" value="{{sat._id}}">
+                    <input type="hidden" id="data" value="{{data.channelcode}}">
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        表单验证失败，请检查表单内容.
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-3" for="GROUP_ID">分组标识</label>
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="GROUP_ID" name="GROUP_ID" value="{{data.GROUP_ID}}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-3" for="GROUP_NAME">分组名称</label>
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="GROUP_NAME" name="GROUP_NAME" value="{{data.GROUP_NAME}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-3" for="GROUP_SAT">卫星代号</label>
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="GROUP_SAT" name="GROUP_SAT" value="{{data.GROUP_SAT}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-3" for="GROUP_TYPE">分组类型</label>
+                        <div class="col-xs-9">
+                            <input type="text" class="form-control" id="GROUP_TYPE" name="GROUP_TYPE" value="{{data.GROUP_TYPE}}">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+  var callbackdata = function() {
+    $('#form_satellite').submit();
+    var validate = $('#form_satellite').valid();
+    if (validate) {
+      return [form2obj('form_satellite')];
+    } else {
+      return null;
+    }
+  };
+
+  $(document).ready(function() {
+    //下拉框，联动
+    $.ajax({
+      type : "get",
+      async: false,
+      url : "/bdm/channel/getList",
+      data:{"_satid":"{{sat._id}}"},
+      success : function(data) {
+        var arr=[];
+        for(var i=0;i<data.data.length;i++){
+          arr.push(data.data[i].code)
+        }
+        $('#channelcode').select2({
+          data:arr
+        });
+        $("#channelcode").change(function(){
+          var item=$(this).val();
+          for(var i=0;i<data.data.length;i++){
+            if(data.data[i].code==item){
+              var Name=data.data[i].name;
+              $("#channelname").val(Name)
+            }
+          }
+        });
+        var selectData=$("#data").val();
+        $("#channelcode").val(selectData).select2();
+      },
+      error:function(request){
+        showMessageAbnomal("通道代号获取失败")
+      }
+    });
+    var rules = {
+      name: {
+        minlength: 2,
+        required: true,
+        remote: {
+          url: 'doValidateName',
+          type: 'post',
+          data: {
+            'name': function() {
+              return $('#name').val();
+            },
+            '_vctypeid': function() {
+              return $('#_id').val();
+            },
+            '_satid': function() {
+              return $('#_satid').val();
+            }
+          }
+        }
+      },
+      code: {
+        minlength: 2,
+        maxlength: 10,
+        required: true,
+        remote: {
+          url: 'doValidateCode',
+          type: 'post',
+          data: {
+            'code': function() {
+              return $('#code').val();
+            },
+            '_vctypeid': function() {
+              return $('#_id').val();
+            },
+            '_satid': function() {
+              return $('#_satid').val();
+            }
+          }
+        }
+      }
+    };
+    var message = {
+      code: {remote: '虚拟信道代号不合法或已被占用'},
+      name: {remote: '虚拟信道名称不合法或已被占用'}
+    };
+    bindFormValidate('#form_satellite', rules, message);
+  });
+
+</script>
+
+{% include "./footer.html" %}

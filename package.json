@@ -1,0 +1,60 @@
+{
+  "name": "thinkjs-application",
+  "description": "application created by thinkjs",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node development.js",
+    "compile": "babel --no-babelrc src/ --presets think-node --out-dir app/",
+    "lint": "eslint src/",
+    "lint-fix": "eslint --fix src/"
+  },
+  "dependencies": {
+    "agentkeepalive": "^4.0.0",
+    "barcode": "^0.1.0",
+    "bson-objectid": "^1.2.1",
+    "elasticsearch": "^15.2.0",
+    "excel-export": "^0.5.1",
+    "html-pdf": "^2.2.0",
+    "marked": "^0.3.6",
+    "node-xlsx": "^0.12.0",
+    "pdc": "^0.2.3",
+    "pdfkit": "^0.8.3",
+    "pinyin": "^2.8.3",
+    "qrcode": "^1.2.0",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "restify-clients": "^1.5.3",
+    "think-cache": "^1.0.0",
+    "think-cache-file": "^1.0.8",
+    "think-logger3": "^1.0.0",
+    "think-model": "^1.0.0",
+    "think-model-mysql": "^1.0.0",
+    "think-mongo": "^1.0.10",
+    "think-session": "^1.0.0",
+    "think-session-file": "^1.0.5",
+    "think-session-redis": "^1.1.2",
+    "think-view": "^1.0.0",
+    "think-view-nunjucks": "^1.0.1",
+    "thinkjs": "^3.2.8"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-think-node": "^1.0.0",
+    "eslint": "^4.2.0",
+    "eslint-config-think": "^1.0.0",
+    "node-notifier": "^5.0.2",
+    "sqlite3": "^4.0.4",
+    "think-babel": "^1.1.0",
+    "think-fetch": "^1.1.0",
+    "think-inspect": "0.0.2",
+    "think-watcher": "^3.0.0",
+    "think-websocket": "^1.0.6",
+    "think-websocket-socket.io": "^1.0.10"
+  },
+  "repository": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "readmeFilename": "README.md"
+}
