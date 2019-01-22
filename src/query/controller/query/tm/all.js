@@ -81,7 +81,7 @@ module.exports = class extends BaseRest {
 
         let set = json.code;
 
-        if (json.rawvalue == 'true')
+        if (rawvalue == 'true')
             set = json.code + ',' + json.code + '_YM';
 
         let result = await dateCollection.where(where).field(set).select();
