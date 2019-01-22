@@ -17,15 +17,6 @@ module.exports = class extends BaseRest {
 
         let map = new Map();
 
-        if (map.size > 0) {
-            if (json.bins == 'true') {
-                var set = new Set();
-                for (let i = 0; i < json.tmList.length; i++) {
-                    set.add(json.tmList[i].sat);
-                }
-            }
-        }
-
         while (true) {
             await this.queryAll(json, map);
             console.log(map.length);
@@ -42,6 +33,19 @@ module.exports = class extends BaseRest {
                 json.end = moment(newend).format('YYYY-MM-DD HH:mm:ss.SSS');
             } else {
                 break;
+            }
+        }
+
+        if (map.size > 0) {
+            if (json.bins == 'true') {
+                var set = new Set();
+                for (let i = 0; i < json.tmList.length; i++) {
+                    set.add(json.tmList[i].sat);
+                }
+
+                for (let i = 0; i < set.size; i++) {
+                    this.queryTcAll()
+                }
             }
         }
 
@@ -119,22 +123,22 @@ module.exports = class extends BaseRest {
         });
     }
 
-    async postAction(json) {
+    async queryTcAll(start,end,sat) {
         let where = {};
 
-        where._id = {"$lte": json.end, "$gte": json.start};
+        where._id = {"$lte": end, "$gte": start};
 
-        const insCollection = this.mongo('MESG', {database: json.sat});
+        const insCollection = this.mongo('MESG', {database: sat});
 
         let result = await insCollection.where(where).select();
 
         let ret = [];
 
         for (let i = 0; i < result.length; i++) {
-            let newItem = await this.queryTcName(result[i], json.sat);
+            let newItem = await this.queryTcName(result[i], sat);
             ret.push(newItem);
         }
-        return this.json(ret);
+        return ret;
     }
 
     async queryTcName(item, sat) {
