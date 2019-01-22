@@ -17,7 +17,14 @@ module.exports = class extends BaseRest {
 
         let map = new Map();
 
-
+        if (map.size > 0) {
+            if (json.bins == 'true') {
+                var set = new Set();
+                for (let i = 0; i < json.tmList.length; i++) {
+                    set.add(json.tmList[i].sat);
+                }
+            }
+        }
 
         while (true) {
             await this.queryAll(json, map);
@@ -110,5 +117,37 @@ module.exports = class extends BaseRest {
                 map.set(t, r);
             }
         });
+    }
+
+    async postAction(json) {
+        let where = {};
+
+        where._id = {"$lte": json.end, "$gte": json.start};
+
+        const insCollection = this.mongo('MESG', {database: json.sat});
+
+        let result = await insCollection.where(where).select();
+
+        let ret = [];
+
+        for (let i = 0; i < result.length; i++) {
+            let newItem = await this.queryTcName(result[i], json.sat);
+            ret.push(newItem);
+        }
+        return this.json(ret);
+    }
+
+    async queryTcName(item, sat) {
+        let where = {};
+        where.insid = item.INS_ID.trim();
+        const insCollection = this.mongo('basic_instruction', {database: sat});
+
+        let result = await insCollection.where(where).field('insname').find();
+
+        if (think.isEmpty(result))
+            item.INS_NAME = '';
+        else
+            item.INS_NAME = result.insname;
+        return item;
     }
 };
