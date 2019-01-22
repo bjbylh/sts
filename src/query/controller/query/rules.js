@@ -14,7 +14,7 @@ module.exports = class extends BaseRest {
 
         if (rule_id == null || rule_id == undefined || rule_id == '')
             rule_id = [];
-        console.log(rule_id)
+
         let result = [];
         const jugeResultCollection = this.mongo('juge_result', {database: sat});
 
