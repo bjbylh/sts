@@ -19,13 +19,34 @@ module.exports = class extends BaseRest {
 
         for (let i = 0; i < json.tmList.length; i++) {
             let item = json.tmList[i];
-            await this.query(item,map);
+            await this.query(item, map);
         }
-        return this.json(alldata);
+
+        let ret = [];
+        map.forEach(function (value, key, mapObj) {
+            var item = {};
+            item.t = key;
+            item.d = value;
+            ret.push(item);
+        });
+        return this.json(ret.sort(await this.compare('t')));
     }
-
-    async query(json) {
-
+    async compare(prop) {
+        return function (obj1, obj2) {
+            var val1 = obj1[prop];
+            var val2 = obj2[prop];
+            if (val1 < val2) {
+                return -1;
+            } else if (val1 > val2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    async query(json, map) {
+        if (!json.hasOwnProperty('type'))
+            json.type = 'DATE';
         const dateCollection = this.mongo(json.type, {database: json.sat});
 
         let where = {};
@@ -45,17 +66,16 @@ module.exports = class extends BaseRest {
         jsObj.type = json.type;
 
         result.forEach(function (item, index) {
-            var j = {};
             var r = [];
 
-            jsObj["v"] = parseFloat(item[code]);
+            jsObj.v = parseFloat(item[json.code]);
             if (rawvalue == 'true')
-                jsObj["r"] = item[code + '_YM'];
+                jsObj.r = item[json.code + '_YM'];
 
-            var t = Date.parse(item._id);
+            let t = Date.parse(item._id);
 
             if (map.has(t)) {
-                var rr = map.get(t);
+                let rr = map.get(t);
                 rr.push(jsObj);
                 map.delete(t);
                 map.set(t, rr);
@@ -64,7 +84,5 @@ module.exports = class extends BaseRest {
                 map.set(t, r);
             }
         });
-
-        return result;
     }
 };

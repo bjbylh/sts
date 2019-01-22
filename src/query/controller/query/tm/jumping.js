@@ -47,6 +47,7 @@ module.exports = class extends BaseRest {
     }
 
     async query(json) {
+
         const dateCollection = this.mongo(json.type, {database: json.sat});
 
         let where = {};
