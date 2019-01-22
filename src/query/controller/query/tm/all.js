@@ -44,7 +44,28 @@ module.exports = class extends BaseRest {
                 }
 
                 for (let i = 0; i < set.size; i++) {
-                    this.queryTcAll()
+                    let r = await this.queryTcAll(json.start, json.end, set[i]);
+                    r.forEach(function (item, index) {
+                        var jsObj = {}
+                        jsObj.code = 'INST';
+                        jsObj.sat = item0;
+                        jsObj.type = 'MESG';
+                        jsObj.c = item.INS_ID;
+                        jsObj.n = item.INS_NAME;
+                        var r = [];
+
+                        var t = Date.parse(item._id);
+
+                        if (map.has(t)) {
+                            var rr = map.get(t);
+                            rr.push(jsObj);
+                            map.delete(t);
+                            map.set(t, rr);
+                        } else {
+                            r.push(jsObj);
+                            map.set(t, r);
+                        }
+                    })
                 }
             }
         }
@@ -123,7 +144,7 @@ module.exports = class extends BaseRest {
         });
     }
 
-    async queryTcAll(start,end,sat) {
+    async queryTcAll(start, end, sat) {
         let where = {};
 
         where._id = {"$lte": end, "$gte": start};
