@@ -39,10 +39,12 @@ module.exports = class extends BaseRest {
             where["_id"] = {"$lte": json.end, "$gte": json.start};
         }
 
-        const insCollection = this.mongo(json.type, {database: json.sat});
+        const insCollection = this.mongo('MESG', {database: json.sat});
 
         let result = await insCollection.where(where).select();
 
         return this.json(result);
     }
+
+
 };
