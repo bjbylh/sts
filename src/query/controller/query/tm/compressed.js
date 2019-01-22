@@ -7,88 +7,101 @@ module.exports = class extends BaseRest {
 
         let compressedData = [];
 
-        while (true) {
-            await this.queryAll(json);
+        await this.queryAll(json, compressedData);
 
-            if (compressedData.length == 0 && Date.parse(json.end) < Date.parse(json.closetime)) {
-                let oldstart = Date.parse(json.start);
-                let oldend = Date.parse(json.end);
-                let close = Date.parse(json.closetime);
-                let span = oldend - oldstart;
-                let newend = oldend + span;
-                if (newend >= close)
-                    newend = close;
-
-                json.start = json.end;
-                json.end = moment(newend).format('YYYY-MM-DD HH:mm:ss.SSS');
-            } else {
-                break;
-            }
-        }
-
-        let ret = [];
-        map.forEach(function (value, key, mapObj) {
-            var item = {};
-            item.t = key;
-            item.d = value;
-            ret.push(item);
-        });
-        return this.json(ret.sort(await this.compare('t')));
+        return this.json(compressedData);
     }
 
-    async queryAll(json) {
+    async queryAll(json, compressedData) {
         for (let i = 0; i < json.tmList.length; i++) {
             let item = json.tmList[i];
-            await this.query(item, json.start, json.end, json.rawvalue);
+            await this.query(item, json.start, json.end, json.rawvalue, compressedData);
         }
     }
 
-    async compare(prop) {
-        return function (obj1, obj2) {
-            var val1 = obj1[prop];
-            var val2 = obj2[prop];
-            if (val1 < val2) {
-                return -1;
-            } else if (val1 > val2) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-    }
 
-    async query(json, start, end, rawvalue) {
+    async query(json, start, end, rawvalue, compressedData) {
 
         if (!json.hasOwnProperty('type'))
             json.type = 'DATE';
-        const dateCollection = this.mongo(json.type, {database: json.sat});
+
+        let oldstart = Date.parse(start);
+        let oldend = Date.parse(end);
+        let span = oldend - oldstart;
+        let interval = parseInt(span / 1000);
+        let zerostart = Date.parse(start);
+        var r = [];
+        for (let i = 0; i < 1001; i++) {
+            let newObject = {};
+            newObject.start = moment(zerostart + i * interval).format('YYYY-MM-DD HH:mm:ss.SSS');
+            newObject.end = moment(zerostart + (i + 1) * interval).format('YYYY-MM-DD HH:mm:ss.SSS');
+            if (newObject.end == end) {
+                jsons.push(newObject);
+                break;
+            }
+            if (newObject.end > end) {
+                newObject.end = end;
+            }
+            //jsons.push(newObject);
+            await this.queryPerSlice(json.type, json.sat, start, end, json.code, json.rawvalue, r);
+        }
+
+        let it = {};
+        it.code = json.code;
+        it.sat = json.sat;
+        it.data = r;
+        compressedData.push(it);
+    }
+
+    async queryPerSlice(type, sat, start, end, code, rawvalue, r) {
+        const dateCollection = this.mongo(type, {database: sat});
 
         let where = {};
         where._id = {'$lte': end, '$gte': start};
-        where[json.code] = {'$exists': true};
+        where[code] = {'$exists': true};
 
-        let set = json.code;
+        let set = code;
 
         if (rawvalue == 'true')
-            set = json.code + ',' + json.code + '_YM';
+            set = code + ',' + code + '_YM';
 
         let result = await dateCollection.where(where).field(set).select();
 
-        let jsObj = {}
-        jsObj.code = json.code;
-        jsObj.sat = json.sat;
+        if (result.length > 0) {
+            var max = result[0];
+            var min = result[0];
 
-        var r = [];
-        result.forEach(function (item, index) {
-            var j = {};
-            j.t = Date.parse(item._id);
-            j.v = parseFloat(item[json.code]);
-            if (rawvalue == 'true')
-                j.r = item[json.code + '_YM'];
+            for (let item3 in result){
+                if (parseFloat(item3[code] > parseFloat(max[code])))
+                    max = item3;
 
-            r.push(j);
-        });
-        jsObj.data = r;
-        compressedData.push(jsObj);
+                if (parseFloat(item3[code] < parseFloat(min[code])))
+                    min = item3;
+            }
+            if (max === min) {
+                var j = {};
+                j.t = Date.parse(max._id);
+                j.v = parseFloat(max[code]);
+                if (rawvalue == 'true')
+                    j.r = max[code + '_YM'];
+
+                r.push(j);
+            } else {
+                let j = {};
+                j.t = Date.parse(max._id);
+                j.v = parseFloat(max[code]);
+                if (rawvalue == 'true')
+                    j.r = max[code + '_YM'];
+
+                let j2 = {};
+                j2.t = Date.parse(min._id);
+                j2.v = parseFloat(min[code]);
+                if (rawvalue == 'true')
+                    j2.r = min[code + '_YM'];
+
+                r.push(j);
+                r.push(j2);
+            }
+        }
     }
 };
