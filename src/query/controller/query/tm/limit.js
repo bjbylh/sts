@@ -70,7 +70,6 @@ module.exports = class extends BaseRest {
                 alldata.push(jsObj);
             }
         });
-
         return alldata;
     }
 };
