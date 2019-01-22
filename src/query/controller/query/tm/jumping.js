@@ -29,11 +29,11 @@ module.exports = class extends BaseRest {
             result = await this.query(json);
 
             if (result.length == 0 && Date.parse(json.end) < Date.parse(json.closetime)) {
-                var oldstart = Date.parse(json.start);
-                var oldend = Date.parse(json.end);
-                var close = Date.parse(json.closetime);
-                var span = oldend - oldstart;
-                var newend = oldend + span;
+                let oldstart = Date.parse(json.start);
+                let oldend = Date.parse(json.end);
+                let close = Date.parse(json.closetime);
+                let span = oldend - oldstart;
+                let newend = oldend + span;
                 if (newend >= close)
                     newend = close;
 

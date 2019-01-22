@@ -1,5 +1,5 @@
 const BaseRest = require('../../rest.js');
-
+let moment = require("moment");
 module.exports = class extends BaseRest {
     async postAction() {
         // let type = 'DATF';
@@ -17,7 +17,26 @@ module.exports = class extends BaseRest {
 
         let map = new Map();
 
-        await this.queryAll(json, map);
+
+
+        while (true) {
+            await this.queryAll(json, map);
+            console.log(map.length);
+            if (map.length == 0 && Date.parse(json.end) < Date.parse(json.closetime)) {
+                let oldstart = Date.parse(json.start);
+                let oldend = Date.parse(json.end);
+                let close = Date.parse(json.closetime);
+                let span = oldend - oldstart;
+                let newend = oldend + span;
+                if (newend >= close)
+                    newend = close;
+
+                json.start = json.end;
+                json.end = moment(newend).format('YYYY-MM-DD HH:mm:ss.SSS');
+            } else {
+                break;
+            }
+        }
 
         let ret = [];
         map.forEach(function (value, key, mapObj) {
@@ -51,12 +70,13 @@ module.exports = class extends BaseRest {
     }
 
     async query(json, map, start, end, rawvalue) {
+        console.log(rawvalue)
         if (!json.hasOwnProperty('type'))
             json.type = 'DATE';
         const dateCollection = this.mongo(json.type, {database: json.sat});
 
         let where = {};
-        where['_id'] = {'$lte': end, '$gte': start};
+        where._id = {'$lte': end, '$gte': start};
         where[json.code] = {'$exists': true};
 
         let set = json.code;
@@ -70,7 +90,7 @@ module.exports = class extends BaseRest {
         jsObj.code = json.code;
         jsObj.sat = json.sat;
         jsObj.type = json.type;
-        console.log(where)
+
         result.forEach(function (item, index) {
             var r = [];
 
