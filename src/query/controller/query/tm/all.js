@@ -15,11 +15,17 @@ module.exports = class extends BaseRest {
         if (inst == null || inst == undefined || inst == '')
             json.inst = 'false';
 
+        let map = new Map();
 
+        for (let i = 0; i < json.tmList.length; i++) {
+            let item = json.tmList[i];
+            await this.query(item,map);
+        }
         return this.json(alldata);
     }
 
     async query(json) {
+
         const dateCollection = this.mongo(json.type, {database: json.sat});
 
         let where = {};
@@ -34,9 +40,9 @@ module.exports = class extends BaseRest {
         let result = await dateCollection.where(where).field(set).select();
 
         var jsObj = {}
-        jsObj["code"] = code;
-        jsObj["sat"] = sat;
-        jsObj["type"] = type;
+        jsObj.code = json.code;
+        jsObj.sat = json.sat;
+        jsObj.type = json.type;
 
         result.forEach(function (item, index) {
             var j = {};

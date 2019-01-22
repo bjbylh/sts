@@ -17,12 +17,12 @@ module.exports = class extends BaseRest {
         let thresholdType = this.post('thresholdType');
 
         if (thresholdType == null || thresholdType == undefined || thresholdType == '')
-            json['thresholdType'] = 'physical';
+            json.thresholdType = 'physical';
 
         let type = this.post('type');
 
         if (type == null || type == undefined || type == '')
-            json['type'] = 'DATE';
+            json.type = 'DATE';
 
         let result = {};
         while (true) {
@@ -50,7 +50,7 @@ module.exports = class extends BaseRest {
         const dateCollection = this.mongo(json.type, {database: json.sat});
 
         let where = {};
-        where['_id'] = {'$lte': json.end, '$gte': json.start};
+        where._id = {'$lte': json.end, '$gte': json.start};
         where[json.code] = {'$exists': true};
 
         let set = json.code;
