@@ -43,12 +43,14 @@ module.exports = class extends BaseRest {
                     set.add(json.tmList[i].sat);
                 }
 
-                for(let set0 of set){
+                for (let set0 of set) {
 
-                    let r = await this.queryTcAll(json.start, json.end, set0);
+                    let alltcs = await this.queryTcAll(json.start, json.end, set0);
 
-                    r.forEach(function (item, index) {
-                        var jsObj = {}
+                    for (let i = 0; i < alltcs.length; i++) {
+                        // r.forEach(function (item, index) {
+                        let item = alltcs[i];
+                        let jsObj = {}
                         jsObj.code = 'INST';
                         jsObj.sat = set0;
                         jsObj.type = 'MESG';
@@ -67,7 +69,7 @@ module.exports = class extends BaseRest {
                             r.push(jsObj);
                             map.set(t, r);
                         }
-                    })
+                    }
                 }
             }
         }
@@ -150,9 +152,7 @@ module.exports = class extends BaseRest {
         let where = {};
 
         where._id = {"$lte": end, "$gte": start};
-        console.log(end)
-        console.log(start)
-        console.log(sat)
+
         const insCollection = this.mongo('MESG', {database: sat});
 
         let result = await insCollection.where(where).select();
@@ -163,6 +163,7 @@ module.exports = class extends BaseRest {
             let newItem = await this.queryTcName(result[i], sat);
             ret.push(newItem);
         }
+
         return ret;
     }
 
