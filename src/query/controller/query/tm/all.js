@@ -19,8 +19,8 @@ module.exports = class extends BaseRest {
 
         while (true) {
             await this.queryAll(json, map);
-            console.log(map.length);
-            if (map.length == 0 && Date.parse(json.end) < Date.parse(json.closetime)) {
+
+            if (map.size == 0 && Date.parse(json.end) < Date.parse(json.closetime)) {
                 let oldstart = Date.parse(json.start);
                 let oldend = Date.parse(json.end);
                 let close = Date.parse(json.closetime);
@@ -37,14 +37,15 @@ module.exports = class extends BaseRest {
         }
 
         if (map.size > 0) {
-            if (json.bins == 'true') {
+            if (json.inst == 'true') {
                 var set = new Set();
                 for (let i = 0; i < json.tmList.length; i++) {
                     set.add(json.tmList[i].sat);
                 }
-
+                console.log(set)
                 for (let i = 0; i < set.size; i++) {
                     let r = await this.queryTcAll(json.start, json.end, set[i]);
+                    console.log(r)
                     r.forEach(function (item, index) {
                         var jsObj = {}
                         jsObj.code = 'INST';
@@ -102,7 +103,7 @@ module.exports = class extends BaseRest {
     }
 
     async query(json, map, start, end, rawvalue) {
-        console.log(rawvalue)
+
         if (!json.hasOwnProperty('type'))
             json.type = 'DATE';
         const dateCollection = this.mongo(json.type, {database: json.sat});
