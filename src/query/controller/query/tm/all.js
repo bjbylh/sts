@@ -8,12 +8,12 @@ module.exports = class extends BaseRest {
         let limit = this.post('limit');
 
         if (limit == null || limit == undefined || limit == '')
-            json['limit'] = 1000;
+            json.limit = 1000;
 
         let inst = this.post('inst');
 
         if (inst == null || inst == undefined || inst == '')
-            json['inst'] = 'false';
+            json.inst = 'false';
 
 
         return this.json(alldata);
