@@ -17,10 +17,7 @@ module.exports = class extends BaseRest {
 
         let map = new Map();
 
-        for (let i = 0; i < json.tmList.length; i++) {
-            let item = json.tmList[i];
-            await this.query(item, map);
-        }
+        await this.queryAll(json, map);
 
         let ret = [];
         map.forEach(function (value, key, mapObj) {
@@ -31,6 +28,14 @@ module.exports = class extends BaseRest {
         });
         return this.json(ret.sort(await this.compare('t')));
     }
+
+    async queryAll(json, map) {
+        for (let i = 0; i < json.tmList.length; i++) {
+            let item = json.tmList[i];
+            await this.query(item, map, json.start, json.end, json.rawvalue);
+        }
+    }
+
     async compare(prop) {
         return function (obj1, obj2) {
             var val1 = obj1[prop];
@@ -44,13 +49,14 @@ module.exports = class extends BaseRest {
             }
         }
     }
-    async query(json, map) {
+
+    async query(json, map, start, end, rawvalue) {
         if (!json.hasOwnProperty('type'))
             json.type = 'DATE';
         const dateCollection = this.mongo(json.type, {database: json.sat});
 
         let where = {};
-        where['_id'] = {'$lte': json.end, '$gte': json.start};
+        where['_id'] = {'$lte': end, '$gte': start};
         where[json.code] = {'$exists': true};
 
         let set = json.code;
@@ -64,7 +70,7 @@ module.exports = class extends BaseRest {
         jsObj.code = json.code;
         jsObj.sat = json.sat;
         jsObj.type = json.type;
-
+        console.log(where)
         result.forEach(function (item, index) {
             var r = [];
 
