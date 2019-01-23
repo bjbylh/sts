@@ -57,6 +57,8 @@ module.exports = class extends Base {
     const _id = this.post ("_id");
     if (_id == undefined || _id == null || _id == "") {
       let insertId = await subsys.add (data);
+
+
       return this.json ({success: true, msg: '添加分系统成功', data: insertId});
     } else {
       let affectedRows = await subsys.where ({_id: _id}).update (data);

@@ -4,5 +4,6 @@ module.exports = [
     [/\/query\/tm\/(\w+)(?:\/(\w+))?/, 'query/query/tm/:1?id=:2', 'rest'],
     [/\/query\/tc\/(\w+)(?:\/(\w+))?/, 'query/query/tc/:1?id=:2', 'rest'],
     [/\/query\/(\w+)(?:\/(\w+))?/, 'query/query/:1?id=:2', 'rest'],
-    [/\/cond\/query\/(\w+)(?:\/(\w+))?/, 'query/cond/query/:1?id=:2', 'rest']
+    [/\/cond\/query\/(\w+)(?:\/(\w+))?/, 'query/cond/query/:1?id=:2', 'rest'],
+    [/\/getcsv\/(\w+)(?:\/(\w+))?/, 'query/getcsv/:1?id=:2', 'rest']
 ];
