@@ -24,11 +24,12 @@ module.exports = class extends BaseRest {
 
         if (!json.hasOwnProperty('type'))
             json.type = 'DATE';
-
+        console.log(json)
         let oldstart = Date.parse(start);
         let oldend = Date.parse(end);
         let span = oldend - oldstart;
         let interval = parseInt(span / 1000);
+        console.log(interval)
         let zerostart = Date.parse(start);
         var r = [];
         for (let i = 0; i < 1001; i++) {
@@ -36,14 +37,13 @@ module.exports = class extends BaseRest {
             newObject.start = moment(zerostart + i * interval).format('YYYY-MM-DD HH:mm:ss.SSS');
             newObject.end = moment(zerostart + (i + 1) * interval).format('YYYY-MM-DD HH:mm:ss.SSS');
             if (newObject.end == end) {
-                jsons.push(newObject);
                 break;
             }
             if (newObject.end > end) {
                 newObject.end = end;
             }
-            //jsons.push(newObject);
-            await this.queryPerSlice(json.type, json.sat, start, end, json.code, json.rawvalue, r);
+
+            await this.queryPerSlice(json.type, json.sat, newObject.start, newObject.end, json.code, rawvalue, r);
         }
 
         let it = {};
@@ -55,7 +55,7 @@ module.exports = class extends BaseRest {
 
     async queryPerSlice(type, sat, start, end, code, rawvalue, r) {
         const dateCollection = this.mongo(type, {database: sat});
-
+        //console.log(rawvalue)
         let where = {};
         where._id = {'$lte': end, '$gte': start};
         where[code] = {'$exists': true};
@@ -66,6 +66,8 @@ module.exports = class extends BaseRest {
             set = code + ',' + code + '_YM';
 
         let result = await dateCollection.where(where).field(set).select();
+
+        //console.log(result)
 
         if (result.length > 0) {
             var max = result[0];
