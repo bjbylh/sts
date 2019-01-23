@@ -24,12 +24,10 @@ module.exports = class extends BaseRest {
 
         if (!json.hasOwnProperty('type'))
             json.type = 'DATE';
-        console.log(json)
         let oldstart = Date.parse(start);
         let oldend = Date.parse(end);
         let span = oldend - oldstart;
         let interval = parseInt(span / 1000);
-        console.log(interval)
         let zerostart = Date.parse(start);
         var r = [];
         for (let i = 0; i < 1001; i++) {
